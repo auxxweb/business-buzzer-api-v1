@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { createPlan, getAllPlans, } from "../../modules/plans/plans.controller.js";
+import {
+  createPlan,
+  getAllPlans,
+} from "../../modules/plans/plans.controller.js";
 const router = Router();
 // user-endpoints
 router.post("/", createPlan);
