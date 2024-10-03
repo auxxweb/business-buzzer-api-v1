@@ -151,7 +151,7 @@ const getBusinessById = async (businessId) => {
     _id: new ObjectId(businessId),
     isDeleted: false,
   })
-    .populate("selectedPlan")
+    .populate("selectedPlan category")
     .select("-password");
   if (business == null) {
     return await generateAPIError(errorMessages.userNotFound, 404);
@@ -161,8 +161,16 @@ const getBusinessById = async (businessId) => {
   }
   return business;
 };
+const getAllBusiness = async ({ query, options }) => {
+  const [data, totalCount] = await Promise.all([
+    Business.find(query, {}, options),
+    Business.countDocuments(query),
+  ]);
+  return { data, totalCount };
+};
 export const businessService = {
   businessLogin,
   businessSignUp,
   getBusinessById,
+  getAllBusiness,
 };

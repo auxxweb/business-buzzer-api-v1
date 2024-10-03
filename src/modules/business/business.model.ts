@@ -52,7 +52,8 @@ const BusinessSchema = new Schema(
       ],
     },
     category: {
-      type: String,
+      type: ObjectId,
+      ref: "categories",
     },
     services: {
       type: [String],

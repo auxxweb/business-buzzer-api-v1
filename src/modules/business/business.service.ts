@@ -8,6 +8,7 @@ import { CreateBusinessData, BusinessLoginData } from "./business.interface.js";
 // import { ObjectId } from '../../constants/type.js'
 import Business from "./business.model.js";
 import { ObjectId } from "../../constants/type.js";
+import { FilterQuery, QueryOptions } from "mongoose";
 
 const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
   const {
@@ -169,7 +170,7 @@ const getBusinessById = async (businessId: string): Promise<any> => {
     _id: new ObjectId(businessId),
     isDeleted: false,
   })
-    .populate("selectedPlan")
+    .populate("selectedPlan category")
     .select("-password");
 
   if (business == null) {
@@ -183,8 +184,24 @@ const getBusinessById = async (businessId: string): Promise<any> => {
   return business;
 };
 
+const getAllBusiness = async ({
+  query,
+  options,
+}: {
+  query: FilterQuery<typeof Business>;
+  options: QueryOptions;
+}): Promise<any> => {
+  const [data, totalCount] = await Promise.all([
+    Business.find(query, {}, options),
+    Business.countDocuments(query),
+  ]);
+
+  return { data, totalCount };
+};
+
 export const businessService = {
   businessLogin,
   businessSignUp,
   getBusinessById,
+  getAllBusiness,
 };

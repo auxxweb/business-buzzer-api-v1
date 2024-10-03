@@ -3,6 +3,8 @@ import { responseUtils } from "../../utils/response.utils.js";
 import { errorWrapper } from "../../middleware/errorWrapper.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 import { businessService } from "./business.service.js";
+import { getPaginationOptions } from "../../utils/pagination.utils.js";
+import { ObjectId } from "../../constants/type.js";
 const businessSignUp = errorWrapper(async (req, res, next) => {
   const data = await businessService.businessSignUp({
     ...req.body,
@@ -28,4 +30,46 @@ const getBusinessById = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
-export { businessSignUp, businessLogin, getBusinessById };
+const getAllBusiness = errorWrapper(async (req, res, next) => {
+  const paginationOptions = getPaginationOptions({
+    limit: req.query?.limit,
+    page: req.query?.page,
+  });
+  let query = {
+    isDeleted: false,
+  };
+  const searchTerm = req.query?.searchTerm;
+  if (searchTerm) {
+    query = {
+      ...query,
+      $or: [
+        {
+          businessName: {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+      ],
+    };
+  }
+  const data = await businessService.getAllBusiness({
+    query: {
+      ...query,
+      ...(req.query?.selectedPlan && {
+        selectedPlan: new ObjectId(String(req.query?.selectedPlan)),
+      }),
+      ...(req.query?.category && {
+        category: new ObjectId(String(req.query?.category)),
+      }),
+    },
+    options: {
+      ...paginationOptions,
+      sort: { createdAt: -1 },
+    },
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+export { businessSignUp, businessLogin, getBusinessById, getAllBusiness };

@@ -5,6 +5,7 @@ import { Router } from "express";
 import {
   businessLogin,
   businessSignUp,
+  getAllBusiness,
   getBusinessById,
 } from "../../modules/business/business.controller.js";
 
@@ -13,5 +14,6 @@ const router = Router();
 router.post("/", businessSignUp);
 router.post("/login", businessLogin);
 router.get("/:id", getBusinessById);
+router.get("/", getAllBusiness);
 
 export default router;

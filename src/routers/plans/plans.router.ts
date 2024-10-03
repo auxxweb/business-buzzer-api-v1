@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
-import { protect } from "middleware/auth.middleware.js";
+// import { protect } from "middleware/auth.middleware.js";
 import {
   createPlan,
   getAllPlans,
