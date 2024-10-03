@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import bcrypt from "bcryptjs";
 
 import { generateAPIError } from "../../errors/apiError.js";
@@ -8,7 +9,7 @@ import { CreateBusinessData, BusinessLoginData } from "./business.interface.js";
 // import { ObjectId } from '../../constants/type.js'
 import Business from "./business.model.js";
 import { ObjectId } from "../../constants/type.js";
-import { FilterQuery, QueryOptions } from "mongoose";
+import { FilterQuery, PipelineStage, QueryOptions } from "mongoose";
 
 const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
   const {
@@ -35,6 +36,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     seoData,
     selectedPlan,
     paymentStatus,
+    location,
   } = userData;
 
   const businessExists = await Business.findOne({
@@ -56,6 +58,13 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     ownerName,
     email,
     address,
+    ...(location?.lat &&
+      location?.lon && {
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -82,6 +91,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     logo: business?.logo,
     ownerName: business?.ownerName,
     email: business?.email,
+    location: business?.location,
     address: business?.address,
     contactDetails: business?.contactDetails,
     socialMediaLinks: business?.socialMediaLinks,
@@ -157,6 +167,7 @@ const businessLogin = async (userData: BusinessLoginData): Promise<any> => {
     testimonial: business?.testimonial,
     gallery: business?.gallery,
     seoData: business?.seoData,
+    location: business?.location,
     selectedPlan: business?.selectedPlan,
     paymentStatus: business?.paymentStatus,
     token: await generateToken({
@@ -187,16 +198,107 @@ const getBusinessById = async (businessId: string): Promise<any> => {
 const getAllBusiness = async ({
   query,
   options,
+  lat,
+  lon,
 }: {
   query: FilterQuery<typeof Business>;
   options: QueryOptions;
+  lat?: number;
+  lon?: number;
 }): Promise<any> => {
-  const [data, totalCount] = await Promise.all([
-    Business.find(query, {}, options),
-    Business.countDocuments(query),
-  ]);
+  const aggregatePipeLine: PipelineStage[] = [
+    {
+      $match: query,
+    },
+    {
+      $lookup: {
+        from: "plans",
+        localField: "selectedPlan",
+        foreignField: "_id",
+        as: "selectedPlan",
+      },
+    },
+    {
+      $unwind: {
+        path: "$selectedPlan",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category",
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    {
+      $unwind: {
+        path: "$category",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        businessName: 1,
+        logo: 1,
+        ownerName: 1,
+        email: 1,
+        address: 1,
+        contactDetails: 1,
+        socialMediaLinks: 1,
+        category: 1,
+        services: 1,
+        businessTiming: 1,
+        description: 1,
+        theme: 1,
+        landingPageHero: 1,
+        welcomePart: 1,
+        specialServices: 1,
+        productSection: 1,
+        service: 1,
+        testimonial: 1,
+        gallery: 1,
+        seoData: 1,
+        location: 1,
+        selectedPlan: 1,
+        paymentStatus: 1,
+      },
+    },
+    {
+      $sort: options?.sort,
+    },
+    {
+      $facet: {
+        metadata: [{ $count: "total" }],
+        data: [{ $skip: options?.skip || 0 }, { $limit: options?.limit || 10 }],
+      },
+    },
+  ];
 
-  return { data, totalCount };
+  if (lat && lon) {
+    aggregatePipeLine.unshift({
+      $geoNear: {
+        near: {
+          type: "Point",
+          coordinates: [lon, lat],
+        },
+        distanceField: "distanceField",
+        maxDistance: 6000,
+        spherical: true,
+      },
+    });
+  }
+
+  console.log(lat, lon, "lat-lon");
+
+  const data = await Business.aggregate(aggregatePipeLine);
+
+  return {
+    data: data[0]?.data,
+    totalCount: data[0]?.metadata[0]?.total || 0,
+  };
 };
 
 export const businessService = {

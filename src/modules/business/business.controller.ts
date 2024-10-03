@@ -71,6 +71,8 @@ const getAllBusiness = errorWrapper(
       };
     }
 
+    console.log(req.query?.lat, req.query?.lon, "lat-logn-loatt");
+
     const data = await businessService.getAllBusiness({
       query: {
         ...query,
@@ -81,6 +83,12 @@ const getAllBusiness = errorWrapper(
           category: new ObjectId(String(req.query?.category)),
         }),
       },
+      ...(req.query?.lat && {
+        lat: Number(req.query?.lat),
+      }),
+      ...(req.query?.lon && {
+        lon: Number(req.query?.lon),
+      }),
       options: {
         ...paginationOptions,
         sort: { createdAt: -1 },

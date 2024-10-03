@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import bcrypt from "bcryptjs";
 import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages } from "../../constants/messages.js";
@@ -31,6 +32,7 @@ const businessSignUp = async (userData) => {
     seoData,
     selectedPlan,
     paymentStatus,
+    location,
   } = userData;
   const businessExists = await Business.findOne({
     email,
@@ -47,6 +49,13 @@ const businessSignUp = async (userData) => {
     ownerName,
     email,
     address,
+    ...(location?.lat &&
+      location?.lon && {
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -72,6 +81,7 @@ const businessSignUp = async (userData) => {
     logo: business?.logo,
     ownerName: business?.ownerName,
     email: business?.email,
+    location: business?.location,
     address: business?.address,
     contactDetails: business?.contactDetails,
     socialMediaLinks: business?.socialMediaLinks,
@@ -139,6 +149,7 @@ const businessLogin = async (userData) => {
     testimonial: business?.testimonial,
     gallery: business?.gallery,
     seoData: business?.seoData,
+    location: business?.location,
     selectedPlan: business?.selectedPlan,
     paymentStatus: business?.paymentStatus,
     token: await generateToken({
@@ -161,12 +172,96 @@ const getBusinessById = async (businessId) => {
   }
   return business;
 };
-const getAllBusiness = async ({ query, options }) => {
-  const [data, totalCount] = await Promise.all([
-    Business.find(query, {}, options),
-    Business.countDocuments(query),
-  ]);
-  return { data, totalCount };
+const getAllBusiness = async ({ query, options, lat, lon }) => {
+  const aggregatePipeLine = [
+    {
+      $match: query,
+    },
+    {
+      $lookup: {
+        from: "plans",
+        localField: "selectedPlan",
+        foreignField: "_id",
+        as: "selectedPlan",
+      },
+    },
+    {
+      $unwind: {
+        path: "$selectedPlan",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category",
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    {
+      $unwind: {
+        path: "$category",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        businessName: 1,
+        logo: 1,
+        ownerName: 1,
+        email: 1,
+        address: 1,
+        contactDetails: 1,
+        socialMediaLinks: 1,
+        category: 1,
+        services: 1,
+        businessTiming: 1,
+        description: 1,
+        theme: 1,
+        landingPageHero: 1,
+        welcomePart: 1,
+        specialServices: 1,
+        productSection: 1,
+        service: 1,
+        testimonial: 1,
+        gallery: 1,
+        seoData: 1,
+        location: 1,
+        selectedPlan: 1,
+        paymentStatus: 1,
+      },
+    },
+    {
+      $sort: options?.sort,
+    },
+    {
+      $facet: {
+        metadata: [{ $count: "total" }],
+        data: [{ $skip: options?.skip || 0 }, { $limit: options?.limit || 10 }],
+      },
+    },
+  ];
+  if (lat && lon) {
+    aggregatePipeLine.unshift({
+      $geoNear: {
+        near: {
+          type: "Point",
+          coordinates: [lon, lat],
+        },
+        distanceField: "distanceField",
+        maxDistance: 6000,
+        spherical: true,
+      },
+    });
+  }
+  console.log(lat, lon, "lat-lon");
+  const data = await Business.aggregate(aggregatePipeLine);
+  return {
+    data: data[0]?.data,
+    totalCount: data[0]?.metadata[0]?.total || 0,
+  };
 };
 export const businessService = {
   businessLogin,

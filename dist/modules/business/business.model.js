@@ -22,6 +22,17 @@ const BusinessSchema = new Schema(
       minlength: 4,
       required: true,
     },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number],
+        index: "2dsphere",
+      },
+    },
     address: {
       type: {
         buildingName: String,

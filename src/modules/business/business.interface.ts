@@ -7,6 +7,10 @@ export interface CreateBusinessData {
   ownerName: string;
   email: string;
   password: string;
+  location: {
+    lat: number;
+    lon: number;
+  };
   address: {
     buildingName: string;
     streetName: string;
