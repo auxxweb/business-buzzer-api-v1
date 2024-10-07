@@ -129,7 +129,7 @@ const businessLogin = async (userData: BusinessLoginData): Promise<any> => {
   }
 
   if (!business?.status) {
-    return await generateAPIError(errorMessages.userAccountBlocked, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page
+    return await generateAPIError(errorMessages.userAccountBlocked, 400); // changed from 401 to 404 to fix frontend issue with redirect to login page
   }
 
   // if (user?.role !== UserRole.USER) {

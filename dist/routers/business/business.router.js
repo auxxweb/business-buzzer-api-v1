@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
 // import { protect } from "../../middleware/auth.middleware.js";
-import {
-  businessLogin,
-  businessSignUp,
-  getAllBusiness,
-  getBusinessById,
-} from "../../modules/business/business.controller.js";
+import { businessLogin, businessSignUp, getAllBusiness, getBusinessById, } from "../../modules/business/business.controller.js";
 const router = Router();
 // user-endpoints
 router.post("/", businessSignUp);

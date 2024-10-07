@@ -5,13 +5,7 @@ export interface RequestWithUser extends Request {
     _id?: string;
     name?: string;
     email?: string;
-    password?: string;
-    country?: string;
-    industry?: string;
-    position?: string;
-    org?: string;
     status?: string;
-    role?: string;
   };
 }
 
