@@ -27,7 +27,7 @@ const getS3Urls = errorWrapper(async (req, res, next) => {
     };
     const url = await s3.getSignedUrlPromise("putObject", params);
     urls.push({
-      file_name: `${appConfig.awsUrl}/bb_${uniqueCode}`,
+      file_name: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
       file_type: file_types[i],
       url,
     });
