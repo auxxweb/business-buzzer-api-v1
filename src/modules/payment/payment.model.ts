@@ -1,5 +1,6 @@
-import { model, Schema } from 'mongoose'
-import { ObjectId } from '../../constants/type.js'
+import { model, Schema } from "mongoose";
+import { ObjectId } from "../../constants/type.js";
+import { PaymentStatus } from "./payment.enums.js";
 
 const PaymentSchema = new Schema(
   {
@@ -9,16 +10,18 @@ const PaymentSchema = new Schema(
     },
     plan: {
       type: ObjectId,
-      ref: 'plans',
+      ref: "plans",
       required: true,
     },
     business: {
       type: ObjectId,
-      ref: 'businesses',
+      ref: "businesses",
       required: true,
     },
     paymentStatus: {
       type: String,
+      enum: PaymentStatus,
+      required: true,
     },
     date: {
       type: Date,
@@ -36,7 +39,7 @@ const PaymentSchema = new Schema(
   {
     timestamps: true,
   },
-)
+);
 
-const Payment = model('payments', PaymentSchema)
-export default Payment
+const Payment = model("payments", PaymentSchema);
+export default Payment;

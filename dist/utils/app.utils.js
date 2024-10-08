@@ -1,12 +1,12 @@
 import { v4 } from "uuid";
 import { appConfig } from "../config/appConfig.js";
 export const getUuid = () => {
-    const uuid = v4();
-    return uuid;
+  const uuid = v4();
+  return uuid;
 };
 export const resetLinkEmailTemplate = async (tempData) => {
-    const resetLink = `${appConfig.webUrl}/reset-password?id=${tempData?.uuId}`;
-    return `
+  const resetLink = `${appConfig.webUrl}/reset-password?id=${tempData?.uuId}`;
+  return `
 <!DOCTYPE html>
 <html>
 

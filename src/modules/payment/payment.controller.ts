@@ -1,10 +1,10 @@
-import { Response, NextFunction } from 'express'
+import { Response, NextFunction } from "express";
 // import { FilterQuery } from 'mongoose'
 
-import { responseUtils } from '../../utils/response.utils.js'
-import { errorWrapper } from '../../middleware/errorWrapper.js'
-import { paymentService } from './payment.service.js'
-import { RequestWithUser } from '../../interface/app.interface.js';
+import { responseUtils } from "../../utils/response.utils.js";
+import { errorWrapper } from "../../middleware/errorWrapper.js";
+import { paymentService } from "./payment.service.js";
+import { RequestWithUser } from "../../interface/app.interface.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 
 const createPayment = errorWrapper(
@@ -12,13 +12,13 @@ const createPayment = errorWrapper(
     const data = await paymentService.createPayment({
       ...req.body,
       business: req.user?._id,
-    })
+    });
 
     return responseUtils.success(res, {
       data,
       status: 201,
-    })
+    });
   },
-)
+);
 
-export { createPayment }
+export { createPayment };

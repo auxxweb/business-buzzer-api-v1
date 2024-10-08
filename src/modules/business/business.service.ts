@@ -129,7 +129,7 @@ const businessLogin = async (userData: BusinessLoginData): Promise<any> => {
   }
 
   if (!business?.status) {
-    return await generateAPIError(errorMessages.userAccountBlocked, 400); // changed from 401 to 404 to fix frontend issue with redirect to login page
+    return await generateAPIError(errorMessages.userAccountBlocked, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page
   }
 
   // if (user?.role !== UserRole.USER) {
@@ -188,7 +188,7 @@ const getBusinessById = async (businessId: string): Promise<any> => {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
-  if (!business?.status) {
+  if (!business?.status || !business?.paymentStatus) {
     return await generateAPIError(errorMessages.userAccountBlocked, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page
   }
 
@@ -290,8 +290,6 @@ const getAllBusiness = async ({
       },
     });
   }
-
-  console.log(lat, lon, "lat-lon");
 
   const data = await Business.aggregate(aggregatePipeLine);
 
