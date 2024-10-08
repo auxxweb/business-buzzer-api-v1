@@ -19,4 +19,5 @@ export const appConfig = {
   razorpayKeyId: process.env.RAZORPAY_KEY_ID ?? "",
   razorpaySecret: process.env.RAZORPAY_SECRET ?? "",
   awsFolder: process.env.AWS_S3_FOLDER,
+  awsUrl: process.env.AWS_S3_URL ?? "",
 };
