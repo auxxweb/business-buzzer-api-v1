@@ -21,11 +21,11 @@ const s3 = new aws.S3({
 
 const getS3Urls = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { files } = req.body; // array of file names with extension
+    const { file_types } = req.body; // array of file names with extension
 
     const urls = []; // array of objects {file_name, url, file_type}
 
-    for (let i = 0; i < files?.length; i++) {
+    for (let i = 0; i < file_types.length; i++) {
       const uniqueCode = uuidv4();
       const params = {
         Bucket: bucket,
@@ -33,11 +33,9 @@ const getS3Urls = errorWrapper(
         Expires: 60,
       };
       const url = await s3.getSignedUrlPromise("putObject", params);
-      // let file_type = file_names[i].split(".");
-      // file_type = file_type[file_type.length - 1];
       urls.push({
         file_name: `${appConfig.awsUrl}/bb_${uniqueCode}`,
-        file_type: files[i]?.file_type,
+        file_type: file_types[i],
         url,
       });
     }
