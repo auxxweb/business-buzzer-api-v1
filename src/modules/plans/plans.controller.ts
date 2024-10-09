@@ -19,6 +19,28 @@ const createPlan = errorWrapper(
     });
   },
 );
+const getPlanById = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await planService.getPlanById(req.params?.id);
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+const updatePlan = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await planService.updatePlan(req.params?.id, {
+      ...req.body,
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 
 const getAllPlans = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -63,4 +85,4 @@ const getAllPlans = errorWrapper(
   },
 );
 
-export { createPlan, getAllPlans };
+export { createPlan, getAllPlans, getPlanById, updatePlan };

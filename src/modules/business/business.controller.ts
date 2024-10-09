@@ -9,6 +9,7 @@ import { getPaginationOptions } from "../../utils/pagination.utils.js";
 import Business from "./business.model.js";
 import { FilterQuery } from "mongoose";
 import { ObjectId } from "../../constants/type.js";
+import { RequestWithUser } from "../../interface/app.interface.js";
 
 const businessSignUp = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -19,6 +20,31 @@ const businessSignUp = errorWrapper(
     return responseUtils.success(res, {
       data,
       status: 201,
+    });
+  },
+);
+const updateBusiness = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await businessService.updateBusiness(req.user?._id as string, {
+      ...req.body,
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+const updateBusinessByAdmin = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await businessService.updateBusinessByAdmin(req.params.id, {
+      ...req.body,
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
     });
   },
 );
@@ -39,6 +65,30 @@ const businessLogin = errorWrapper(
 const getBusinessById = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await businessService.getBusinessById(req.params?.id);
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+const getBusinessProfile = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await businessService.getBusinessById(req.user?._id as string);
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+const updateBusinessPassword = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await businessService.updateBusinessPassword({
+      businessId: req.user?._id,
+      ...req.body,
+    });
 
     return responseUtils.success(res, {
       data,
@@ -160,4 +210,8 @@ export {
   getBusinessById,
   getAllBusiness,
   getBusinessByCategory,
+  updateBusiness,
+  updateBusinessByAdmin,
+  getBusinessProfile,
+  updateBusinessPassword,
 };

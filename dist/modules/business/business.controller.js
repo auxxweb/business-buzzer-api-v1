@@ -14,6 +14,24 @@ const businessSignUp = errorWrapper(async (req, res, next) => {
     status: 201,
   });
 });
+const updateBusiness = errorWrapper(async (req, res, next) => {
+  const data = await businessService.updateBusiness(req.user?._id, {
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+const updateBusinessByAdmin = errorWrapper(async (req, res, next) => {
+  const data = await businessService.updateBusinessByAdmin(req.params.id, {
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const businessLogin = errorWrapper(async (req, res, next) => {
   const data = await businessService.businessLogin({
     ...req.body,
@@ -25,6 +43,23 @@ const businessLogin = errorWrapper(async (req, res, next) => {
 });
 const getBusinessById = errorWrapper(async (req, res, next) => {
   const data = await businessService.getBusinessById(req.params?.id);
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+const getBusinessProfile = errorWrapper(async (req, res, next) => {
+  const data = await businessService.getBusinessById(req.user?._id);
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+const updateBusinessPassword = errorWrapper(async (req, res, next) => {
+  const data = await businessService.updateBusinessPassword({
+    businessId: req.user?._id,
+    ...req.body,
+  });
   return responseUtils.success(res, {
     data,
     status: 200,
@@ -128,4 +163,8 @@ export {
   getBusinessById,
   getAllBusiness,
   getBusinessByCategory,
+  updateBusiness,
+  updateBusinessByAdmin,
+  getBusinessProfile,
+  updateBusinessPassword,
 };

@@ -4,7 +4,8 @@ import { appConfig } from "../config/appConfig.js";
 import { errorMessages } from "../constants/messages.js";
 import { ObjectId } from "../constants/type.js";
 import Business from "../modules/business/business.model.js";
-export const protect = ({ isAdmin }) => {
+import Admin from "../modules/admin/admin.model.js";
+export const protect = ({ isAdmin = false }) => {
   return async (req, res, next) => {
     let token;
     if (req.headers.authorization?.startsWith("Bearer") === true) {
@@ -15,15 +16,10 @@ export const protect = ({ isAdmin }) => {
         if (decoded) {
           let user;
           if (isAdmin) {
-            user = await Business.findOne({
+            user = await Admin.findOne({
               _id: new ObjectId(decoded?.id),
               isDeleted: false,
             }).select("status _id");
-            if (!user?.status) {
-              res
-                .status(401)
-                .send({ message: errorMessages.userAccountBlocked });
-            }
             req.user = user;
             next();
           } else {
@@ -31,6 +27,7 @@ export const protect = ({ isAdmin }) => {
               _id: new ObjectId(decoded?.id),
               isDeleted: false,
             }).select("status _id");
+            console.log(user, "user-token-details");
             if (!user?.status) {
               res
                 .status(401)

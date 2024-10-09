@@ -3,6 +3,7 @@ import { errorMessages } from "../../constants/messages.js";
 import { generateAPIError } from "../../errors/apiError.js";
 import { CreateCategoryData } from "./category.interface.js";
 import Category from "./category.model.js";
+import { ObjectId } from "../../constants/type.js";
 
 const createCategory = async (category: CreateCategoryData): Promise<any> => {
   const categoryExists = await Category.findOne({
@@ -11,7 +12,7 @@ const createCategory = async (category: CreateCategoryData): Promise<any> => {
   });
 
   if (categoryExists) {
-    return await generateAPIError(errorMessages.planExists, 400);
+    return await generateAPIError(errorMessages.categoryExists, 400);
   }
 
   return await Category.create({
@@ -20,6 +21,19 @@ const createCategory = async (category: CreateCategoryData): Promise<any> => {
       image: category?.image,
     }),
   });
+};
+
+const getCategoryById = async (categoryId: string): Promise<any> => {
+  const categoryExists = await Category.findOne({
+    _id: new ObjectId(categoryId),
+    isDeleted: false,
+  });
+
+  if (!categoryExists) {
+    return await generateAPIError(errorMessages.categoryNotFound, 400);
+  }
+
+  return categoryExists;
 };
 
 const getAllCategories = async ({
@@ -37,7 +51,43 @@ const getAllCategories = async ({
   return { data, totalCount };
 };
 
+const updateCategory = async (
+  categoryId: string,
+  categoryData: any,
+): Promise<any> => {
+  const categoryExists = await Category.findOne({
+    _id: new ObjectId(categoryId),
+    isDeleted: false,
+  });
+
+  if (!categoryExists) {
+    return await generateAPIError(errorMessages.categoryNotFound, 400);
+  }
+  return await Category.findOneAndUpdate(
+    {
+      _id: new ObjectId(categoryId),
+      isDeleted: false,
+    },
+    {
+      ...(categoryData?.name && {
+        name: categoryData?.name,
+      }),
+      ...(categoryData?.image && {
+        image: categoryData?.image,
+      }),
+      ...(categoryData?.isDeleted && {
+        isDeleted: categoryData?.isDeleted,
+      }),
+    },
+    {
+      new: true,
+    },
+  );
+};
+
 export const categoryService = {
   createCategory,
   getAllCategories,
+  updateCategory,
+  getCategoryById,
 };

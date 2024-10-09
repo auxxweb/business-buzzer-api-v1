@@ -6,8 +6,9 @@ import { RequestWithUser } from "../interface/app.interface.js";
 import { errorMessages } from "../constants/messages.js";
 import { ObjectId } from "../constants/type.js";
 import Business from "../modules/business/business.model.js";
+import Admin from "../modules/admin/admin.model.js";
 
-export const protect = ({ isAdmin }: { isAdmin: boolean }) => {
+export const protect = ({ isAdmin = false }: { isAdmin: boolean }) => {
   return async (req: RequestWithUser, res: Response, next: NextFunction) => {
     let token: any;
 
@@ -22,16 +23,10 @@ export const protect = ({ isAdmin }: { isAdmin: boolean }) => {
           let user: any;
 
           if (isAdmin) {
-            user = await Business.findOne({
+            user = await Admin.findOne({
               _id: new ObjectId(decoded?.id),
               isDeleted: false,
             }).select("status _id");
-
-            if (!user?.status) {
-              res
-                .status(401)
-                .send({ message: errorMessages.userAccountBlocked });
-            }
 
             req.user = user;
             next();
@@ -40,6 +35,7 @@ export const protect = ({ isAdmin }: { isAdmin: boolean }) => {
               _id: new ObjectId(decoded?.id),
               isDeleted: false,
             }).select("status _id");
+            console.log(user, "user-token-details");
 
             if (!user?.status) {
               res

@@ -62,4 +62,27 @@ const getAllCategories = errorWrapper(
   },
 );
 
-export { createCategory, getAllCategories };
+const updateCategory = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await categoryService.updateCategory(req.params.id, {
+      ...req.body,
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+const getCategoryById = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await categoryService.getCategoryById(req.params.id);
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+export { createCategory, getAllCategories, updateCategory, getCategoryById };

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import bcrypt from "bcryptjs";
 import { generateAPIError } from "../../errors/apiError.js";
-import { errorMessages } from "../../constants/messages.js";
+import { errorMessages, successMessages } from "../../constants/messages.js";
 import { hashValue } from "./business.utils.js";
 import { generateToken } from "../../utils/auth.utils.js";
 // import { ObjectId } from '../../constants/type.js'
@@ -262,9 +262,303 @@ const getAllBusiness = async ({ query, options, lat, lon }) => {
     totalCount: data[0]?.metadata[0]?.total || 0,
   };
 };
+const updateBusiness = async (businessId, businessData) => {
+  const {
+    businessName,
+    logo,
+    ownerName,
+    email,
+    address,
+    contactDetails,
+    socialMediaLinks,
+    category,
+    services,
+    businessTiming,
+    description,
+    theme,
+    landingPageHero,
+    welcomePart,
+    specialServices,
+    productSection,
+    service,
+    testimonial,
+    gallery,
+    seoData,
+    selectedPlan,
+    location,
+  } = businessData;
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  })
+    .populate("selectedPlan category")
+    .select("-password");
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+  return await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(businessId),
+      isDeleted: false,
+    },
+    {
+      ...(businessName && {
+        businessName,
+      }),
+      ...(logo && {
+        logo,
+      }),
+      ...(ownerName && {
+        ownerName,
+      }),
+      ...(email && {
+        email,
+      }),
+      ...(address && {
+        address,
+      }),
+      ...(contactDetails && {
+        contactDetails,
+      }),
+      ...(socialMediaLinks && {
+        socialMediaLinks,
+      }),
+      ...(category && {
+        category,
+      }),
+      ...(services && {
+        services,
+      }),
+      ...(businessTiming && {
+        businessTiming,
+      }),
+      ...(description && {
+        description,
+      }),
+      ...(theme && {
+        theme,
+      }),
+      ...(landingPageHero && {
+        landingPageHero,
+      }),
+      ...(welcomePart && {
+        welcomePart,
+      }),
+      ...(specialServices && {
+        specialServices,
+      }),
+      ...(productSection && {
+        productSection,
+      }),
+      ...(service && {
+        service,
+      }),
+      ...(testimonial && {
+        testimonial,
+      }),
+      ...(gallery && {
+        gallery,
+      }),
+      ...(seoData && {
+        seoData,
+      }),
+      ...(selectedPlan && {
+        selectedPlan,
+      }),
+      ...(location?.lat &&
+        location?.lon && {
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
+    },
+    {
+      new: true,
+    },
+  );
+};
+const updateBusinessByAdmin = async (businessId, businessData) => {
+  const {
+    businessName,
+    logo,
+    ownerName,
+    email,
+    address,
+    contactDetails,
+    socialMediaLinks,
+    category,
+    services,
+    businessTiming,
+    description,
+    theme,
+    landingPageHero,
+    welcomePart,
+    specialServices,
+    productSection,
+    service,
+    testimonial,
+    gallery,
+    seoData,
+    selectedPlan,
+    location,
+    password,
+    paymentStatus,
+    status,
+  } = businessData;
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  })
+    .populate("selectedPlan category")
+    .select("-password");
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+  let hashedPassword;
+  let comparePassword;
+  if (password) {
+    comparePassword = await bcrypt.compare(password, business.password ?? "");
+    hashedPassword = await hashValue(password, 10);
+  }
+  return await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(businessId),
+      isDeleted: false,
+    },
+    {
+      ...(businessName && {
+        businessName,
+      }),
+      ...(logo && {
+        logo,
+      }),
+      ...(ownerName && {
+        ownerName,
+      }),
+      ...(email && {
+        email,
+      }),
+      ...(address && {
+        address,
+      }),
+      ...(contactDetails && {
+        contactDetails,
+      }),
+      ...(socialMediaLinks && {
+        socialMediaLinks,
+      }),
+      ...(category && {
+        category,
+      }),
+      ...(services && {
+        services,
+      }),
+      ...(businessTiming && {
+        businessTiming,
+      }),
+      ...(description && {
+        description,
+      }),
+      ...(theme && {
+        theme,
+      }),
+      ...(landingPageHero && {
+        landingPageHero,
+      }),
+      ...(welcomePart && {
+        welcomePart,
+      }),
+      ...(specialServices && {
+        specialServices,
+      }),
+      ...(productSection && {
+        productSection,
+      }),
+      ...(service && {
+        service,
+      }),
+      ...(testimonial && {
+        testimonial,
+      }),
+      ...(gallery && {
+        gallery,
+      }),
+      ...(seoData && {
+        seoData,
+      }),
+      ...(selectedPlan && {
+        selectedPlan,
+      }),
+      ...(paymentStatus && {
+        paymentStatus,
+      }),
+      ...(status && {
+        status,
+      }),
+      ...(password &&
+        !comparePassword && {
+          password: hashedPassword,
+        }),
+      ...(location?.lat &&
+        location?.lon && {
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
+    },
+    {
+      new: true,
+    },
+  );
+};
+const updateBusinessPassword = async ({
+  oldPassword,
+  newPassword,
+  businessId,
+}) => {
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  });
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+  if (!business?.status) {
+    return await generateAPIError(errorMessages.userAccountBlocked, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page
+  }
+  const comparePassword = await bcrypt.compare(
+    oldPassword,
+    business.password ?? "",
+  );
+  if (!comparePassword) {
+    return await generateAPIError(errorMessages.invalidCredentials, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page
+  }
+  const hashedPassword = await hashValue(newPassword, 10);
+  try {
+    await Business.findOneAndUpdate(
+      {
+        _id: new ObjectId(businessId),
+        isDeleted: false,
+      },
+      {
+        password: hashedPassword,
+      },
+    );
+    return {
+      message: successMessages.passwordUpdated,
+    };
+  } catch (error) {
+    return await generateAPIError(errorMessages.passwordNotUpdated, 400);
+  }
+};
 export const businessService = {
   businessLogin,
   businessSignUp,
   getBusinessById,
   getAllBusiness,
+  updateBusiness,
+  updateBusinessByAdmin,
+  updateBusinessPassword,
 };

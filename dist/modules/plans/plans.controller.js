@@ -11,6 +11,22 @@ const createPlan = errorWrapper(async (req, res, next) => {
     status: 201,
   });
 });
+const getPlanById = errorWrapper(async (req, res, next) => {
+  const data = await planService.getPlanById(req.params?.id);
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+const updatePlan = errorWrapper(async (req, res, next) => {
+  const data = await planService.updatePlan(req.params?.id, {
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const getAllPlans = errorWrapper(async (req, res, next) => {
   const paginationOptions = getPaginationOptions({
     limit: req.query?.limit,
@@ -47,4 +63,4 @@ const getAllPlans = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
-export { createPlan, getAllPlans };
+export { createPlan, getAllPlans, getPlanById, updatePlan };
