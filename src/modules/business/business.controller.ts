@@ -22,6 +22,7 @@ const businessSignUp = errorWrapper(
     });
   },
 );
+
 const businessLogin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await businessService.businessLogin({
@@ -34,6 +35,7 @@ const businessLogin = errorWrapper(
     });
   },
 );
+
 const getBusinessById = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await businessService.getBusinessById(req.params?.id);
@@ -102,4 +104,60 @@ const getAllBusiness = errorWrapper(
   },
 );
 
-export { businessSignUp, businessLogin, getBusinessById, getAllBusiness };
+const getBusinessByCategory = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const paginationOptions = getPaginationOptions({
+      limit: req.query?.limit,
+      page: req.query?.page,
+    });
+
+    let query: FilterQuery<typeof Business> = {
+      isDeleted: false,
+      category: new ObjectId(String(req.params?.id)),
+    };
+
+    const searchTerm = req.query?.searchTerm;
+    if (searchTerm) {
+      query = {
+        ...query,
+        $or: [
+          {
+            businessName: {
+              $regex: new RegExp(String(searchTerm)),
+              $options: "i",
+            },
+          },
+        ],
+      };
+    }
+
+    const data = await businessService.getAllBusiness({
+      query: {
+        ...query,
+      },
+      ...(req.query?.lat && {
+        lat: Number(req.query?.lat),
+      }),
+      ...(req.query?.lon && {
+        lon: Number(req.query?.lon),
+      }),
+      options: {
+        ...paginationOptions,
+        sort: { createdAt: -1 },
+      },
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+export {
+  businessSignUp,
+  businessLogin,
+  getBusinessById,
+  getAllBusiness,
+  getBusinessByCategory,
+};

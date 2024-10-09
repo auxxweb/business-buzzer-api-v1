@@ -79,4 +79,53 @@ const getAllBusiness = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
-export { businessSignUp, businessLogin, getBusinessById, getAllBusiness };
+const getBusinessByCategory = errorWrapper(async (req, res, next) => {
+  const paginationOptions = getPaginationOptions({
+    limit: req.query?.limit,
+    page: req.query?.page,
+  });
+  let query = {
+    isDeleted: false,
+    category: new ObjectId(String(req.params?.id)),
+  };
+  const searchTerm = req.query?.searchTerm;
+  if (searchTerm) {
+    query = {
+      ...query,
+      $or: [
+        {
+          businessName: {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+      ],
+    };
+  }
+  const data = await businessService.getAllBusiness({
+    query: {
+      ...query,
+    },
+    ...(req.query?.lat && {
+      lat: Number(req.query?.lat),
+    }),
+    ...(req.query?.lon && {
+      lon: Number(req.query?.lon),
+    }),
+    options: {
+      ...paginationOptions,
+      sort: { createdAt: -1 },
+    },
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+export {
+  businessSignUp,
+  businessLogin,
+  getBusinessById,
+  getAllBusiness,
+  getBusinessByCategory,
+};

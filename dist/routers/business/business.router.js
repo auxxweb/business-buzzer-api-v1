@@ -5,11 +5,13 @@ import {
   businessLogin,
   businessSignUp,
   getAllBusiness,
+  getBusinessByCategory,
   getBusinessById,
 } from "../../modules/business/business.controller.js";
 const router = Router();
 // user-endpoints
 router.post("/", businessSignUp);
+router.get("/category/:id", getBusinessByCategory);
 router.post("/login", businessLogin);
 router.get("/:id", getBusinessById);
 router.get("/", getAllBusiness);
