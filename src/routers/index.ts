@@ -7,6 +7,7 @@ import businessRouter from "./business/business.router.js";
 import categoryRouter from "./category/category.router.js";
 import paymentRouter from "./payment/payment.router.js";
 import adminRouter from "./admin/admin.router.js";
+import dashboardRouter from "./dashboard/dashboard.js";
 
 const router = Router();
 router.post("/s3url", getS3Urls);
@@ -17,5 +18,6 @@ router.use("/business", businessRouter);
 router.use("/category", categoryRouter);
 router.use("/payment", paymentRouter);
 router.use("/admin", adminRouter);
+router.use("/dashboard", dashboardRouter);
 
 export default router;
