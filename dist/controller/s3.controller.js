@@ -16,9 +16,24 @@ const s3 = new aws.S3({
   signatureVersion: "v4",
 });
 const getS3Urls = errorWrapper(async (req, res, next) => {
-  const { file_types } = req.body; // array of file names with extension
+  // const { file_types } = req.body; // array of file names with extension
   const urls = []; // array of objects {file_name, url, file_type}
-  for (let i = 0; i < file_types.length; i++) {
+  // for (let i = 0; i < file_types.length; i++) {
+  //   const uniqueCode = uuidv4();
+  //   const params = {
+  //     Bucket: bucket,
+  //     Key: `${folder}/bb_${uniqueCode}`,
+  //     Expires: 60,
+  //   };
+  //   const url = await s3.getSignedUrlPromise("putObject", params);
+  //   urls.push({
+  //     file_name: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
+  //     file_type: file_types[i],
+  //     url,
+  //   });
+  // }
+  const { files } = req.body;
+  for (let i = 0; i < files?.length; i++) {
     const uniqueCode = uuidv4();
     const params = {
       Bucket: bucket,
@@ -27,8 +42,9 @@ const getS3Urls = errorWrapper(async (req, res, next) => {
     };
     const url = await s3.getSignedUrlPromise("putObject", params);
     urls.push({
-      file_name: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
-      file_type: file_types[i],
+      accessLink: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
+      file_type: files[i]?.file_type,
+      position: files[i]?.position,
       url,
     });
   }

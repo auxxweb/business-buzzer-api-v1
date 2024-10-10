@@ -4,6 +4,9 @@ import Business from "../../modules/business/business.model.js";
 import Category from "../../modules/category/category.model.js";
 import Payment from "../../modules/payment/payment.model.js";
 import Plans from "../../modules/plans/plans.model.js";
+import { ObjectId } from "../../constants/type.js";
+import { generateAPIError } from "../../errors/apiError.js";
+import { errorMessages } from "../../constants/messages.js";
 function getWeekRanges(startDate) {
   const weeks = [];
   const current = new Date(startDate);
@@ -127,7 +130,17 @@ const getAdminDashboardChartData = async () => {
     paymentCounts,
   };
 };
+const businessDashboardData = async (businessId) => {
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  });
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+};
 export const dashboardService = {
   getAdminDashboardData,
   getAdminDashboardChartData,
+  businessDashboardData,
 };
