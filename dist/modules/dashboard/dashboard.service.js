@@ -110,16 +110,16 @@ const getAdminDashboardChartData = async () => {
     {
       // Lookup payments related to each plan
       $lookup: {
-        from: "payments",
-        localField: "_id",
-        foreignField: "plan",
+        from: "payments", // The collection to join with
+        localField: "_id", // Plan _id
+        foreignField: "plan", // The "plan" field in payments collection
         as: "paymentDetails", // The field name for the joined results
       },
     },
     {
       $project: {
-        _id: 1,
-        plan: 1,
+        _id: 1, // Plan _id
+        plan: 1, // Plan name (assuming you have this field in Plan schema)
         count: { $size: "$paymentDetails" }, // Get the size of the payments array (number of payments)
       },
     },

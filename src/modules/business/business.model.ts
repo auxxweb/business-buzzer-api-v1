@@ -47,9 +47,18 @@ const BusinessSchema = new Schema(
     },
     contactDetails: {
       type: {
-        primaryNumber: Number,
-        secondaryNumber: Number,
-        whatsAppNumber: Number,
+        primaryNumber: {
+          number: Number,
+          countryCode: String,
+        },
+        secondaryNumber: {
+          number: Number,
+          countryCode: String,
+        },
+        whatsAppNumber: {
+          number: Number,
+          countryCode: String,
+        },
         email: String,
         webSite: String,
       },
@@ -162,6 +171,10 @@ const BusinessSchema = new Schema(
     status: {
       type: Boolean,
       default: true,
+    },
+    rating: {
+      type: Number,
+      default: 0,
     },
     isDeleted: {
       type: Boolean,

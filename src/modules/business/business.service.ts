@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 
 import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages, successMessages } from "../../constants/messages.js";
-import { hashValue } from "./business.utils.js";
+import { findRating, hashValue } from "./business.utils.js";
 import { generateToken } from "../../utils/auth.utils.js";
 import { CreateBusinessData, BusinessLoginData } from "./business.interface.js";
 // import { ObjectId } from '../../constants/type.js'
@@ -110,6 +110,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     seoData: business?.seoData,
     selectedPlan: business?.selectedPlan,
     paymentStatus: business?.paymentStatus,
+    rating: await findRating(business?.testimonial?.reviews),
     token: await generateToken({
       id: String(business?._id),
     }),
@@ -170,6 +171,7 @@ const businessLogin = async (userData: BusinessLoginData): Promise<any> => {
     location: business?.location,
     selectedPlan: business?.selectedPlan,
     paymentStatus: business?.paymentStatus,
+    rating: await findRating(business?.testimonial?.reviews),
     token: await generateToken({
       id: String(business?._id),
     }),
@@ -177,6 +179,8 @@ const businessLogin = async (userData: BusinessLoginData): Promise<any> => {
 };
 
 const getBusinessById = async (businessId: string): Promise<any> => {
+  // Convert businessId to ObjectId (Mongoose handles it automatically if needed)
+
   const business: any = await Business.findOne({
     _id: new ObjectId(businessId),
     isDeleted: false,
@@ -184,13 +188,20 @@ const getBusinessById = async (businessId: string): Promise<any> => {
     .populate("selectedPlan category")
     .select("-password");
 
-  if (business == null) {
+  if (!business) {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
-  if (!business?.status || !business?.paymentStatus) {
-    return await generateAPIError(errorMessages.userAccountBlocked, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page
+  // Check business status and paymentStatus
+  if (!business.status || !business.paymentStatus) {
+    return await generateAPIError(errorMessages.userAccountBlocked, 404);
   }
+
+  // Calculate rating from testimonials
+  const reviews = business?.testimonial?.reviews || [];
+  business.rating = await findRating(reviews);
+
+  console.log(business.rating, "ratings");
 
   return business;
 };
@@ -293,8 +304,17 @@ const getAllBusiness = async ({
 
   const data = await Business.aggregate(aggregatePipeLine);
 
+  // Loop through each business and calculate the rating
+  const businessesWithRating = await Promise.all(
+    data[0]?.data?.map(async (business: any) => {
+      const reviews = business?.testimonial?.reviews || [];
+      business.rating = await findRating(reviews);
+      return business;
+    }),
+  );
+
   return {
-    data: data[0]?.data,
+    data: businessesWithRating,
     totalCount: data[0]?.metadata[0]?.total || 0,
   };
 };
@@ -338,7 +358,7 @@ const updateBusiness = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
-  return await Business.findOneAndUpdate(
+  const updatedBusiness: any = await Business.findOneAndUpdate(
     {
       _id: new ObjectId(businessId),
       isDeleted: false,
@@ -419,6 +439,11 @@ const updateBusiness = async (
       new: true,
     },
   );
+
+  const reviews = updatedBusiness?.testimonial?.reviews || [];
+  updatedBusiness.rating = await findRating(reviews);
+
+  return updatedBusiness;
 };
 const updateBusinessByAdmin = async (
   businessId: string,
@@ -469,7 +494,7 @@ const updateBusinessByAdmin = async (
     hashedPassword = await hashValue(password, 10);
   }
 
-  return await Business.findOneAndUpdate(
+  const updatedBusiness: any = await Business.findOneAndUpdate(
     {
       _id: new ObjectId(businessId),
       isDeleted: false,
@@ -560,6 +585,11 @@ const updateBusinessByAdmin = async (
       new: true,
     },
   );
+
+  const reviews = updatedBusiness?.testimonial?.reviews || [];
+  updatedBusiness.rating = await findRating(reviews);
+
+  return updatedBusiness;
 };
 
 const updateBusinessPassword = async ({
