@@ -20,6 +20,9 @@ const createCategory = async (category: CreateCategoryData): Promise<any> => {
     ...(category?.image && {
       image: category?.image,
     }),
+    ...(category?.coverImage && {
+      coverImage: category?.coverImage,
+    }),
   });
 };
 

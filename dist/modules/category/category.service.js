@@ -15,6 +15,9 @@ const createCategory = async (category) => {
     ...(category?.image && {
       image: category?.image,
     }),
+    ...(category?.coverImage && {
+      coverImage: category?.coverImage,
+    }),
   });
 };
 const getCategoryById = async (categoryId) => {

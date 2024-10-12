@@ -9,6 +9,9 @@ const CategorySchema = new Schema(
     image: {
       type: String,
     },
+    coverImage: {
+      type: String,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
