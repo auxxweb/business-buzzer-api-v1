@@ -52,6 +52,7 @@ export interface CreateBusinessData {
   };
   description: string;
   theme: string;
+  secondaryTheme: string;
   landingPageHero: {
     title: string;
     description: string;
