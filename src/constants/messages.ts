@@ -20,6 +20,7 @@ const successMessages = {
   linkSend: "Link successfully send to mail",
   healthOk: "Server is healthy",
   passwordUpdated: "Password updated successfully",
+  statusUpdated: "Business status updated successfully"
 };
 
 export { errorMessages, successMessages };

@@ -49,6 +49,20 @@ const updateBusinessByAdmin = errorWrapper(
   },
 );
 
+const updateBusinessStatusByAdmin = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body, "req body")
+    const data = await businessService.updateBusinessStatusByAdmin(req.params.id,
+      req.body?.status,
+    );
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
 const businessLogin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await businessService.businessLogin({
@@ -212,6 +226,7 @@ export {
   getBusinessByCategory,
   updateBusiness,
   updateBusinessByAdmin,
+  updateBusinessStatusByAdmin,
   getBusinessProfile,
   updateBusinessPassword,
 };

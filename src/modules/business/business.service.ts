@@ -61,11 +61,11 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     address,
     ...(location?.lat &&
       location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+      location: {
+        type: "Point",
+        coordinates: [location?.lon, location?.lat],
+      },
+    }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -432,11 +432,11 @@ const updateBusiness = async (
       }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -574,15 +574,15 @@ const updateBusinessByAdmin = async (
       }),
       ...(password &&
         !comparePassword && {
-          password: hashedPassword,
-        }),
+        password: hashedPassword,
+      }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -594,6 +594,31 @@ const updateBusinessByAdmin = async (
 
   return updatedBusiness;
 };
+
+const updateBusinessStatusByAdmin = async (
+  businessId: string,
+  status: string,
+): Promise<any> => {
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  }).select("-password");
+
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+
+  await Business.findOneAndUpdate({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  }, {
+    status: status === "true"
+  })
+
+  return {
+    message: successMessages.statusUpdated,
+  };
+}
 
 const updateBusinessPassword = async ({
   oldPassword,
@@ -654,5 +679,6 @@ export const businessService = {
   getAllBusiness,
   updateBusiness,
   updateBusinessByAdmin,
+  updateBusinessStatusByAdmin,
   updateBusinessPassword,
 };

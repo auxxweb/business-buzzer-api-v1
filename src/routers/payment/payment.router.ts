@@ -7,6 +7,6 @@ import { protect } from "../../middleware/auth.middleware.js";
 const router = Router();
 // user-endpoints
 router.post("/", protect({ isAdmin: false }), createPayment);
-router.get("/", getPaymentListing)
+router.get("/", protect({ isAdmin: true }), getPaymentListing)
 
 export default router;
