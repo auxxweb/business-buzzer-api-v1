@@ -62,6 +62,21 @@ const createPayment = async (paymentData: PaymentData): Promise<any> => {
   return paymentDatas;
 };
 
+const getPaymentListing = async (): Promise<any> => {
+
+  const paymentData = await Payment.find().populate(
+    [{
+    path: "business",
+    select: "_id businessName email status rating"
+  },{
+    path: "plan",
+  }, ]
+)
+
+  return paymentData
+}
+
 export const paymentService = {
   createPayment,
+  getPaymentListing
 };
