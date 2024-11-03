@@ -14,12 +14,16 @@ const errorMessages = {
   categoryExists: "Category already exists",
   categoryNotFound: "Category not found",
   passwordNotUpdated: "Password not updated ,please try again",
+  termsAndConditionsNotFound:"Terms and Conditions not found",
+  privacyPolicyNotFound: "Privacy policy not found"
 };
 
 const successMessages = {
   linkSend: "Link successfully send to mail",
   healthOk: "Server is healthy",
   passwordUpdated: "Password updated successfully",
+  statusUpdated: "Business status updated successfully",
+  deleteSuccess: "Data deleted successfully"
 };
 
 export { errorMessages, successMessages };
