@@ -3,8 +3,10 @@ import { ObjectId } from "../../constants/type.js";
 import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages } from "../../constants/messages.js";
 
-const getTermsAndConditions = async (data: any): Promise<any> => {
-  const termsAndConditions = await TermsAndCondition.find()
+const getTermsAndConditions = async (businessId: any): Promise<any> => {
+  const termsAndConditions = await TermsAndCondition.find({
+    business: new ObjectId(businessId)
+  })
   return termsAndConditions
 }
 
@@ -44,7 +46,21 @@ const updateTermsAndConditions = async (id: string,businessId:any, data: any): P
   return termsAndCondition
 }
 
-const deleteTermsAndConditions = async (data: any): Promise<any> => {
+const deleteTermsAndConditions = async (id:string, businessId:any): Promise<any> => {
+  const termsAndCondition = await TermsAndCondition.findOne({
+    _id: new ObjectId(id),
+    business: new ObjectId(businessId)
+  })
+
+  if (termsAndCondition == null) {
+    return await generateAPIError(errorMessages.termsAndConditionsNotFound, 404);
+  }
+
+  await termsAndCondition.deleteOne();
+
+  return {
+    message: "Data deleted successfully"
+  }
 
 }
 export const termsAndConditionsService = {

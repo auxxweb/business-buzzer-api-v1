@@ -9,9 +9,7 @@ import { RequestWithUser } from "../../interface/app.interface.js";
 
 const getTermsAndConditions = errorWrapper(
     async (req: Request, res: Response, next: NextFunction) => {
-        const data = await termsAndConditionsService.getTermsAndConditions({
-            ...req.body,
-        });
+        const data = await termsAndConditionsService.getTermsAndConditions(req.params.businessId);
 
         return responseUtils.success(res, {
             data,
@@ -47,10 +45,8 @@ const updateTermsAndConditions = errorWrapper(
 );
 
 const deleteTermsAndConditions = errorWrapper(
-    async (req: Request, res: Response, next: NextFunction) => {
-        const data = await termsAndConditionsService.deleteTermsAndConditions({
-            ...req.body,
-        });
+    async (req: RequestWithUser, res: Response, next: NextFunction) => {
+        const data = await termsAndConditionsService.deleteTermsAndConditions(req.params.id, req.user?._id);
 
         return responseUtils.success(res, {
             data,
