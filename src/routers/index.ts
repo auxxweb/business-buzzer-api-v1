@@ -23,7 +23,7 @@ router.use("/category", categoryRouter);
 router.use("/payment", paymentRouter);
 router.use("/admin", adminRouter);
 router.use("/dashboard", dashboardRouter);
-router.use("/terms_and_services", termsAndServicesRouter)
+router.use("/terms_and_conditions", termsAndServicesRouter)
 router.use("/privacy_policies", privacyPoliciesRouter)
 router.use("/notifications", notificationRouter)
 router.use("/contact_forms", contactFormRouter)

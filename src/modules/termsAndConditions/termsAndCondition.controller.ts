@@ -4,6 +4,7 @@ import { Response, NextFunction, Request } from "express";
 import { responseUtils } from "../../utils/response.utils.js";
 import { errorWrapper } from "../../middleware/errorWrapper.js";
 import { termsAndConditionsService } from "./termsAndCondition.service.js";
+import { RequestWithUser } from "../../interface/app.interface.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 
 const getTermsAndConditions = errorWrapper(
@@ -20,8 +21,8 @@ const getTermsAndConditions = errorWrapper(
 );
 
 const createTermsAndConditions = errorWrapper(
-    async (req: Request, res: Response, next: NextFunction) => {
-        const data = await termsAndConditionsService.createTermsAndConditions({
+    async (req: RequestWithUser, res: Response, next: NextFunction) => {
+        const data = await termsAndConditionsService.createTermsAndConditions(req.user?._id, {
             ...req.body,
         });
 
@@ -33,8 +34,8 @@ const createTermsAndConditions = errorWrapper(
 );
 
 const updateTermsAndConditions = errorWrapper(
-    async (req: Request, res: Response, next: NextFunction) => {
-        const data = await termsAndConditionsService.updateTermsAndConditions({
+    async (req: RequestWithUser, res: Response, next: NextFunction) => {
+        const data = await termsAndConditionsService.updateTermsAndConditions(req.params?.id, req.user?._id,{
             ...req.body,
         });
 

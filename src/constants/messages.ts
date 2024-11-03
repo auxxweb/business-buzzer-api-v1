@@ -14,6 +14,7 @@ const errorMessages = {
   categoryExists: "Category already exists",
   categoryNotFound: "Category not found",
   passwordNotUpdated: "Password not updated ,please try again",
+  termsAndConditionsNotFound:"Terms and Conditions not found"
 };
 
 const successMessages = {

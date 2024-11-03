@@ -10,10 +10,10 @@ import { protect } from "../../middleware/auth.middleware.js";
 
 const router = Router();
 // user-endpoints
-router.get("/", getTermsAndConditions)
-router.post("/", protect({ isAdmin: true }), createTermsAndConditions)
-router.patch("/:id", protect({ isAdmin: true }), updateTermsAndConditions);
-router.delete("/:id", protect({ isAdmin: true }), deleteTermsAndConditions);
+router.get("/:businessId", getTermsAndConditions)
+router.post("/", protect({ isAdmin: false }), createTermsAndConditions)
+router.put("/:id",protect({ isAdmin: false }), updateTermsAndConditions);
+router.delete("/:id", protect({ isAdmin: false }), deleteTermsAndConditions);
 
 
 export default router;
