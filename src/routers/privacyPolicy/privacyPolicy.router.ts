@@ -10,10 +10,10 @@ import { protect } from "../../middleware/auth.middleware.js";
 
 const router = Router();
 // user-endpoints
-router.get("/", getPrivacyPolicy)
-router.post("/", protect({ isAdmin: true }), createPrivacyPolicy)
-router.patch("/:id", protect({ isAdmin: true }), updatePrivacyPolicy);
-router.delete("/:id", protect({ isAdmin: true }), deletePrivacyPolicy);
+router.get("/:businessId", getPrivacyPolicy)
+router.post("/", protect({ isAdmin: false }), createPrivacyPolicy)
+router.put("/:id", protect({ isAdmin: false }), updatePrivacyPolicy);
+router.delete("/:id", protect({ isAdmin: false }), deletePrivacyPolicy);
 
 
 export default router;

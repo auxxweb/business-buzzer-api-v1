@@ -1,7 +1,7 @@
 import TermsAndCondition from "./termsAndConditions.model.js"
 import { ObjectId } from "../../constants/type.js";
 import { generateAPIError } from "../../errors/apiError.js";
-import { errorMessages } from "../../constants/messages.js";
+import { errorMessages, successMessages } from "../../constants/messages.js";
 
 const getTermsAndConditions = async (businessId: any): Promise<any> => {
   const termsAndConditions = await TermsAndCondition.find({
@@ -10,11 +10,11 @@ const getTermsAndConditions = async (businessId: any): Promise<any> => {
   return termsAndConditions
 }
 
-const createTermsAndConditions = async (businessId:any, data: any): Promise<any> => {
+const createTermsAndConditions = async (businessId: any, data: any): Promise<any> => {
   const businessObjId = new ObjectId(businessId)
 
   const termsAndConditions: Array<{ title: string, data: string }> = data?.termsAndConditions
-  const creationData = termsAndConditions.map(data=> {
+  const creationData = termsAndConditions.map(data => {
     return {
       business: businessObjId,
       title: data.title,
@@ -27,7 +27,7 @@ const createTermsAndConditions = async (businessId:any, data: any): Promise<any>
   return createdData
 }
 
-const updateTermsAndConditions = async (id: string,businessId:any, data: any): Promise<any> => {
+const updateTermsAndConditions = async (id: string, businessId: any, data: any): Promise<any> => {
   const termsAndCondition = await TermsAndCondition.findOne({
     _id: new ObjectId(id),
     business: new ObjectId(businessId)
@@ -46,7 +46,7 @@ const updateTermsAndConditions = async (id: string,businessId:any, data: any): P
   return termsAndCondition
 }
 
-const deleteTermsAndConditions = async (id:string, businessId:any): Promise<any> => {
+const deleteTermsAndConditions = async (id: string, businessId: any): Promise<any> => {
   const termsAndCondition = await TermsAndCondition.findOne({
     _id: new ObjectId(id),
     business: new ObjectId(businessId)
@@ -59,7 +59,8 @@ const deleteTermsAndConditions = async (id:string, businessId:any): Promise<any>
   await termsAndCondition.deleteOne();
 
   return {
-    message: "Data deleted successfully"
+    message: successMessages.deleteSuccess
+
   }
 
 }

@@ -29,5 +29,5 @@ const PrivacyPoliciesSchema = new Schema(
   },
 );
 
-const PrivacyPolicy = model("privacyPolicies", PrivacyPoliciesSchema);
+const PrivacyPolicy = model("privacy_policies", PrivacyPoliciesSchema);
 export default PrivacyPolicy;
