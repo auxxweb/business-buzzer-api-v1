@@ -8,7 +8,7 @@ import { protect } from "../../middleware/auth.middleware.js";
 
 const router = Router();
 // user-endpoints
-router.post("/", submitContactForm)
+router.post("/:businessId", submitContactForm)
 router.get("/", protect({ isAdmin: false }), getContactFormsByBusiness);
 
 export default router;

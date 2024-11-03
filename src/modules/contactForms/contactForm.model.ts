@@ -34,5 +34,5 @@ const ContactFormSchema = new Schema(
   },
 );
 
-const ContactForm = model("contactForms", ContactFormSchema);
+const ContactForm = model("contact_forms", ContactFormSchema);
 export default ContactForm;
