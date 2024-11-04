@@ -21,4 +21,16 @@ const createPayment = errorWrapper(
   },
 );
 
-export { createPayment };
+const getPaymentListing = errorWrapper(
+  async(req: Request, res: Response, next: NextFunction) => {
+    const data = await paymentService.getPaymentListing()
+
+    return responseUtils.success(res, {
+      data,
+      status: 201
+    })
+
+  }
+)
+
+export { createPayment, getPaymentListing };
