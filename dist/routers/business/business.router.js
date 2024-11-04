@@ -5,6 +5,7 @@ import {
   businessLogin,
   businessSignUp,
   getAllBusiness,
+  getAllBusinessByAdmin,
   getBusinessByCategory,
   getBusinessById,
   getBusinessProfile,
@@ -18,6 +19,7 @@ const router = Router();
 router.post("/", businessSignUp);
 router.get("/profile", protect({ isAdmin: false }), getBusinessProfile);
 router.get("/category/:id", getBusinessByCategory);
+router.get("/all", protect({ isAdmin: true }), getAllBusinessByAdmin);
 router.post("/login", businessLogin);
 router.get("/:id", getBusinessById);
 router.get("/", getAllBusiness);

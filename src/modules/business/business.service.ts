@@ -303,6 +303,130 @@ const getAllBusiness = async ({
         selectedPlan: 1,
         paymentStatus: 1,
         payment: 1,
+        status: 1,
+      },
+    },
+    {
+      $sort: options?.sort,
+    },
+    {
+      $facet: {
+        metadata: [{ $count: "total" }],
+        data: [{ $skip: options?.skip || 0 }, { $limit: options?.limit || 10 }],
+      },
+    },
+  ];
+
+  if (lat && lon) {
+    aggregatePipeLine.unshift({
+      $geoNear: {
+        near: {
+          type: "Point",
+          coordinates: [lon, lat],
+        },
+        distanceField: "distanceField",
+        maxDistance: 6000,
+        spherical: true,
+      },
+    });
+  }
+
+  const data = await Business.aggregate(aggregatePipeLine);
+
+  // Loop through each business and calculate the rating
+  const businessesWithRating = await Promise.all(
+    data[0]?.data?.map(async (business: any) => {
+      const reviews = business?.testimonial?.reviews || [];
+      business.rating = await findRating(reviews);
+      return business;
+    }),
+  );
+
+  return {
+    data: businessesWithRating,
+    totalCount: data[0]?.metadata[0]?.total || 0,
+  };
+};
+const getAllBusinessByAdmin = async ({
+  query,
+  options,
+  lat,
+  lon,
+}: {
+  query: FilterQuery<typeof Business>;
+  options: QueryOptions;
+  lat?: number;
+  lon?: number;
+}): Promise<any> => {
+  const aggregatePipeLine: PipelineStage[] = [
+    {
+      $match: query,
+    },
+    {
+      $lookup: {
+        from: "plans",
+        localField: "selectedPlan",
+        foreignField: "_id",
+        as: "selectedPlan",
+      },
+    },
+    {
+      $unwind: {
+        path: "$selectedPlan",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category",
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    {
+      $unwind: {
+        path: "$category",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "payments",
+        let: { businessId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$business", "$$businessId"],
+              },
+            },
+          },
+          { $sort: { createdAt: -1 } }, // Sort by `createdAt` in descending order to get the latest document first
+          { $limit: 1 }, // Limit to only one document
+        ],
+        as: "payment",
+      },
+    },
+    {
+      $unwind: {
+        path: "$payment",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        businessName: 1,
+        logo: 1,
+        ownerName: 1,
+        email: 1,
+        address: 1,
+        "category.name": 1,
+        theme: 1,
+        "selectedPlan.plan": 1,
+        status: 1,
+        payment: 1,
       },
     },
     {
@@ -709,4 +833,5 @@ export const businessService = {
   updateBusinessByAdmin,
   updateBusinessStatusByAdmin,
   updateBusinessPassword,
+  getAllBusinessByAdmin,
 };

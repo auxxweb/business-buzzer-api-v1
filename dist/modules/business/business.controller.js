@@ -127,6 +127,61 @@ const getAllBusiness = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const getAllBusinessByAdmin = errorWrapper(async (req, res, next) => {
+  const paginationOptions = getPaginationOptions({
+    limit: req.query?.limit,
+    page: req.query?.page,
+  });
+  let query = {
+    isDeleted: false,
+  };
+  const searchTerm = req.query?.searchTerm;
+  if (searchTerm) {
+    query = {
+      ...query,
+      $or: [
+        {
+          businessName: {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+      ],
+    };
+  }
+  console.log(req.query?.lat, req.query?.lon, "lat-logn-loatt");
+  const data = await businessService.getAllBusinessByAdmin({
+    query: {
+      ...query,
+      ...(req.query?.selectedPlan && {
+        selectedPlan: new ObjectId(String(req.query?.selectedPlan)),
+      }),
+      ...(req.query?.category && {
+        category: new ObjectId(String(req.query?.category)),
+      }),
+    },
+    ...(req.query?.lat && {
+      lat: Number(req.query?.lat),
+    }),
+    ...(req.query?.lon && {
+      lon: Number(req.query?.lon),
+    }),
+    ...(req.query?.paymentStatus && {
+      paymentStatus: Number(req.query?.paymentStatus),
+    }),
+    ...(req.query?.status && {
+      status: Number(req.query?.status),
+    }),
+    options: {
+      ...paginationOptions,
+      sort: { createdAt: -1 },
+    },
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const getBusinessByCategory = errorWrapper(async (req, res, next) => {
   const paginationOptions = getPaginationOptions({
     limit: req.query?.limit,
@@ -181,4 +236,5 @@ export {
   updateBusinessStatusByAdmin,
   getBusinessProfile,
   updateBusinessPassword,
+  getAllBusinessByAdmin,
 };
