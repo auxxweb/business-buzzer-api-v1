@@ -72,6 +72,8 @@ const getAllBusiness = errorWrapper(async (req, res, next) => {
   });
   let query = {
     isDeleted: false,
+    paymentStatus: true,
+    status: true,
   };
   const searchTerm = req.query?.searchTerm;
   if (searchTerm) {

@@ -106,6 +106,8 @@ const getAllBusiness = errorWrapper(
 
     let query: FilterQuery<typeof Business> = {
       isDeleted: false,
+      paymentStatus: true,
+      status: true,
     };
 
     const searchTerm = req.query?.searchTerm;
