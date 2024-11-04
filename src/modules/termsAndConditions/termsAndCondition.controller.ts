@@ -8,56 +8,68 @@ import { RequestWithUser } from "../../interface/app.interface.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 
 const getTermsAndConditions = errorWrapper(
-    async (req: Request, res: Response, next: NextFunction) => {
-        const data = await termsAndConditionsService.getTermsAndConditions(req.params.businessId);
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await termsAndConditionsService.getTermsAndConditions(
+      req.params.businessId,
+    );
 
-        return responseUtils.success(res, {
-            data,
-            status: 201,
-        });
-    },
+    return responseUtils.success(res, {
+      data,
+      status: 201,
+    });
+  },
 );
 
 const createTermsAndConditions = errorWrapper(
-    async (req: RequestWithUser, res: Response, next: NextFunction) => {
-        const data = await termsAndConditionsService.createTermsAndConditions(req.user?._id, {
-            ...req.body,
-        });
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await termsAndConditionsService.createTermsAndConditions(
+      req.user?._id,
+      {
+        ...req.body,
+      },
+    );
 
-        return responseUtils.success(res, {
-            data,
-            status: 201,
-        });
-    },
+    return responseUtils.success(res, {
+      data,
+      status: 201,
+    });
+  },
 );
 
 const updateTermsAndConditions = errorWrapper(
-    async (req: RequestWithUser, res: Response, next: NextFunction) => {
-        const data = await termsAndConditionsService.updateTermsAndConditions(req.params?.id, req.user?._id,{
-            ...req.body,
-        });
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await termsAndConditionsService.updateTermsAndConditions(
+      req.params?.id,
+      req.user?._id,
+      {
+        ...req.body,
+      },
+    );
 
-        return responseUtils.success(res, {
-            data,
-            status: 201,
-        });
-    },
+    return responseUtils.success(res, {
+      data,
+      status: 201,
+    });
+  },
 );
 
 const deleteTermsAndConditions = errorWrapper(
-    async (req: RequestWithUser, res: Response, next: NextFunction) => {
-        const data = await termsAndConditionsService.deleteTermsAndConditions(req.params.id, req.user?._id);
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await termsAndConditionsService.deleteTermsAndConditions(
+      req.params.id,
+      req.user?._id,
+    );
 
-        return responseUtils.success(res, {
-            data,
-            status: 201,
-        });
-    },
+    return responseUtils.success(res, {
+      data,
+      status: 201,
+    });
+  },
 );
 
 export {
-    getTermsAndConditions,
-    createTermsAndConditions,
-    updateTermsAndConditions,
-    deleteTermsAndConditions
-}
+  getTermsAndConditions,
+  createTermsAndConditions,
+  updateTermsAndConditions,
+  deleteTermsAndConditions,
+};

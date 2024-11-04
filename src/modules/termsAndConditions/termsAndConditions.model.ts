@@ -29,5 +29,8 @@ const TermsAndConditionsSchema = new Schema(
   },
 );
 
-const TermsAndCondition = model("terms_and_conditions", TermsAndConditionsSchema);
+const TermsAndCondition = model(
+  "terms_and_conditions",
+  TermsAndConditionsSchema,
+);
 export default TermsAndCondition;

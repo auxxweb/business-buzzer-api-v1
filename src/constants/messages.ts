@@ -14,8 +14,8 @@ const errorMessages = {
   categoryExists: "Category already exists",
   categoryNotFound: "Category not found",
   passwordNotUpdated: "Password not updated ,please try again",
-  termsAndConditionsNotFound:"Terms and Conditions not found",
-  privacyPolicyNotFound: "Privacy policy not found"
+  termsAndConditionsNotFound: "Terms and Conditions not found",
+  privacyPolicyNotFound: "Privacy policy not found",
 };
 
 const successMessages = {
@@ -23,7 +23,7 @@ const successMessages = {
   healthOk: "Server is healthy",
   passwordUpdated: "Password updated successfully",
   statusUpdated: "Business status updated successfully",
-  deleteSuccess: "Data deleted successfully"
+  deleteSuccess: "Data deleted successfully",
 };
 
 export { errorMessages, successMessages };

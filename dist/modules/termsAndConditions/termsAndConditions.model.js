@@ -1,29 +1,20 @@
-import { model, Schema } from "mongoose";
 import { ObjectId } from "../../constants/type.js";
-
-const ContactFormSchema = new Schema(
+import { model, Schema } from "mongoose";
+const TermsAndConditionsSchema = new Schema(
   {
     business: {
       type: ObjectId,
       ref: "business",
       required: true,
     },
-
-    name: {
+    title: {
       type: String,
       required: true,
     },
-
-    email: {
+    data: {
       type: String,
       required: true,
     },
-
-    message: {
-      type: String,
-      required: true,
-    },
-
     isDeleted: {
       type: Boolean,
       default: false,
@@ -33,6 +24,8 @@ const ContactFormSchema = new Schema(
     timestamps: true,
   },
 );
-
-const ContactForm = model("contact_forms", ContactFormSchema);
-export default ContactForm;
+const TermsAndCondition = model(
+  "terms_and_conditions",
+  TermsAndConditionsSchema,
+);
+export default TermsAndCondition;

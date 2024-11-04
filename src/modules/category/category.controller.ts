@@ -61,6 +61,42 @@ const getAllCategories = errorWrapper(
     });
   },
 );
+const getAllCategoriesForDropDown = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let query: FilterQuery<typeof Category> = {
+      isDeleted: false,
+    };
+
+    const searchTerm = req.query?.searchTerm;
+    if (searchTerm) {
+      query = {
+        ...query,
+        $or: [
+          {
+            name: {
+              $regex: new RegExp(String(searchTerm)),
+              $options: "i",
+            },
+          },
+        ],
+      };
+    }
+
+    const data = await categoryService.getAllCategoriesForDropDown({
+      query: {
+        ...query,
+      },
+      options: {
+        sort: { name: 1 },
+      },
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 
 const updateCategory = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -85,4 +121,10 @@ const getCategoryById = errorWrapper(
   },
 );
 
-export { createCategory, getAllCategories, updateCategory, getCategoryById };
+export {
+  createCategory,
+  getAllCategories,
+  updateCategory,
+  getCategoryById,
+  getAllCategoriesForDropDown,
+};

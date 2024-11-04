@@ -61,11 +61,11 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     address,
     ...(location?.lat &&
       location?.lon && {
-      location: {
-        type: "Point",
-        coordinates: [location?.lon, location?.lat],
-      },
-    }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -253,6 +253,30 @@ const getAllBusiness = async ({
       },
     },
     {
+      $lookup: {
+        from: "payments",
+        let: { businessId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$business", "$$businessId"],
+              },
+            },
+          },
+          { $sort: { createdAt: -1 } }, // Sort by `createdAt` in descending order to get the latest document first
+          { $limit: 1 }, // Limit to only one document
+        ],
+        as: "payment",
+      },
+    },
+    {
+      $unwind: {
+        path: "$payment",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $project: {
         _id: 1,
         businessName: 1,
@@ -278,6 +302,7 @@ const getAllBusiness = async ({
         location: 1,
         selectedPlan: 1,
         paymentStatus: 1,
+        payment: 1,
       },
     },
     {
@@ -432,11 +457,11 @@ const updateBusiness = async (
       }),
       ...(location?.lat &&
         location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
     },
     {
       new: true,
@@ -574,15 +599,15 @@ const updateBusinessByAdmin = async (
       }),
       ...(password &&
         !comparePassword && {
-        password: hashedPassword,
-      }),
+          password: hashedPassword,
+        }),
       ...(location?.lat &&
         location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
     },
     {
       new: true,
@@ -608,17 +633,20 @@ const updateBusinessStatusByAdmin = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
-  await Business.findOneAndUpdate({
-    _id: new ObjectId(businessId),
-    isDeleted: false,
-  }, {
-    status: status === "true"
-  })
+  await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(businessId),
+      isDeleted: false,
+    },
+    {
+      status: status === "true",
+    },
+  );
 
   return {
     message: successMessages.statusUpdated,
   };
-}
+};
 
 const updateBusinessPassword = async ({
   oldPassword,

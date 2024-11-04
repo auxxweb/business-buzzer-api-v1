@@ -94,7 +94,7 @@ const BusinessSchema = new Schema(
       type: String,
     },
     secondaryTheme: {
-      type: String
+      type: String,
     },
     landingPageHero: {
       type: {

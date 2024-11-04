@@ -37,6 +37,13 @@ const getAllCategories = async ({ query, options }) => {
   ]);
   return { data, totalCount };
 };
+const getAllCategoriesForDropDown = async ({ query, options }) => {
+  const [data, totalCount] = await Promise.all([
+    Category.find(query, { _id: 1, name: 1 }, options),
+    Category.countDocuments(query),
+  ]);
+  return { data, totalCount };
+};
 const updateCategory = async (categoryId, categoryData) => {
   const categoryExists = await Category.findOne({
     _id: new ObjectId(categoryId),
@@ -71,4 +78,5 @@ export const categoryService = {
   getAllCategories,
   updateCategory,
   getCategoryById,
+  getAllCategoriesForDropDown,
 };

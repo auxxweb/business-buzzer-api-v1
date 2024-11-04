@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import { ObjectId } from "../../constants/type.js";
-
 const ContactFormSchema = new Schema(
   {
     business: {
@@ -8,22 +7,18 @@ const ContactFormSchema = new Schema(
       ref: "business",
       required: true,
     },
-
     name: {
       type: String,
       required: true,
     },
-
     email: {
       type: String,
       required: true,
     },
-
     message: {
       type: String,
       required: true,
     },
-
     isDeleted: {
       type: Boolean,
       default: false,
@@ -33,6 +28,5 @@ const ContactFormSchema = new Schema(
     timestamps: true,
   },
 );
-
 const ContactForm = model("contact_forms", ContactFormSchema);
 export default ContactForm;

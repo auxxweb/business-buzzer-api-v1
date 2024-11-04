@@ -1,29 +1,19 @@
 import { model, Schema } from "mongoose";
 import { ObjectId } from "../../constants/type.js";
-
-const ContactFormSchema = new Schema(
+const NotificationSchema = new Schema(
   {
-    business: {
+    senderId: {
       type: ObjectId,
-      ref: "business",
       required: true,
     },
-
-    name: {
-      type: String,
+    receiverId: {
+      type: ObjectId,
       required: true,
     },
-
-    email: {
-      type: String,
-      required: true,
-    },
-
     message: {
       type: String,
       required: true,
     },
-
     isDeleted: {
       type: Boolean,
       default: false,
@@ -33,6 +23,5 @@ const ContactFormSchema = new Schema(
     timestamps: true,
   },
 );
-
-const ContactForm = model("contact_forms", ContactFormSchema);
-export default ContactForm;
+const Notification = model("notifications", NotificationSchema);
+export default Notification;

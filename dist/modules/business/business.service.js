@@ -22,6 +22,7 @@ const businessSignUp = async (userData) => {
     businessTiming,
     description,
     theme,
+    secondaryTheme,
     landingPageHero,
     welcomePart,
     specialServices,
@@ -63,6 +64,7 @@ const businessSignUp = async (userData) => {
     businessTiming,
     description,
     theme,
+    secondaryTheme,
     landingPageHero,
     welcomePart,
     specialServices,
@@ -90,6 +92,7 @@ const businessSignUp = async (userData) => {
     businessTiming: business?.businessTiming,
     description: business?.description,
     theme: business?.theme,
+    secondaryTheme: business?.secondaryTheme,
     landingPageHero: business?.landingPageHero,
     welcomePart: business?.welcomePart,
     specialServices: business?.specialServices,
@@ -214,6 +217,30 @@ const getAllBusiness = async ({ query, options, lat, lon }) => {
       },
     },
     {
+      $lookup: {
+        from: "payments",
+        let: { businessId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$business", "$$businessId"],
+              },
+            },
+          },
+          { $sort: { createdAt: -1 } },
+          { $limit: 1 }, // Limit to only one document
+        ],
+        as: "payment",
+      },
+    },
+    {
+      $unwind: {
+        path: "$payment",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $project: {
         _id: 1,
         businessName: 1,
@@ -239,6 +266,7 @@ const getAllBusiness = async ({ query, options, lat, lon }) => {
         location: 1,
         selectedPlan: 1,
         paymentStatus: 1,
+        payment: 1,
       },
     },
     {
@@ -535,6 +563,27 @@ const updateBusinessByAdmin = async (businessId, businessData) => {
   updatedBusiness.rating = await findRating(reviews);
   return updatedBusiness;
 };
+const updateBusinessStatusByAdmin = async (businessId, status) => {
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  }).select("-password");
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+  await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(businessId),
+      isDeleted: false,
+    },
+    {
+      status: status === "true",
+    },
+  );
+  return {
+    message: successMessages.statusUpdated,
+  };
+};
 const updateBusinessPassword = async ({
   oldPassword,
   newPassword,
@@ -582,5 +631,6 @@ export const businessService = {
   getAllBusiness,
   updateBusiness,
   updateBusinessByAdmin,
+  updateBusinessStatusByAdmin,
   updateBusinessPassword,
 };

@@ -47,6 +47,37 @@ const getAllCategories = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const getAllCategoriesForDropDown = errorWrapper(async (req, res, next) => {
+  let query = {
+    isDeleted: false,
+  };
+  const searchTerm = req.query?.searchTerm;
+  if (searchTerm) {
+    query = {
+      ...query,
+      $or: [
+        {
+          name: {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+      ],
+    };
+  }
+  const data = await categoryService.getAllCategoriesForDropDown({
+    query: {
+      ...query,
+    },
+    options: {
+      sort: { name: 1 },
+    },
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const updateCategory = errorWrapper(async (req, res, next) => {
   const data = await categoryService.updateCategory(req.params.id, {
     ...req.body,
@@ -63,4 +94,10 @@ const getCategoryById = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
-export { createCategory, getAllCategories, updateCategory, getCategoryById };
+export {
+  createCategory,
+  getAllCategories,
+  updateCategory,
+  getCategoryById,
+  getAllCategoriesForDropDown,
+};

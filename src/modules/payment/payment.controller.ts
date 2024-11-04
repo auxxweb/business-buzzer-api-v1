@@ -22,15 +22,14 @@ const createPayment = errorWrapper(
 );
 
 const getPaymentListing = errorWrapper(
-  async(req: Request, res: Response, next: NextFunction) => {
-    const data = await paymentService.getPaymentListing()
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await paymentService.getPaymentListing();
 
     return responseUtils.success(res, {
       data,
-      status: 201
-    })
-
-  }
-)
+      status: 201,
+    });
+  },
+);
 
 export { createPayment, getPaymentListing };

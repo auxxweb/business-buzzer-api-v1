@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   createCategory,
   getAllCategories,
+  getAllCategoriesForDropDown,
   getCategoryById,
   updateCategory,
 } from "../../modules/category/category.controller.js";
@@ -13,6 +14,7 @@ const router = Router();
 // user-endpoints
 router.post("/", protect({ isAdmin: true }), createCategory);
 router.get("/", getAllCategories);
+router.get("/all", getAllCategoriesForDropDown);
 router.get("/:id", getCategoryById);
 router.patch("/:id", protect({ isAdmin: true }), updateCategory);
 

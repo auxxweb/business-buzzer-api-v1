@@ -51,8 +51,9 @@ const updateBusinessByAdmin = errorWrapper(
 
 const updateBusinessStatusByAdmin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body, "req body")
-    const data = await businessService.updateBusinessStatusByAdmin(req.params.id,
+    console.log(req.body, "req body");
+    const data = await businessService.updateBusinessStatusByAdmin(
+      req.params.id,
       req.body?.status,
     );
 

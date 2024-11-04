@@ -8,16 +8,14 @@ import { RequestWithUser } from "../../interface/app.interface.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 
 const getNotificationByUser = errorWrapper(
-    async (req: RequestWithUser, res: Response, next: NextFunction) => {
-        const data = await notificationService.getNotificationByUser(req.user?._id);
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await notificationService.getNotificationByUser(req.user?._id);
 
-        return responseUtils.success(res, {
-            data,
-            status: 201,
-        });
-    },
+    return responseUtils.success(res, {
+      data,
+      status: 201,
+    });
+  },
 );
 
-export {
-    getNotificationByUser
-}
+export { getNotificationByUser };

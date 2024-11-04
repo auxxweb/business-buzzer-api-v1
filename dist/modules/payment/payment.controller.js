@@ -13,4 +13,11 @@ const createPayment = errorWrapper(async (req, res, next) => {
     status: 201,
   });
 });
-export { createPayment };
+const getPaymentListing = errorWrapper(async (req, res, next) => {
+  const data = await paymentService.getPaymentListing();
+  return responseUtils.success(res, {
+    data,
+    status: 201,
+  });
+});
+export { createPayment, getPaymentListing };
