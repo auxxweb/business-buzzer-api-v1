@@ -12,6 +12,7 @@ import termsAndServicesRouter from "./termsAndCondition/termsAndCondition.router
 import privacyPoliciesRouter from "./privacyPolicy/privacyPolicy.router.js";
 import notificationRouter from "./notification/notification.router.js";
 import contactFormRouter from "./contactForm/contactForm.router.js";
+import leadRouter from "./leads/leads.router.js";
 const router = Router();
 router.post("/s3url", getS3Urls);
 router.get("/", healthCheck);
@@ -25,4 +26,5 @@ router.use("/terms_and_conditions", termsAndServicesRouter);
 router.use("/privacy_policies", privacyPoliciesRouter);
 router.use("/notifications", notificationRouter);
 router.use("/contact_forms", contactFormRouter);
+router.use("/review", leadRouter);
 export default router;
