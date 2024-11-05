@@ -19,6 +19,7 @@ const createPlan = async (planData: CreatePlanServiceData): Promise<any> => {
     plan: planData?.plan,
     validity: planData?.validity,
     amount: planData?.amount,
+    isPremium: planData?.isPremium,
     description: planData?.description,
   });
 };
@@ -59,6 +60,7 @@ const updatePlan = async (
     amount: number;
     description: string;
     isDeleted: boolean;
+    isPremium: boolean;
   },
 ): Promise<any> => {
   const planExist = await Plans.findOne({
@@ -84,6 +86,9 @@ const updatePlan = async (
       }),
       ...(planData?.amount && {
         amount: planData?.amount,
+      }),
+      ...(planData?.isPremium && {
+        isPremium: planData?.isPremium,
       }),
       ...(planData?.description && {
         description: planData?.description,

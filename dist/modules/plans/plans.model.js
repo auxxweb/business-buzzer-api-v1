@@ -10,6 +10,10 @@ const PlansCollection = new Schema(
       type: Number,
       required: true,
     },
+    isPremium: {
+      type: Boolean,
+      default: false,
+    },
     amount: Number,
     description: {
       type: [String],

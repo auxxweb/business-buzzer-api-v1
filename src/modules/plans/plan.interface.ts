@@ -3,4 +3,5 @@ export interface CreatePlanServiceData {
   validity: number;
   amount: number;
   description: [string];
+  isPremium: boolean;
 }

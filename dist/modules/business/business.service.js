@@ -353,7 +353,24 @@ const getAllBusinessByAdmin = async ({ query, options, lat, lon }) => {
             },
           },
           { $sort: { createdAt: -1 } },
-          { $limit: 1 }, // Limit to only one document
+          { $limit: 1 },
+          {
+            $addFields: {
+              status: {
+                $cond: [
+                  { $lt: ["$expiryDate", new Date()] },
+                  "expired",
+                  {
+                    $cond: [
+                      { $eq: ["$paymentStatus", false] },
+                      "payment failed",
+                      "active",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
         ],
         as: "payment",
       },
@@ -377,6 +394,7 @@ const getAllBusinessByAdmin = async ({ query, options, lat, lon }) => {
         "selectedPlan.plan": 1,
         status: 1,
         payment: 1,
+        createdAt: 1,
       },
     },
     {

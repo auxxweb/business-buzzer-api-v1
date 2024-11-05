@@ -402,12 +402,30 @@ const getAllBusinessByAdmin = async ({
               },
             },
           },
-          { $sort: { createdAt: -1 } }, // Sort by `createdAt` in descending order to get the latest document first
-          { $limit: 1 }, // Limit to only one document
+          { $sort: { createdAt: -1 } },
+          { $limit: 1 },
+          {
+            $addFields: {
+              status: {
+                $cond: [
+                  { $lt: ["$expiryDate", new Date()] },
+                  "expired",
+                  {
+                    $cond: [
+                      { $eq: ["$paymentStatus", false] },
+                      "payment failed",
+                      "active",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
         ],
         as: "payment",
       },
     },
+
     {
       $unwind: {
         path: "$payment",
@@ -427,6 +445,7 @@ const getAllBusinessByAdmin = async ({
         "selectedPlan.plan": 1,
         status: 1,
         payment: 1,
+        createdAt: 1,
       },
     },
     {
