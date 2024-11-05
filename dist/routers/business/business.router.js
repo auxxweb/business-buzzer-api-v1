@@ -4,6 +4,7 @@ import { protect } from "../../middleware/auth.middleware.js";
 import {
   businessLogin,
   businessSignUp,
+  deleteBusinessByAdmin,
   getAllBusiness,
   getAllBusinessByAdmin,
   getBusinessByCategory,
@@ -23,12 +24,13 @@ router.get("/all", protect({ isAdmin: true }), getAllBusinessByAdmin);
 router.post("/login", businessLogin);
 router.get("/:id", getBusinessById);
 router.get("/", getAllBusiness);
-router.patch("/admin/:id", protect({ isAdmin: true }), updateBusinessByAdmin);
 router.patch(
   "/admin/status/:id",
   protect({ isAdmin: true }),
   updateBusinessStatusByAdmin,
 );
+router.patch("/admin/:id", protect({ isAdmin: true }), updateBusinessByAdmin);
+router.delete("/admin/:id", protect({ isAdmin: true }), deleteBusinessByAdmin);
 router.patch("/", protect({ isAdmin: false }), updateBusiness);
 router.patch("/password", protect({ isAdmin: false }), updateBusinessPassword);
 export default router;

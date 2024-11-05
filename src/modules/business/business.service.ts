@@ -597,6 +597,32 @@ const updateBusiness = async (
 
   return updatedBusiness;
 };
+
+const deleteBusinessByAdmin = async (businessId: string): Promise<any> => {
+  const business: any = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  })
+    .populate("selectedPlan category")
+    .select("-password");
+
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+
+  return await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(businessId),
+      isDeleted: false,
+    },
+    {
+      isDeleted: true,
+    },
+    {
+      new: true,
+    },
+  );
+};
 const updateBusinessByAdmin = async (
   businessId: string,
   businessData: Partial<CreateBusinessData & { status: boolean }>,
@@ -763,7 +789,7 @@ const updateBusinessStatusByAdmin = async (
       isDeleted: false,
     },
     {
-      status: status === "true",
+      status: !business?.status,
     },
   );
 
@@ -834,4 +860,5 @@ export const businessService = {
   updateBusinessStatusByAdmin,
   updateBusinessPassword,
   getAllBusinessByAdmin,
+  deleteBusinessByAdmin,
 };

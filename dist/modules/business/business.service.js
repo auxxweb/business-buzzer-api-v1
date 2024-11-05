@@ -535,6 +535,29 @@ const updateBusiness = async (businessId, businessData) => {
   updatedBusiness.rating = await findRating(reviews);
   return updatedBusiness;
 };
+const deleteBusinessByAdmin = async (businessId) => {
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  })
+    .populate("selectedPlan category")
+    .select("-password");
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+  return await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(businessId),
+      isDeleted: false,
+    },
+    {
+      isDeleted: true,
+    },
+    {
+      new: true,
+    },
+  );
+};
 const updateBusinessByAdmin = async (businessId, businessData) => {
   const {
     businessName,
@@ -687,7 +710,7 @@ const updateBusinessStatusByAdmin = async (businessId, status) => {
       isDeleted: false,
     },
     {
-      status: status === "true",
+      status: !business?.status,
     },
   );
   return {
@@ -744,4 +767,5 @@ export const businessService = {
   updateBusinessStatusByAdmin,
   updateBusinessPassword,
   getAllBusinessByAdmin,
+  deleteBusinessByAdmin,
 };

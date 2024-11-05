@@ -63,6 +63,17 @@ const updateBusinessStatusByAdmin = errorWrapper(
     });
   },
 );
+const deleteBusinessByAdmin = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body, "req body");
+    const data = await businessService.deleteBusinessByAdmin(req?.params?.id);
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 
 const businessLogin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -295,4 +306,5 @@ export {
   getBusinessProfile,
   updateBusinessPassword,
   getAllBusinessByAdmin,
+  deleteBusinessByAdmin,
 };
