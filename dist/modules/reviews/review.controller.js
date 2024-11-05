@@ -30,7 +30,7 @@ const getAllLeads = errorWrapper(async (req, res, next) => {
   });
   return responseUtils.success(res, {
     data,
-    status: 201,
+    status: 200,
   });
 });
 export { createLead, getAllLeads };

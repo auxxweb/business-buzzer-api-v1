@@ -43,7 +43,7 @@ const getAllLeads = errorWrapper(
 
     return responseUtils.success(res, {
       data,
-      status: 201,
+      status: 200,
     });
   },
 );
