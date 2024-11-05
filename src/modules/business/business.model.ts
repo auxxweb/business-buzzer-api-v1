@@ -17,6 +17,7 @@ const BusinessSchema = new Schema(
       type: String,
       trim: true,
       required: true,
+      unique: true,
       set: (value: string) => value.toLowerCase(),
     },
     password: {

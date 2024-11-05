@@ -14,6 +14,15 @@ const businessSignUp = errorWrapper(async (req, res, next) => {
     status: 201,
   });
 });
+const businessExists = errorWrapper(async (req, res, next) => {
+  const data = await businessService.businessExists({
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const updateBusiness = errorWrapper(async (req, res, next) => {
   const data = await businessService.updateBusiness(req.user?._id, {
     ...req.body,
@@ -246,4 +255,5 @@ export {
   updateBusinessPassword,
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
+  businessExists,
 };

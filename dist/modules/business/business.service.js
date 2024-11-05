@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import bcrypt from "bcryptjs";
 import { generateAPIError } from "../../errors/apiError.js";
@@ -775,6 +776,16 @@ const updateBusinessPassword = async ({
     return await generateAPIError(errorMessages.passwordNotUpdated, 400);
   }
 };
+const businessExists = async (businessData) => {
+  const business = await Business.findOne({
+    email: businessData?.email,
+    isDeleted: false,
+  });
+  if (business) {
+    return await generateAPIError(errorMessages.businessExists, 400);
+  }
+  return true;
+};
 export const businessService = {
   businessLogin,
   businessSignUp,
@@ -786,4 +797,5 @@ export const businessService = {
   updateBusinessPassword,
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
+  businessExists,
 };

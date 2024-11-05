@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import bcrypt from "bcryptjs";
 
@@ -869,6 +870,22 @@ const updateBusinessPassword = async ({
   }
 };
 
+const businessExists = async (businessData: {
+  email: string;
+  password: string;
+}): Promise<any> => {
+  const business = await Business.findOne({
+    email: businessData?.email,
+    isDeleted: false,
+  });
+
+  if (business) {
+    return await generateAPIError(errorMessages.businessExists, 400);
+  }
+
+  return true;
+};
+
 export const businessService = {
   businessLogin,
   businessSignUp,
@@ -880,4 +897,5 @@ export const businessService = {
   updateBusinessPassword,
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
+  businessExists,
 };

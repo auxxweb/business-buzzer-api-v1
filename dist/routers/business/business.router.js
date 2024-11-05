@@ -2,6 +2,7 @@
 import { Router } from "express";
 import { protect } from "../../middleware/auth.middleware.js";
 import {
+  businessExists,
   businessLogin,
   businessSignUp,
   deleteBusinessByAdmin,
@@ -18,6 +19,7 @@ import {
 const router = Router();
 // user-endpoints
 router.post("/", businessSignUp);
+router.post("/check", businessExists);
 router.get("/profile", protect({ isAdmin: false }), getBusinessProfile);
 router.get("/category/:id", getBusinessByCategory);
 router.get("/all", protect({ isAdmin: true }), getAllBusinessByAdmin);

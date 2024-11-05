@@ -23,6 +23,19 @@ const businessSignUp = errorWrapper(
     });
   },
 );
+const businessExists = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await businessService.businessExists({
+      ...req.body,
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
 const updateBusiness = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
     const data = await businessService.updateBusiness(req.user?._id as string, {
@@ -307,4 +320,5 @@ export {
   updateBusinessPassword,
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
+  businessExists,
 };
