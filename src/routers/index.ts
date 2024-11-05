@@ -13,6 +13,7 @@ import privacyPoliciesRouter from "./privacyPolicy/privacyPolicy.router.js";
 import notificationRouter from "./notification/notification.router.js";
 import contactFormRouter from "./contactForm/contactForm.router.js";
 import leadRouter from "./leads/leads.router.js";
+import bannerRouter from "./banners/banner.router.js";
 
 const router = Router();
 router.post("/s3url", getS3Urls);
@@ -29,5 +30,6 @@ router.use("/privacy_policies", privacyPoliciesRouter);
 router.use("/notifications", notificationRouter);
 router.use("/contact_forms", contactFormRouter);
 router.use("/review", leadRouter);
+router.use("/banner", bannerRouter);
 
 export default router;

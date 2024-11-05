@@ -17,6 +17,8 @@ const errorMessages = {
   termsAndConditionsNotFound: "Terms and Conditions not found",
   privacyPolicyNotFound: "Privacy policy not found",
   businessExists: "Business already exists with email",
+  bannerCountExceeded: "Banner limit exceeded.",
+  bannerDeleteFailed: "Failed to delete banner ,try again",
 };
 
 const successMessages = {
