@@ -63,10 +63,10 @@ const getAdminDashboardData = async (): Promise<any> => {
     totalPendingPayments,
     totalFailedPayments,
   ] = await Promise.all([
-    Plans.countDocuments(),
-    Business.countDocuments(),
-    Category.countDocuments(),
-    Payment.countDocuments(),
+    Plans.countDocuments({ isDeleted: false }),
+    Business.countDocuments({ isDeleted: false }),
+    Category.countDocuments({ isDeleted: false }),
+    Payment.countDocuments({ isDeleted: false }),
     Business.countDocuments({
       paymentStatus: true,
       status: true,
@@ -74,18 +74,23 @@ const getAdminDashboardData = async (): Promise<any> => {
     Business.countDocuments({
       paymentStatus: false,
       status: true,
+      isDeleted: false,
     }),
     Business.countDocuments({
       status: false,
+      isDeleted: false,
     }),
     Payment.countDocuments({
       paymentStatus: PaymentStatus.SUCCESS,
+      isDeleted: false,
     }),
     Payment.countDocuments({
       paymentStatus: PaymentStatus.PENDING,
+      isDeleted: false,
     }),
     Payment.countDocuments({
       paymentStatus: PaymentStatus.FAILED,
+      isDeleted: false,
     }),
   ]);
 
@@ -105,7 +110,7 @@ const getAdminDashboardData = async (): Promise<any> => {
 
 const getAdminDashboardChartData = async (): Promise<any> => {
   const now = new Date();
-  const currentMonth = now.getMonth(); // Current month (0-indexed, so October is 9)
+  const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
   // Get the previous month and year (handle January case)
@@ -127,8 +132,19 @@ const getAdminDashboardChartData = async (): Promise<any> => {
       // Lookup payments related to each plan
       $lookup: {
         from: "payments", // The collection to join with
-        localField: "_id", // Plan _id
-        foreignField: "plan", // The "plan" field in payments collection
+        let: { planId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$plan", "$$planId"] }, // Match the plan
+                  { $eq: ["$isDeleted", false] }, // Only include non-deleted payments
+                ],
+              },
+            },
+          },
+        ],
         as: "paymentDetails", // The field name for the joined results
       },
     },
@@ -136,7 +152,7 @@ const getAdminDashboardChartData = async (): Promise<any> => {
       $project: {
         _id: 1, // Plan _id
         plan: 1, // Plan name (assuming you have this field in Plan schema)
-        count: { $size: "$paymentDetails" }, // Get the size of the payments array (number of payments)
+        count: { $size: "$paymentDetails" }, // Get the size of the filtered payments array (non-deleted payments count)
       },
     },
   ]);
