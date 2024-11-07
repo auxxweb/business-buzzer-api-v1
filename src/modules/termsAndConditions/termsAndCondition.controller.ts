@@ -10,24 +10,22 @@ import { RequestWithUser } from "../../interface/app.interface.js";
 const getTermsAndConditions = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await termsAndConditionsService.getTermsAndConditions(
-      req.params.businessId,
+      req?.user?._id,
     );
 
     return responseUtils.success(res, {
       data,
-      status: 201,
+      status: 200,
     });
   },
 );
 
 const createTermsAndConditions = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    const data = await termsAndConditionsService.createTermsAndConditions(
-      req.user?._id,
-      {
-        ...req.body,
-      },
-    );
+    const data = await termsAndConditionsService.createTermsAndConditions({
+      businessId: req?.user?._id,
+      ...req.body,
+    });
 
     return responseUtils.success(res, {
       data,
@@ -39,8 +37,7 @@ const createTermsAndConditions = errorWrapper(
 const updateTermsAndConditions = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
     const data = await termsAndConditionsService.updateTermsAndConditions(
-      req.params?.id,
-      req.user?._id,
+      req.user?._id as string,
       {
         ...req.body,
       },
@@ -48,7 +45,7 @@ const updateTermsAndConditions = errorWrapper(
 
     return responseUtils.success(res, {
       data,
-      status: 201,
+      status: 200,
     });
   },
 );

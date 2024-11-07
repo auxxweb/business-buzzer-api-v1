@@ -2,40 +2,52 @@ import TermsAndCondition from "./termsAndConditions.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages, successMessages } from "../../constants/messages.js";
+import { forGotPasswordLinkSchema } from "../../modules/business/business.joi.js";
 const getTermsAndConditions = async (businessId) => {
-  const termsAndConditions = await TermsAndCondition.find({
+  const termsAndConditions = await TermsAndCondition.findOne({
     business: new ObjectId(businessId),
+    isDeleted: forGotPasswordLinkSchema,
   });
   return termsAndConditions;
 };
-const createTermsAndConditions = async (businessId, data) => {
-  const businessObjId = new ObjectId(businessId);
-  const termsAndConditions = data?.termsAndConditions;
-  const creationData = termsAndConditions.map((data) => {
-    return {
-      business: businessObjId,
-      title: data.title,
-      data: data.data,
-    };
+const createTermsAndConditions = async (data) => {
+  const exists = await TermsAndCondition.findOne({
+    business: new ObjectId(data?.businessId),
+    isDeleted: false,
   });
-  const createdData = await TermsAndCondition.insertMany(creationData);
-  return createdData;
+  if (exists) {
+    return await generateAPIError(errorMessages.termsAndConditionsExists, 400);
+  }
+  return await TermsAndCondition.create({
+    business: data?.businessId,
+    data: data?.data,
+  });
 };
-const updateTermsAndConditions = async (id, businessId, data) => {
+const updateTermsAndConditions = async (businessId, data) => {
   const termsAndCondition = await TermsAndCondition.findOne({
-    _id: new ObjectId(id),
     business: new ObjectId(businessId),
+    isDeleted: false,
   });
   if (termsAndCondition == null) {
     return await generateAPIError(
       errorMessages.termsAndConditionsNotFound,
-      404,
+      400,
     );
   }
-  termsAndCondition.title = data?.title ? data.title : termsAndCondition.title;
-  termsAndCondition.data = data?.data ? data.data : termsAndCondition.data;
-  await termsAndCondition.save();
-  return termsAndCondition;
+  return await TermsAndCondition.findOneAndUpdate(
+    {
+      business: new ObjectId(businessId),
+      isDeleted: false,
+    },
+    {
+      ...(data?.data && {
+        data: data?.data,
+      }),
+    },
+    {
+      new: true,
+    },
+  );
 };
 const deleteTermsAndConditions = async (id, businessId) => {
   const termsAndCondition = await TermsAndCondition.findOne({

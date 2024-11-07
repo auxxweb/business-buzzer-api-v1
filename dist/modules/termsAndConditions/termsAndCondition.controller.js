@@ -5,20 +5,18 @@ import { termsAndConditionsService } from "./termsAndCondition.service.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 const getTermsAndConditions = errorWrapper(async (req, res, next) => {
   const data = await termsAndConditionsService.getTermsAndConditions(
-    req.params.businessId,
+    req?.user?._id,
   );
   return responseUtils.success(res, {
     data,
-    status: 201,
+    status: 200,
   });
 });
 const createTermsAndConditions = errorWrapper(async (req, res, next) => {
-  const data = await termsAndConditionsService.createTermsAndConditions(
-    req.user?._id,
-    {
-      ...req.body,
-    },
-  );
+  const data = await termsAndConditionsService.createTermsAndConditions({
+    businessId: req?.user?._id,
+    ...req.body,
+  });
   return responseUtils.success(res, {
     data,
     status: 201,
@@ -26,7 +24,6 @@ const createTermsAndConditions = errorWrapper(async (req, res, next) => {
 });
 const updateTermsAndConditions = errorWrapper(async (req, res, next) => {
   const data = await termsAndConditionsService.updateTermsAndConditions(
-    req.params?.id,
     req.user?._id,
     {
       ...req.body,
@@ -34,7 +31,7 @@ const updateTermsAndConditions = errorWrapper(async (req, res, next) => {
   );
   return responseUtils.success(res, {
     data,
-    status: 201,
+    status: 200,
   });
 });
 const deleteTermsAndConditions = errorWrapper(async (req, res, next) => {
