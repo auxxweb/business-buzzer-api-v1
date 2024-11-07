@@ -4,8 +4,18 @@ import { errorWrapper } from "../../middleware/errorWrapper.js";
 import { termsAndConditionsService } from "./termsAndCondition.service.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 const getTermsAndConditions = errorWrapper(async (req, res, next) => {
+  console.log("happy");
   const data = await termsAndConditionsService.getTermsAndConditions(
     req?.user?._id,
+  );
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+const getTermsAndConditionsById = errorWrapper(async (req, res, next) => {
+  const data = await termsAndConditionsService.getTermsAndConditions(
+    req?.params?._id,
   );
   return responseUtils.success(res, {
     data,
@@ -23,6 +33,7 @@ const createTermsAndConditions = errorWrapper(async (req, res, next) => {
   });
 });
 const updateTermsAndConditions = errorWrapper(async (req, res, next) => {
+  console.log(req.body, "req.body");
   const data = await termsAndConditionsService.updateTermsAndConditions(
     req.user?._id,
     {
@@ -49,4 +60,5 @@ export {
   createTermsAndConditions,
   updateTermsAndConditions,
   deleteTermsAndConditions,
+  getTermsAndConditionsById,
 };

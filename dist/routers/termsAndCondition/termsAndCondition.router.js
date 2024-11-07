@@ -5,12 +5,14 @@ import {
   createTermsAndConditions,
   updateTermsAndConditions,
   deleteTermsAndConditions,
+  getTermsAndConditionsById,
 } from "../../modules/termsAndConditions/termsAndCondition.controller.js";
 import { protect } from "../../middleware/auth.middleware.js";
 const router = Router();
 // user-endpoints
-router.get("/:businessId", getTermsAndConditions);
+router.get("/", protect({ isAdmin: false }), getTermsAndConditions);
+router.get("/:id", protect({ isAdmin: false }), getTermsAndConditionsById);
 router.post("/", protect({ isAdmin: false }), createTermsAndConditions);
-router.put("/:id", protect({ isAdmin: false }), updateTermsAndConditions);
+router.patch("/", protect({ isAdmin: false }), updateTermsAndConditions);
 router.delete("/:id", protect({ isAdmin: false }), deleteTermsAndConditions);
 export default router;

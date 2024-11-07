@@ -7,10 +7,6 @@ const TermsAndConditionsSchema = new Schema(
       ref: "business",
       required: true,
     },
-    title: {
-      type: String,
-      required: true,
-    },
     data: {
       type: String,
       required: true,

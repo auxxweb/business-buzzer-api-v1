@@ -1,4 +1,4 @@
-import { Response, NextFunction, Request } from "express";
+import { Response, NextFunction } from "express";
 // import { FilterQuery } from 'mongoose'
 
 import { responseUtils } from "../../utils/response.utils.js";
@@ -8,9 +8,23 @@ import { RequestWithUser } from "../../interface/app.interface.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 
 const getTermsAndConditions = errorWrapper(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    console.log("happy");
+
     const data = await termsAndConditionsService.getTermsAndConditions(
-      req?.user?._id,
+      req?.user?._id as string,
+    );
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+const getTermsAndConditionsById = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await termsAndConditionsService.getTermsAndConditions(
+      req?.params?._id,
     );
 
     return responseUtils.success(res, {
@@ -36,6 +50,8 @@ const createTermsAndConditions = errorWrapper(
 
 const updateTermsAndConditions = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    console.log(req.body, "req.body");
+
     const data = await termsAndConditionsService.updateTermsAndConditions(
       req.user?._id as string,
       {
@@ -69,4 +85,5 @@ export {
   createTermsAndConditions,
   updateTermsAndConditions,
   deleteTermsAndConditions,
+  getTermsAndConditionsById,
 };

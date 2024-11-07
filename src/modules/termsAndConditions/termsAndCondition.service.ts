@@ -2,13 +2,20 @@ import TermsAndCondition from "./termsAndConditions.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages, successMessages } from "../../constants/messages.js";
-import { forGotPasswordLinkSchema } from "../../modules/business/business.joi.js";
 
-const getTermsAndConditions = async (businessId: any): Promise<any> => {
+const getTermsAndConditions = async (businessId: string): Promise<any> => {
+  console.log("calling", businessId);
+
   const termsAndConditions = await TermsAndCondition.findOne({
     business: new ObjectId(businessId),
-    isDeleted: forGotPasswordLinkSchema,
+    isDeleted: false,
   });
+  if (!termsAndConditions) {
+    return await generateAPIError(
+      errorMessages.termsAndConditionsNotFound,
+      400,
+    );
+  }
   return termsAndConditions;
 };
 
@@ -46,6 +53,8 @@ const updateTermsAndConditions = async (
       400,
     );
   }
+
+  console.log(data, "data");
 
   return await TermsAndCondition.findOneAndUpdate(
     {
