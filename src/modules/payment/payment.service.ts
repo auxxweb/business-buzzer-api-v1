@@ -7,6 +7,7 @@ import Payment from "./payment.model.js";
 import Plans from "../../modules/plans/plans.model.js";
 import { findExpiryDate } from "./payment.utils.js";
 import { PaymentStatus } from "./payment.enums.js";
+import { FilterQuery, QueryOptions } from "mongoose";
 
 const createPayment = async (paymentData: PaymentData): Promise<any> => {
   const { paymentId, plan, business, paymentStatus, date } = paymentData;
@@ -62,20 +63,28 @@ const createPayment = async (paymentData: PaymentData): Promise<any> => {
   return paymentDatas;
 };
 
-const getPaymentListing = async (): Promise<any> => {
-  const paymentData = await Payment.find().populate([
-    {
-      path: "business",
-      select: "_id businessName email status rating",
-    },
-    {
-      path: "plan",
-    },
+const getPaymentListing = async ({
+  query,
+  options,
+}: {
+  query: FilterQuery<typeof Payment>;
+  options: QueryOptions;
+}): Promise<any> => {
+  const [data, totalCount] = await Promise.all([
+    Payment.find(query, {}, options).populate([
+      {
+        path: "business",
+        select: "_id businessName email status rating",
+      },
+      {
+        path: "plan",
+      },
+    ]),
+    Payment.countDocuments(query),
   ]);
 
-  return paymentData;
+  return { data, totalCount };
 };
-
 export const paymentService = {
   createPayment,
   getPaymentListing,

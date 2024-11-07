@@ -786,6 +786,13 @@ const businessExists = async (businessData) => {
   }
   return true;
 };
+const getAllBusinessForDropDown = async ({ query, options }) => {
+  const [data, totalCount] = await Promise.all([
+    Business.find(query, { _id: 1, businessName: 1 }, options),
+    Business.countDocuments(query),
+  ]);
+  return { data, totalCount };
+};
 export const businessService = {
   businessLogin,
   businessSignUp,
@@ -798,4 +805,5 @@ export const businessService = {
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
   businessExists,
+  getAllBusinessForDropDown,
 };

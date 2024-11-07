@@ -21,4 +21,14 @@ const adminLogin = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
-export { createAdmin, adminLogin };
+const updatePassword = errorWrapper(async (req, res, next) => {
+  const data = await adminService.updatePassword({
+    adminId: req.user?._id,
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+export { createAdmin, adminLogin, updatePassword };

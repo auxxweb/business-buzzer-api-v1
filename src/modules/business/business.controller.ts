@@ -194,6 +194,49 @@ const getAllBusiness = errorWrapper(
     });
   },
 );
+const getAllBusinessForDropDown = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const paginationOptions = getPaginationOptions({
+      limit: req.query?.limit,
+      page: req.query?.page,
+    });
+
+    let query: FilterQuery<typeof Business> = {
+      isDeleted: false,
+    };
+
+    const searchTerm = req.query?.searchTerm;
+    if (searchTerm) {
+      query = {
+        ...query,
+        $or: [
+          {
+            businessName: {
+              $regex: new RegExp(String(searchTerm)),
+              $options: "i",
+            },
+          },
+        ],
+      };
+    }
+
+    const data = await businessService.getAllBusinessForDropDown({
+      query: {
+        ...query,
+      },
+
+      options: {
+        ...paginationOptions,
+        sort: { createdAt: -1 },
+      },
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 const getAllBusinessByAdmin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const paginationOptions = getPaginationOptions({
@@ -321,4 +364,5 @@ export {
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
   businessExists,
+  getAllBusinessForDropDown,
 };

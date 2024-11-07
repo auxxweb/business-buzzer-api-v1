@@ -8,6 +8,7 @@ import {
   deleteBusinessByAdmin,
   getAllBusiness,
   getAllBusinessByAdmin,
+  getAllBusinessForDropDown,
   getBusinessByCategory,
   getBusinessById,
   getBusinessProfile,
@@ -22,6 +23,7 @@ router.post("/", businessSignUp);
 router.post("/check", businessExists);
 router.get("/profile", protect({ isAdmin: false }), getBusinessProfile);
 router.get("/category/:id", getBusinessByCategory);
+router.get("/dropdown", getAllBusinessForDropDown);
 router.get("/all", protect({ isAdmin: true }), getAllBusinessByAdmin);
 router.post("/login", businessLogin);
 router.get("/:id", getBusinessById);

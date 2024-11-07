@@ -18,6 +18,7 @@ const errorMessages = {
   businessExists: "Business already exists with email",
   bannerCountExceeded: "Banner limit exceeded.",
   bannerDeleteFailed: "Failed to delete banner ,try again",
+  termsAndConditionsExists: "Terms & conditions already added",
 };
 const successMessages = {
   linkSend: "Link successfully send to mail",

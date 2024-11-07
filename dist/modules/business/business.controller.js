@@ -144,6 +144,42 @@ const getAllBusiness = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const getAllBusinessForDropDown = errorWrapper(async (req, res, next) => {
+  const paginationOptions = getPaginationOptions({
+    limit: req.query?.limit,
+    page: req.query?.page,
+  });
+  let query = {
+    isDeleted: false,
+  };
+  const searchTerm = req.query?.searchTerm;
+  if (searchTerm) {
+    query = {
+      ...query,
+      $or: [
+        {
+          businessName: {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+      ],
+    };
+  }
+  const data = await businessService.getAllBusinessForDropDown({
+    query: {
+      ...query,
+    },
+    options: {
+      ...paginationOptions,
+      sort: { createdAt: -1 },
+    },
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const getAllBusinessByAdmin = errorWrapper(async (req, res, next) => {
   const paginationOptions = getPaginationOptions({
     limit: req.query?.limit,
@@ -256,4 +292,5 @@ export {
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
   businessExists,
+  getAllBusinessForDropDown,
 };

@@ -50,17 +50,20 @@ const createPayment = async (paymentData) => {
   }
   return paymentDatas;
 };
-const getPaymentListing = async () => {
-  const paymentData = await Payment.find().populate([
-    {
-      path: "business",
-      select: "_id businessName email status rating",
-    },
-    {
-      path: "plan",
-    },
+const getPaymentListing = async ({ query, options }) => {
+  const [data, totalCount] = await Promise.all([
+    Payment.find(query, {}, options).populate([
+      {
+        path: "business",
+        select: "_id businessName email status rating",
+      },
+      {
+        path: "plan",
+      },
+    ]),
+    Payment.countDocuments(query),
   ]);
-  return paymentData;
+  return { data, totalCount };
 };
 export const paymentService = {
   createPayment,
