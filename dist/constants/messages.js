@@ -12,6 +12,7 @@ const errorMessages = {
   adminNotFound: "Invalid Email",
   categoryExists: "Category already exists",
   categoryNotFound: "Category not found",
+  bannerNOtFound: "Banner not found",
   passwordNotUpdated: "Password not updated ,please try again",
   termsAndConditionsNotFound: "Terms and Conditions not found",
   privacyPolicyNotFound: "Privacy policy not found",

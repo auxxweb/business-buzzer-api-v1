@@ -9,7 +9,7 @@ const createBanner = async ({ image }: { image: string }): Promise<any> => {
     isDeleted: false,
   });
 
-  if (bannerCount > 5) {
+  if (bannerCount >= 5) {
     return await generateAPIError(errorMessages.bannerCountExceeded, 400);
   }
 
@@ -67,8 +67,10 @@ const deleteBanner = async (bannerId: string): Promise<any> => {
     isDeleted: false,
   });
 
+  console.log(bannerExists, "banner");
+
   if (!bannerExists) {
-    return await generateAPIError(errorMessages.categoryNotFound, 400);
+    return await generateAPIError(errorMessages.bannerNOtFound, 400);
   }
   const data = await Banner.findOneAndUpdate(
     {
@@ -76,16 +78,15 @@ const deleteBanner = async (bannerId: string): Promise<any> => {
       isDeleted: false,
     },
     {
-      isDeleted: false,
+      isDeleted: true,
     },
   );
 
   if (!data) {
     return await generateAPIError(errorMessages.bannerDeleteFailed, 400);
   }
-  return {
-    message: "Banner deleted successfully",
-  };
+
+  return data;
 };
 
 export const bannerService = {

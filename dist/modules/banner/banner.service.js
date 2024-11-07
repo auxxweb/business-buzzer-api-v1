@@ -6,7 +6,7 @@ const createBanner = async ({ image }) => {
   const bannerCount = await Banner.countDocuments({
     isDeleted: false,
   });
-  if (bannerCount > 5) {
+  if (bannerCount >= 5) {
     return await generateAPIError(errorMessages.bannerCountExceeded, 400);
   }
   return await Banner.create({
@@ -48,8 +48,9 @@ const deleteBanner = async (bannerId) => {
     _id: new ObjectId(bannerId),
     isDeleted: false,
   });
+  console.log(bannerExists, "banner");
   if (!bannerExists) {
-    return await generateAPIError(errorMessages.categoryNotFound, 400);
+    return await generateAPIError(errorMessages.bannerNOtFound, 400);
   }
   const data = await Banner.findOneAndUpdate(
     {
@@ -57,15 +58,13 @@ const deleteBanner = async (bannerId) => {
       isDeleted: false,
     },
     {
-      isDeleted: false,
+      isDeleted: true,
     },
   );
   if (!data) {
     return await generateAPIError(errorMessages.bannerDeleteFailed, 400);
   }
-  return {
-    message: "Banner deleted successfully",
-  };
+  return data;
 };
 export const bannerService = {
   createBanner,
