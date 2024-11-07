@@ -4,7 +4,7 @@ import Category from "./category.model.js";
 import { ObjectId } from "../../constants/type.js";
 const createCategory = async (category) => {
   const categoryExists = await Category.findOne({
-    name: category?.name,
+    name: category?.name?.trim().toLowerCase(),
     isDeleted: false,
   });
   if (categoryExists) {

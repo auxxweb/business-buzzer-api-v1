@@ -7,7 +7,7 @@ import { ObjectId } from "../../constants/type.js";
 
 const createPlan = async (planData: CreatePlanServiceData): Promise<any> => {
   const planExist = await Plans.findOne({
-    plan: planData?.plan,
+    plan: planData?.plan?.trim().toLowerCase(),
     isDeleted: false,
   });
 

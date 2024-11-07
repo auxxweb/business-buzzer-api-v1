@@ -4,7 +4,7 @@ import Plans from "./plans.model.js";
 import { ObjectId } from "../../constants/type.js";
 const createPlan = async (planData) => {
   const planExist = await Plans.findOne({
-    plan: planData?.plan,
+    plan: planData?.plan?.trim().toLowerCase(),
     isDeleted: false,
   });
   if (planExist) {

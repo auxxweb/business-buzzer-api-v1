@@ -7,7 +7,7 @@ import { ObjectId } from "../../constants/type.js";
 
 const createCategory = async (category: CreateCategoryData): Promise<any> => {
   const categoryExists = await Category.findOne({
-    name: category?.name,
+    name: category?.name?.trim().toLowerCase(),
     isDeleted: false,
   });
 
