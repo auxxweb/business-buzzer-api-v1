@@ -64,6 +64,9 @@ const updateCategory = async (categoryId, categoryData) => {
       ...(categoryData?.image && {
         image: categoryData?.image,
       }),
+      ...(categoryData?.coverImage && {
+        coverImage: categoryData?.coverImage,
+      }),
       ...(categoryData?.isDeleted && {
         isDeleted: categoryData?.isDeleted,
       }),
