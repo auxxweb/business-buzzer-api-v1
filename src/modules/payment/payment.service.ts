@@ -85,7 +85,19 @@ const getPaymentListing = async ({
 
   return { data, totalCount };
 };
+
+const getCurrentPlan = async (businessId: string): Promise<any> => {
+  // const data = await Payment.findOne({
+  //   business: new ObjectId(businessId),
+  //   isDeleted: false,
+  //   expiryDate: {
+  //     $gt: new Date(),
+  //   },
+  // })
+};
+
 export const paymentService = {
   createPayment,
   getPaymentListing,
+  getCurrentPlan,
 };
