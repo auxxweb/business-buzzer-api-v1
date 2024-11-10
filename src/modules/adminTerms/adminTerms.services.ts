@@ -1,4 +1,4 @@
-import { generateAPIError } from "errors/apiError.js";
+import { generateAPIError } from "../../errors/apiError.js";
 import AdminTerms from "./adminTerms.model.js";
 import { errorMessages } from "../../constants/messages.js";
 
