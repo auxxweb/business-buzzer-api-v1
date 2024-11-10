@@ -11,6 +11,7 @@ import { CreateBusinessData, BusinessLoginData } from "./business.interface.js";
 import Business from "./business.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { FilterQuery, PipelineStage, QueryOptions } from "mongoose";
+import { createBusinessId } from "../../utils/app.utils.js";
 
 const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
   const {
@@ -60,6 +61,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     ownerName,
     email,
     address,
+    businessId: await createBusinessId(),
     ...(location?.lat &&
       location?.lon && {
         location: {
@@ -95,6 +97,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     ownerName: business?.ownerName,
     email: business?.email,
     location: business?.location,
+    businessId: business?.businessId,
     address: business?.address,
     contactDetails: business?.contactDetails,
     socialMediaLinks: business?.socialMediaLinks,
@@ -156,6 +159,7 @@ const businessLogin = async (userData: BusinessLoginData): Promise<any> => {
     logo: business?.logo,
     ownerName: business?.ownerName,
     email: business?.email,
+    businessId: business?.businessId,
     address: business?.address,
     contactDetails: business?.contactDetails,
     socialMediaLinks: business?.socialMediaLinks,
@@ -284,6 +288,7 @@ const getAllBusiness = async ({
         logo: 1,
         ownerName: 1,
         email: 1,
+        businessId: 1,
         address: 1,
         contactDetails: 1,
         socialMediaLinks: 1,
@@ -440,6 +445,7 @@ const getAllBusinessByAdmin = async ({
         logo: 1,
         ownerName: 1,
         email: 1,
+        businessId: 1,
         address: 1,
         "category.name": 1,
         theme: 1,

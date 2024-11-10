@@ -25,6 +25,11 @@ const BusinessSchema = new Schema(
       minlength: 4,
       required: true,
     },
+    businessId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     location: {
       type: {
         type: String,

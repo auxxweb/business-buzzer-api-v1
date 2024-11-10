@@ -8,6 +8,7 @@ import { generateToken } from "../../utils/auth.utils.js";
 // import { ObjectId } from '../../constants/type.js'
 import Business from "./business.model.js";
 import { ObjectId } from "../../constants/type.js";
+import { createBusinessId } from "../../utils/app.utils.js";
 const businessSignUp = async (userData) => {
   const {
     businessName,
@@ -51,6 +52,7 @@ const businessSignUp = async (userData) => {
     ownerName,
     email,
     address,
+    businessId: await createBusinessId(),
     ...(location?.lat &&
       location?.lon && {
         location: {
@@ -85,6 +87,7 @@ const businessSignUp = async (userData) => {
     ownerName: business?.ownerName,
     email: business?.email,
     location: business?.location,
+    businessId: business?.businessId,
     address: business?.address,
     contactDetails: business?.contactDetails,
     socialMediaLinks: business?.socialMediaLinks,
@@ -138,6 +141,7 @@ const businessLogin = async (userData) => {
     logo: business?.logo,
     ownerName: business?.ownerName,
     email: business?.email,
+    businessId: business?.businessId,
     address: business?.address,
     contactDetails: business?.contactDetails,
     socialMediaLinks: business?.socialMediaLinks,
@@ -248,6 +252,7 @@ const getAllBusiness = async ({ query, options, lat, lon }) => {
         logo: 1,
         ownerName: 1,
         email: 1,
+        businessId: 1,
         address: 1,
         contactDetails: 1,
         socialMediaLinks: 1,
@@ -389,6 +394,7 @@ const getAllBusinessByAdmin = async ({ query, options, lat, lon }) => {
         logo: 1,
         ownerName: 1,
         email: 1,
+        businessId: 1,
         address: 1,
         "category.name": 1,
         theme: 1,
