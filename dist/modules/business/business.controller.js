@@ -93,6 +93,13 @@ const updateBusinessPassword = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const getBusinessDashboardData = errorWrapper(async (req, res, next) => {
+  const data = await businessService.getBusinessDashboardData(req.user?._id);
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const getAllBusiness = errorWrapper(async (req, res, next) => {
   const paginationOptions = getPaginationOptions({
     limit: req.query?.limit,
@@ -293,4 +300,5 @@ export {
   deleteBusinessByAdmin,
   businessExists,
   getAllBusinessForDropDown,
+  getBusinessDashboardData,
 };

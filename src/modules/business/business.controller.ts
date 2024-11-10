@@ -135,6 +135,18 @@ const updateBusinessPassword = errorWrapper(
     });
   },
 );
+const getBusinessDashboardData = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await businessService.getBusinessDashboardData(
+      req.user?._id as string,
+    );
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 
 const getAllBusiness = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -365,4 +377,5 @@ export {
   deleteBusinessByAdmin,
   businessExists,
   getAllBusinessForDropDown,
+  getBusinessDashboardData,
 };

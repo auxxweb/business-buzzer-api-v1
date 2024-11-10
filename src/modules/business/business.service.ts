@@ -923,7 +923,6 @@ const getBusinessDashboardData = async (businessId: string): Promise<any> => {
     {
       $match: {
         _id: new ObjectId(businessId),
-        isDeleted: false,
       },
     },
     {
@@ -937,10 +936,17 @@ const getBusinessDashboardData = async (businessId: string): Promise<any> => {
     {
       $project: {
         businessName: 1,
-        totalLeads: { $size: "$leads" }, // assuming "leads" is an array in the Business schema
-        totalServices: { $size: "$services" },
-        totalReviews: { $size: "$reviews" },
-        averageRating: { $avg: "$reviews.rating" },
+        totalLeads: { $size: { $ifNull: ["$leads", []] } }, // Ensures `leads` is treated as an array
+        // totalServices: { $size: { $ifNull: ["$services", []] } }, // Ensures `services` is treated as an array
+        // totalSpecialServices: { $size: { $ifNull: ["$specialServices.data", []] } }, // Ensures `specialServices.data` is treated as an array
+        totalServiceCount: {
+          $add: [
+            { $size: { $ifNull: ["$services", []] } },
+            { $size: { $ifNull: ["$specialServices.data", []] } },
+          ],
+        }, // Combined total of `services` and `specialServices.data`
+        totalReviews: { $size: "$reviews" }, // `reviews` is an array from the $lookup
+        averageRating: { $ifNull: [{ $avg: "$reviews.rating" }, 0] }, // Sets `averageRating` to 0 if no reviews
       },
     },
   ]);

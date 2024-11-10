@@ -12,6 +12,7 @@ import {
   getAllBusinessForDropDown,
   getBusinessByCategory,
   getBusinessById,
+  getBusinessDashboardData,
   getBusinessProfile,
   updateBusiness,
   updateBusinessByAdmin,
@@ -28,8 +29,9 @@ router.get("/category/:id", getBusinessByCategory);
 router.get("/dropdown", getAllBusinessForDropDown);
 router.get("/all", protect({ isAdmin: true }), getAllBusinessByAdmin);
 router.post("/login", businessLogin);
-router.get("/:id", getBusinessById);
 router.get("/", getAllBusiness);
+router.get("/dashboard", protect({ isAdmin: false }), getBusinessDashboardData);
+router.get("/:id", getBusinessById);
 router.patch(
   "/admin/status/:id",
   protect({ isAdmin: true }),

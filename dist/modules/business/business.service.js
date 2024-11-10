@@ -814,7 +814,6 @@ const getBusinessDashboardData = async (businessId) => {
     {
       $match: {
         _id: new ObjectId(businessId),
-        isDeleted: false,
       },
     },
     {
@@ -828,10 +827,17 @@ const getBusinessDashboardData = async (businessId) => {
     {
       $project: {
         businessName: 1,
-        totalLeads: { $size: "$leads" },
-        totalServices: { $size: "$services" },
+        totalLeads: { $size: { $ifNull: ["$leads", []] } },
+        // totalServices: { $size: { $ifNull: ["$services", []] } }, // Ensures `services` is treated as an array
+        // totalSpecialServices: { $size: { $ifNull: ["$specialServices.data", []] } }, // Ensures `specialServices.data` is treated as an array
+        totalServiceCount: {
+          $add: [
+            { $size: { $ifNull: ["$services", []] } },
+            { $size: { $ifNull: ["$specialServices.data", []] } },
+          ],
+        },
         totalReviews: { $size: "$reviews" },
-        averageRating: { $avg: "$reviews.rating" },
+        averageRating: { $ifNull: [{ $avg: "$reviews.rating" }, 0] }, // Sets `averageRating` to 0 if no reviews
       },
     },
   ]);
