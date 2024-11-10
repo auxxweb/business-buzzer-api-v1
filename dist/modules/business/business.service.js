@@ -9,6 +9,7 @@ import { generateToken } from "../../utils/auth.utils.js";
 import Business from "./business.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { createBusinessId } from "../../utils/app.utils.js";
+// import BusinessReview from 'modules/businessReviews/businessReviews.model.js'
 const businessSignUp = async (userData) => {
   const {
     businessName,
@@ -809,7 +810,32 @@ const getBusinessDashboardData = async (businessId) => {
   if (business == null) {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
-  // const totalCount = await
+  const businessSummary = await Business.aggregate([
+    {
+      $match: {
+        _id: new ObjectId(businessId),
+        isDeleted: false,
+      },
+    },
+    {
+      $lookup: {
+        from: "business_reviews",
+        localField: "_id",
+        foreignField: "businessId",
+        as: "reviews",
+      },
+    },
+    {
+      $project: {
+        businessName: 1,
+        totalLeads: { $size: "$leads" },
+        totalServices: { $size: "$services" },
+        totalReviews: { $size: "$reviews" },
+        averageRating: { $avg: "$reviews.rating" },
+      },
+    },
+  ]);
+  return businessSummary[0];
 };
 export const businessService = {
   businessLogin,

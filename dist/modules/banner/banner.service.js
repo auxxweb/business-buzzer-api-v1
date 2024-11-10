@@ -1,7 +1,7 @@
 import { generateAPIError } from "../../errors/apiError.js";
 import Banner from "./banner.model.js";
 import { errorMessages } from "../../constants/messages.js";
-import { ObjectId } from "constants/type.js";
+import { ObjectId } from "../../constants/type.js";
 const createBanner = async ({ image }) => {
   const bannerCount = await Banner.countDocuments({
     isDeleted: false,

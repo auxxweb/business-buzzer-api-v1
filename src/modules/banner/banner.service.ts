@@ -2,7 +2,7 @@ import { generateAPIError } from "../../errors/apiError.js";
 import Banner from "./banner.model.js";
 import { errorMessages } from "../../constants/messages.js";
 import { FilterQuery, QueryOptions } from "mongoose";
-import { ObjectId } from "constants/type.js";
+import { ObjectId } from "../../constants/type.js";
 
 const createBanner = async ({ image }: { image: string }): Promise<any> => {
   const bannerCount = await Banner.countDocuments({

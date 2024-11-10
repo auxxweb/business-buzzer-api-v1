@@ -12,6 +12,7 @@ import Business from "./business.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { FilterQuery, PipelineStage, QueryOptions } from "mongoose";
 import { createBusinessId } from "../../utils/app.utils.js";
+// import BusinessReview from 'modules/businessReviews/businessReviews.model.js'
 
 const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
   const {
@@ -918,7 +919,33 @@ const getBusinessDashboardData = async (businessId: string): Promise<any> => {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
-  // const totalCount = await
+  const businessSummary = await Business.aggregate([
+    {
+      $match: {
+        _id: new ObjectId(businessId),
+        isDeleted: false,
+      },
+    },
+    {
+      $lookup: {
+        from: "business_reviews",
+        localField: "_id",
+        foreignField: "businessId",
+        as: "reviews",
+      },
+    },
+    {
+      $project: {
+        businessName: 1,
+        totalLeads: { $size: "$leads" }, // assuming "leads" is an array in the Business schema
+        totalServices: { $size: "$services" },
+        totalReviews: { $size: "$reviews" },
+        averageRating: { $avg: "$reviews.rating" },
+      },
+    },
+  ]);
+
+  return businessSummary[0];
 };
 
 export const businessService = {
