@@ -9,12 +9,21 @@ import { RequestWithUser } from "interface/app.interface.js";
 
 const submitContactForm = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    const data = await contactFormService.submitContactForm(
-      req.params.businessId,
-      {
-        ...req.body,
-      },
-    );
+    const data = await contactFormService.submitContactForm({
+      ...req.body,
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 201,
+    });
+  },
+);
+const submitAdminNewsLetter = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await contactFormService.submitAdminNewsLetter({
+      ...req.body,
+    });
 
     return responseUtils.success(res, {
       data,
@@ -31,9 +40,9 @@ const getContactFormsByBusiness = errorWrapper(
 
     return responseUtils.success(res, {
       data,
-      status: 201,
+      status: 200,
     });
   },
 );
 
-export { submitContactForm, getContactFormsByBusiness };
+export { submitContactForm, getContactFormsByBusiness, submitAdminNewsLetter };

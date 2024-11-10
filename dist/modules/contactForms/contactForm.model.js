@@ -11,13 +11,14 @@ const ContactFormSchema = new Schema(
       type: String,
       required: true,
     },
+    phoneNumber: {
+      type: String,
+    },
     email: {
       type: String,
-      required: true,
     },
     message: {
       type: String,
-      required: true,
     },
     isDeleted: {
       type: Boolean,
