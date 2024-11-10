@@ -21,6 +21,7 @@ const errorMessages = {
   bannerDeleteFailed: "Failed to delete banner ,try again",
   termsAndConditionsExists: "Terms & conditions already added",
   paymentNotFound: "Plan not found",
+  reviewNotFound: "Review not found",
 };
 const successMessages = {
   linkSend: "Link successfully send to mail",

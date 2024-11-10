@@ -7,7 +7,7 @@ import { getPaginationOptions } from "../../utils/pagination.utils.js";
 const createPayment = errorWrapper(async (req, res, next) => {
   const data = await paymentService.createPayment({
     ...req.body,
-    business: "672a623f79929725c9fe4799",
+    business: req?.user?._id,
   });
   return responseUtils.success(res, {
     data,

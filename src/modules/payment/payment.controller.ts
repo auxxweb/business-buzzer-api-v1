@@ -14,7 +14,7 @@ const createPayment = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
     const data = await paymentService.createPayment({
       ...req.body,
-      business: "672a623f79929725c9fe4799",
+      business: req?.user?._id,
     });
 
     return responseUtils.success(res, {

@@ -15,6 +15,7 @@ import contactFormRouter from "./contactForm/contactForm.router.js";
 import leadRouter from "./leads/leads.router.js";
 import bannerRouter from "./banners/banner.router.js";
 import adminTermsRouter from "./adminTerms/adminTerms.router.js";
+import businessReviewRouter from "./businessReview/businessReview.router.js";
 
 const router = Router();
 router.post("/s3url", getS3Urls);
@@ -33,5 +34,6 @@ router.use("/contact_forms", contactFormRouter);
 router.use("/review", leadRouter);
 router.use("/banner", bannerRouter);
 router.use("/admin-terms", adminTermsRouter);
+router.use("/business-review", businessReviewRouter);
 
 export default router;

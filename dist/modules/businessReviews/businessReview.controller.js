@@ -1,0 +1,45 @@
+import { responseUtils } from "../../utils/response.utils.js";
+import { errorWrapper } from "../../middleware/errorWrapper.js";
+import { getPaginationOptions } from "../../utils/pagination.utils.js";
+import { businessReviewService } from "./businessReview.service.js";
+const createBusinessReview = errorWrapper(async (req, res, next) => {
+  const data = await businessReviewService.createBusinessReview({
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 201,
+  });
+});
+const getAllReviews = errorWrapper(async (req, res, next) => {
+  const query = {
+    isDeleted: false,
+  };
+  const paginationOptions = getPaginationOptions({
+    limit: req.query?.limit,
+    page: req.query?.page,
+  });
+  const data = await businessReviewService.getAllReviews({
+    query: {
+      ...query,
+    },
+    options: {
+      ...paginationOptions,
+      sort: { createdAt: -1 },
+    },
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+const deleteReviews = errorWrapper(async (req, res, next) => {
+  const data = await businessReviewService.deleteReviews(req.params?.id, {
+    businessId: req.body?.businessId,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+export { createBusinessReview, deleteReviews, getAllReviews };

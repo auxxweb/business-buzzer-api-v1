@@ -799,6 +799,18 @@ const getAllBusinessForDropDown = async ({ query, options }) => {
   ]);
   return { data, totalCount };
 };
+const getBusinessDashboardData = async (businessId) => {
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  })
+    .populate("selectedPlan category")
+    .select("-password");
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+  // const totalCount = await
+};
 export const businessService = {
   businessLogin,
   businessSignUp,
@@ -812,4 +824,5 @@ export const businessService = {
   deleteBusinessByAdmin,
   businessExists,
   getAllBusinessForDropDown,
+  getBusinessDashboardData,
 };
