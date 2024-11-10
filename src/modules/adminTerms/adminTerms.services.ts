@@ -1,6 +1,6 @@
 import { generateAPIError } from "errors/apiError.js";
 import AdminTerms from "./adminTerms.model.js";
-import { errorMessages } from "constants/messages.js";
+import { errorMessages } from "../../constants/messages.js";
 
 const createAdminTerms = async (termsData: any): Promise<any> => {
   const termsExists = await AdminTerms.findOne({
