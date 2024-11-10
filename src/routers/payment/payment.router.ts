@@ -2,6 +2,7 @@
 import { Router } from "express";
 import {
   createPayment,
+  getCurrentPlan,
   getPaymentListing,
 } from "../../modules/payment/payment.controller.js";
 
@@ -12,5 +13,6 @@ const router = Router();
 router.post("/", protect({ isAdmin: false }), createPayment);
 router.get("/", protect({ isAdmin: true }), getPaymentListing);
 router.get("/current", protect({ isAdmin: true }), getPaymentListing);
+router.get("/current-plan", protect({ isAdmin: false }), getCurrentPlan);
 
 export default router;
