@@ -66,13 +66,20 @@ const getPaymentListing = async ({ query, options }) => {
   return { data, totalCount };
 };
 const getCurrentPlan = async (businessId) => {
-  // const data = await Payment.findOne({
-  //   business: new ObjectId(businessId),
-  //   isDeleted: false,
-  //   expiryDate: {
-  //     $gt: new Date(),
-  //   },
-  // })
+  console.log(businessId, "businessId");
+  const data = await Payment.findOne({
+    business: new ObjectId(businessId),
+    isDeleted: false,
+  })
+    .sort({ createdAt: -1 })
+    .populate({
+      path: "plan",
+      select: "plan amount validity",
+    });
+  if (!data) {
+    return await generateAPIError(errorMessages.paymentNotFound, 400);
+  }
+  return data;
 };
 export const paymentService = {
   createPayment,

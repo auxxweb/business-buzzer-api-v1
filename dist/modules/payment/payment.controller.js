@@ -7,7 +7,7 @@ import { getPaginationOptions } from "../../utils/pagination.utils.js";
 const createPayment = errorWrapper(async (req, res, next) => {
   const data = await paymentService.createPayment({
     ...req.body,
-    business: req.user?._id,
+    business: "672a623f79929725c9fe4799",
   });
   return responseUtils.success(res, {
     data,
@@ -56,4 +56,12 @@ const getPaymentListing = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
-export { createPayment, getPaymentListing };
+const getCurrentPlan = errorWrapper(async (req, res, next) => {
+  console.log(req.user?._id, "apple-orange");
+  const data = await paymentService.getCurrentPlan(req.user?._id);
+  return responseUtils.success(res, {
+    data,
+    status: 201,
+  });
+});
+export { createPayment, getPaymentListing, getCurrentPlan };

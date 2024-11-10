@@ -20,6 +20,7 @@ const errorMessages = {
   bannerCountExceeded: "Banner limit exceeded.",
   bannerDeleteFailed: "Failed to delete banner ,try again",
   termsAndConditionsExists: "Terms & conditions already added",
+  paymentNotFound: "Plan not found",
 };
 const successMessages = {
   linkSend: "Link successfully send to mail",
