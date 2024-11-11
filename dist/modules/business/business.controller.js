@@ -32,6 +32,15 @@ const updateBusiness = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const addProduct = errorWrapper(async (req, res, next) => {
+  const data = await businessService.addProduct(req.user?._id, {
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const updateBusinessByAdmin = errorWrapper(async (req, res, next) => {
   const data = await businessService.updateBusinessByAdmin(req.params.id, {
     ...req.body,
@@ -301,4 +310,5 @@ export {
   businessExists,
   getAllBusinessForDropDown,
   getBusinessDashboardData,
+  addProduct,
 };

@@ -26,12 +26,12 @@ const submitAdminNewsLetter = async (data) => {
   });
   return newsLetter;
 };
-const getContactFormsByBusiness = async (businessId) => {
-  const contactForms = await ContactForm.find({
-    business: new ObjectId(businessId),
-    isDeleted: false,
-  });
-  return contactForms;
+const getContactFormsByBusiness = async ({ query, options }) => {
+  const [data, totalCount] = await Promise.all([
+    ContactForm.find(query, {}, options),
+    ContactForm.countDocuments(query),
+  ]);
+  return { data, totalCount };
 };
 export const contactFormService = {
   submitContactForm,

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
 import { ObjectId } from "../../constants/type.js";
 
@@ -129,12 +129,15 @@ const BusinessSchema = new Schema(
     },
     productSection: {
       type: [
-        {
-          title: String,
-          description: String,
-          image: String,
-          price: Number,
-        },
+        new mongoose.Schema(
+          {
+            title: String,
+            description: String,
+            image: String,
+            price: Number,
+          },
+          // { _id: false } // Prevents Mongoose from adding an _id field to each product
+        ),
       ],
     },
     service: {

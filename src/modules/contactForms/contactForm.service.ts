@@ -4,6 +4,7 @@ import { errorMessages } from "../../constants/messages.js";
 import { ObjectId } from "../../constants/type.js";
 import ContactForm from "./contactForm.model.js";
 import AdminNewsLetter from "./adminNewsLetter.model.js";
+import { FilterQuery, QueryOptions } from "mongoose";
 
 const submitContactForm = async (data: any): Promise<any> => {
   const business: any = await Business.findById(
@@ -32,13 +33,19 @@ const submitAdminNewsLetter = async (data: any): Promise<any> => {
   return newsLetter;
 };
 
-const getContactFormsByBusiness = async (businessId: any): Promise<any> => {
-  const contactForms = await ContactForm.find({
-    business: new ObjectId(businessId),
-    isDeleted: false,
-  });
+const getContactFormsByBusiness = async ({
+  query,
+  options,
+}: {
+  query: FilterQuery<typeof ContactForm>;
+  options: QueryOptions;
+}): Promise<any> => {
+  const [data, totalCount] = await Promise.all([
+    ContactForm.find(query, {}, options),
+    ContactForm.countDocuments(query),
+  ]);
 
-  return contactForms;
+  return { data, totalCount };
 };
 
 export const contactFormService = {

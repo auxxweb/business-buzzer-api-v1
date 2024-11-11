@@ -3,6 +3,7 @@ import { Router } from "express";
 
 import { protect } from "../../middleware/auth.middleware.js";
 import {
+  addProduct,
   businessExists,
   businessLogin,
   businessSignUp,
@@ -23,7 +24,9 @@ import {
 const router = Router();
 // user-endpoints
 router.post("/", businessSignUp);
+router.post("/product", protect({ isAdmin: false }), addProduct);
 router.post("/check", businessExists);
+router.patch("/", protect({ isAdmin: false }), updateBusiness);
 router.get("/profile", protect({ isAdmin: false }), getBusinessProfile);
 router.get("/category/:id", getBusinessByCategory);
 router.get("/dropdown", getAllBusinessForDropDown);
@@ -40,7 +43,6 @@ router.patch(
 router.patch("/admin/:id", protect({ isAdmin: true }), updateBusinessByAdmin);
 router.delete("/admin/:id", protect({ isAdmin: true }), deleteBusinessByAdmin);
 
-router.patch("/", protect({ isAdmin: false }), updateBusiness);
 router.patch("/password", protect({ isAdmin: false }), updateBusinessPassword);
 
 export default router;

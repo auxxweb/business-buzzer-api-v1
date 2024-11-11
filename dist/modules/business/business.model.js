@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { ObjectId } from "../../constants/type.js";
 const BusinessSchema = new Schema(
   {
@@ -127,12 +127,12 @@ const BusinessSchema = new Schema(
     },
     productSection: {
       type: [
-        {
+        new mongoose.Schema({
           title: String,
           description: String,
           image: String,
           price: Number,
-        },
+        }),
       ],
     },
     service: {

@@ -526,6 +526,8 @@ const updateBusiness = async (
     selectedPlan,
     location,
   } = businessData;
+  console.log();
+
   const business: any = await Business.findOne({
     _id: new ObjectId(businessId),
     isDeleted: false,
@@ -954,6 +956,52 @@ const getBusinessDashboardData = async (businessId: string): Promise<any> => {
   return businessSummary[0];
 };
 
+const addProduct = async (
+  businessId: string,
+  productData: {
+    title: string;
+    description: string;
+    price?: number | string; // Optional and allow string for validation
+    image?: string | null; // Optional and allow null for validation
+  },
+): Promise<any> => {
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  });
+
+  if (!business) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+
+  // Validate and sanitize product data, add unique _id for the new product
+  const sanitizedProductData = {
+    _id: new ObjectId(), // Generate a new ObjectId for the product
+    title: productData.title,
+    description: productData.description,
+    price:
+      typeof productData.price === "number" && !isNaN(productData.price)
+        ? productData.price
+        : typeof productData.price === "string"
+        ? Number(productData.price)
+        : 0,
+    image: productData.image || "", // Default to empty string if null or undefined
+  };
+
+  try {
+    const data = await Business.findOneAndUpdate(
+      { _id: new ObjectId(businessId), isDeleted: false },
+      { $push: { productSection: sanitizedProductData } },
+      { new: true }, // Returns the updated document with the new product's _id
+    );
+
+    return data?._id;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error; // Re-throw to handle in higher-level error handling
+  }
+};
+
 export const businessService = {
   businessLogin,
   businessSignUp,
@@ -968,4 +1016,5 @@ export const businessService = {
   businessExists,
   getAllBusinessForDropDown,
   getBusinessDashboardData,
+  addProduct,
 };
