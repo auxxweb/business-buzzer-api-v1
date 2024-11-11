@@ -100,5 +100,5 @@ export {
   updateTermsAndConditions,
   deleteTermsAndConditions,
   getTermsAndConditionsById,
-  getTermsAndConditionsByBusinessId
+  getTermsAndConditionsByBusinessId,
 };
