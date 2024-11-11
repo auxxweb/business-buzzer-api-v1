@@ -21,6 +21,20 @@ const getTermsAndConditions = errorWrapper(
     });
   },
 );
+
+const getTermsAndConditionsByBusinessId = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await termsAndConditionsService.getTermsAndConditions(
+      req?.params?.businessId,
+    );
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
 const getTermsAndConditionsById = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
     const data = await termsAndConditionsService.getTermsAndConditions(
@@ -86,4 +100,5 @@ export {
   updateTermsAndConditions,
   deleteTermsAndConditions,
   getTermsAndConditionsById,
+  getTermsAndConditionsByBusinessId
 };
