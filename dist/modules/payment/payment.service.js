@@ -29,12 +29,20 @@ const createPayment = async (paymentData) => {
     date,
     validity: planData?.validity,
   });
+  const planDetails = await Plans.findOne({
+    _id: new ObjectId(plan),
+    isDeleted: false,
+  }).select("plan amount");
+  if (!planDetails) {
+    return await generateAPIError(errorMessages.planNotValid, 400);
+  }
   const paymentDatas = await Payment.create({
     paymentId,
     business,
     paymentStatus,
     date,
     plan,
+    amount: planDetails?.amount,
     expiryDate: expiry,
   });
   if (paymentStatus === PaymentStatus.SUCCESS) {

@@ -23,6 +23,10 @@ const PaymentSchema = new Schema(
       enum: PaymentStatus,
       required: true,
     },
+    amount: {
+      type: Number,
+      required: true,
+    },
     date: {
       type: Date,
       required: true,

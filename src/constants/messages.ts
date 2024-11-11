@@ -23,6 +23,7 @@ const errorMessages = {
   termsAndConditionsExists: "Terms & conditions already added",
   paymentNotFound: "Plan not found",
   reviewNotFound: "Review not found",
+  planNotValid: "Plan not valid",
 };
 
 const successMessages = {
