@@ -86,7 +86,6 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     testimonial,
     gallery,
     seoData,
-    selectedPlan,
     paymentStatus,
     password: hashedPassword,
   });

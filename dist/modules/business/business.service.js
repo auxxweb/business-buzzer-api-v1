@@ -77,7 +77,6 @@ const businessSignUp = async (userData) => {
     testimonial,
     gallery,
     seoData,
-    selectedPlan,
     paymentStatus,
     password: hashedPassword,
   });
