@@ -46,6 +46,7 @@ const createPayment = async (paymentData) => {
   return paymentDatas;
 };
 const getPaymentListing = async ({ query, options }) => {
+  console.log(query, "query", options);
   const [data, totalCount] = await Promise.all([
     Payment.find(query, {}, options).populate([
       {

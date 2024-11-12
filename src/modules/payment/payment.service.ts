@@ -67,6 +67,8 @@ const getPaymentListing = async ({
   query: FilterQuery<typeof Payment>;
   options: QueryOptions;
 }): Promise<any> => {
+  console.log(query, "query", options);
+
   const [data, totalCount] = await Promise.all([
     Payment.find(query, {}, options).populate([
       {
