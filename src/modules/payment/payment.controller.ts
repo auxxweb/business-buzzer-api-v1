@@ -8,6 +8,8 @@ import { RequestWithUser } from "../../interface/app.interface.js";
 import { getPaginationOptions } from "../../utils/pagination.utils.js";
 import { FilterQuery } from "mongoose";
 import Payment from "./payment.model.js";
+import crypto from "crypto";
+import { appConfig } from "../../config/appConfig.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 
 const createPayment = errorWrapper(
@@ -20,6 +22,28 @@ const createPayment = errorWrapper(
     return responseUtils.success(res, {
       data,
       status: 201,
+    });
+  },
+);
+const updatePaymentWebHook = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const razorpaySignature = req.headers["x-razorpay-signature"] as string;
+    const payload = JSON.stringify(req.body);
+
+    // Generate expected signature using HMAC with SHA256
+    const expectedSignature = crypto
+      .createHmac("sha256", appConfig.webHookSecret)
+      .update(payload)
+      .digest("hex");
+
+    const data = await paymentService.updatePaymentWebHook({
+      razorpaySignature,
+      expectedSignature,
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
     });
   },
 );
@@ -86,4 +110,9 @@ const getCurrentPlan = errorWrapper(
   },
 );
 
-export { createPayment, getPaymentListing, getCurrentPlan };
+export {
+  createPayment,
+  getPaymentListing,
+  getCurrentPlan,
+  updatePaymentWebHook,
+};

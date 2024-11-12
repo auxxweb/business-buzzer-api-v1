@@ -6,11 +6,11 @@ import { errorMessages } from "../../constants/messages.js";
 import Payment from "./payment.model.js";
 import Plans from "../../modules/plans/plans.model.js";
 import { findExpiryDate } from "./payment.utils.js";
-import { PaymentStatus } from "./payment.enums.js";
+// import { PaymentStatus } from './payment.enums.js'
 import { FilterQuery, QueryOptions } from "mongoose";
 
 const createPayment = async (paymentData: PaymentData): Promise<any> => {
-  const { paymentId, plan, business, paymentStatus, date } = paymentData;
+  const { paymentId, plan, business, date } = paymentData;
 
   const businessExists = await Business.findOne({
     _id: new ObjectId(business),
@@ -51,24 +51,11 @@ const createPayment = async (paymentData: PaymentData): Promise<any> => {
   const paymentDatas = await Payment.create({
     paymentId,
     business,
-    paymentStatus,
     date,
     plan,
     amount: planDetails?.amount,
     expiryDate: expiry,
   });
-
-  if (paymentStatus === PaymentStatus.SUCCESS) {
-    await Business.findOneAndUpdate(
-      {
-        _id: new ObjectId(business),
-        isDeleted: false,
-      },
-      {
-        paymentStatus: true,
-      },
-    );
-  }
 
   return paymentDatas;
 };
@@ -115,8 +102,17 @@ const getCurrentPlan = async (businessId: string): Promise<any> => {
   return data;
 };
 
+const updatePaymentWebHook = async ({
+  razorpaySignature,
+  expectedSignature,
+}: any): Promise<any> => {
+  console.log(razorpaySignature, "signature");
+  console.log(expectedSignature, "expot");
+};
+
 export const paymentService = {
   createPayment,
   getPaymentListing,
   getCurrentPlan,
+  updatePaymentWebHook,
 };

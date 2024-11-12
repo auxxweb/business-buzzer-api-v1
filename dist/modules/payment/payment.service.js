@@ -5,9 +5,8 @@ import { errorMessages } from "../../constants/messages.js";
 import Payment from "./payment.model.js";
 import Plans from "../../modules/plans/plans.model.js";
 import { findExpiryDate } from "./payment.utils.js";
-import { PaymentStatus } from "./payment.enums.js";
 const createPayment = async (paymentData) => {
-  const { paymentId, plan, business, paymentStatus, date } = paymentData;
+  const { paymentId, plan, business, date } = paymentData;
   const businessExists = await Business.findOne({
     _id: new ObjectId(business),
     isDeleted: false,
@@ -39,23 +38,11 @@ const createPayment = async (paymentData) => {
   const paymentDatas = await Payment.create({
     paymentId,
     business,
-    paymentStatus,
     date,
     plan,
     amount: planDetails?.amount,
     expiryDate: expiry,
   });
-  if (paymentStatus === PaymentStatus.SUCCESS) {
-    await Business.findOneAndUpdate(
-      {
-        _id: new ObjectId(business),
-        isDeleted: false,
-      },
-      {
-        paymentStatus: true,
-      },
-    );
-  }
   return paymentDatas;
 };
 const getPaymentListing = async ({ query, options }) => {
@@ -89,8 +76,16 @@ const getCurrentPlan = async (businessId) => {
   }
   return data;
 };
+const updatePaymentWebHook = async ({
+  razorpaySignature,
+  expectedSignature,
+}) => {
+  console.log(razorpaySignature, "signature");
+  console.log(expectedSignature, "expot");
+};
 export const paymentService = {
   createPayment,
   getPaymentListing,
   getCurrentPlan,
+  updatePaymentWebHook,
 };

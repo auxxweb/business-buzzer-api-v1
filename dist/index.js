@@ -11,6 +11,7 @@ import helmet from "helmet";
 import notFound from "./middleware/notFound.js";
 import errorHandler from "./middleware/errorHandler.js";
 import indexRouter from "./routers/index.js";
+import webHookRouter from "./routers/webHook/webeHook.router.js";
 // import webHookRouter from "./routers/webHook/webeHook.router.js";
 import { appConfig } from "./config/appConfig.js";
 const app = express();
@@ -54,11 +55,11 @@ app.use(helmet());
 // app.use(xss());
 app.use(morgan("tiny"));
 app.use("/api/v1", indexRouter);
-// app.use(
-//   "/api/webhook",
-//   express.raw({ type: "application/json" }),
-//   webHookRouter,
-// );
+app.use(
+  "/api/v1/webhook",
+  express.raw({ type: "application/json" }),
+  webHookRouter,
+);
 app.use(notFound);
 app.use(errorHandler);
 const port = process.env.PORT ?? 5000;

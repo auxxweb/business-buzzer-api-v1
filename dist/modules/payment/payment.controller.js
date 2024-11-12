@@ -3,6 +3,8 @@ import { responseUtils } from "../../utils/response.utils.js";
 import { errorWrapper } from "../../middleware/errorWrapper.js";
 import { paymentService } from "./payment.service.js";
 import { getPaginationOptions } from "../../utils/pagination.utils.js";
+import crypto from "crypto";
+import { appConfig } from "../../config/appConfig.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 const createPayment = errorWrapper(async (req, res, next) => {
   const data = await paymentService.createPayment({
@@ -12,6 +14,23 @@ const createPayment = errorWrapper(async (req, res, next) => {
   return responseUtils.success(res, {
     data,
     status: 201,
+  });
+});
+const updatePaymentWebHook = errorWrapper(async (req, res, next) => {
+  const razorpaySignature = req.headers["x-razorpay-signature"];
+  const payload = JSON.stringify(req.body);
+  // Generate expected signature using HMAC with SHA256
+  const expectedSignature = crypto
+    .createHmac("sha256", appConfig.webHookSecret)
+    .update(payload)
+    .digest("hex");
+  const data = await paymentService.updatePaymentWebHook({
+    razorpaySignature,
+    expectedSignature,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
   });
 });
 const getPaymentListing = errorWrapper(async (req, res, next) => {
@@ -64,4 +83,9 @@ const getCurrentPlan = errorWrapper(async (req, res, next) => {
     status: 201,
   });
 });
-export { createPayment, getPaymentListing, getCurrentPlan };
+export {
+  createPayment,
+  getPaymentListing,
+  getCurrentPlan,
+  updatePaymentWebHook,
+};
