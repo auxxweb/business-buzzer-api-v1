@@ -815,22 +815,51 @@ const getBusinessDashboardData = async (businessId) => {
     {
       $match: {
         _id: new ObjectId(businessId),
+        isDeleted: false,
       },
     },
     {
       $lookup: {
         from: "business_reviews",
-        localField: "_id",
-        foreignField: "businessId",
+        let: { businessId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$businessId", "$$businessId"] },
+                  { $eq: ["$isDeleted", false] },
+                ],
+              },
+            },
+          },
+        ],
         as: "reviews",
+      },
+    },
+    {
+      $lookup: {
+        from: "contact_forms",
+        let: { businessId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$business", "$$businessId"] },
+                  { $eq: ["$isDeleted", false] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "leads",
       },
     },
     {
       $project: {
         businessName: 1,
-        totalLeads: { $size: { $ifNull: ["$leads", []] } },
-        // totalServices: { $size: { $ifNull: ["$services", []] } }, // Ensures `services` is treated as an array
-        // totalSpecialServices: { $size: { $ifNull: ["$specialServices.data", []] } }, // Ensures `specialServices.data` is treated as an array
+        totalLeads: { $size: "$leads" },
         totalServiceCount: {
           $add: [
             { $size: { $ifNull: ["$services", []] } },

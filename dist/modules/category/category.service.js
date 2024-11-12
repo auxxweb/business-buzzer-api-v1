@@ -2,6 +2,7 @@ import { errorMessages } from "../../constants/messages.js";
 import { generateAPIError } from "../../errors/apiError.js";
 import Category from "./category.model.js";
 import { ObjectId } from "../../constants/type.js";
+import { checkAnyActiveBusinesses } from "./category.utils.js";
 const createCategory = async (category) => {
   const categoryExists = await Category.findOne({
     name: category?.name?.trim().toLowerCase(),
@@ -52,6 +53,33 @@ const updateCategory = async (categoryId, categoryData) => {
   if (!categoryExists) {
     return await generateAPIError(errorMessages.categoryNotFound, 400);
   }
+  if (categoryData?.name && categoryExists?.name !== categoryData?.name) {
+    const catNameExists = await Category.findOne({
+      _id: {
+        $ne: new ObjectId(categoryId),
+      },
+      isDeleted: false,
+    });
+    if (catNameExists) {
+      return await generateAPIError(
+        errorMessages.categoryNameExists(categoryData?.name),
+        400,
+      );
+    }
+  }
+  if (categoryData?.isDeleted === true || categoryData?.isDeleted === "true") {
+    const isBusinessExists = await checkAnyActiveBusinesses(categoryId);
+    console.log(isBusinessExists, "isbusinessExists");
+    if (isBusinessExists > 0) {
+      return await generateAPIError(
+        errorMessages.businessExistsInCategory(
+          isBusinessExists,
+          categoryExists?.name,
+        ),
+        400,
+      );
+    }
+  }
   return await Category.findOneAndUpdate(
     {
       _id: new ObjectId(categoryId),
@@ -68,7 +96,7 @@ const updateCategory = async (categoryId, categoryData) => {
         coverImage: categoryData?.coverImage,
       }),
       ...(categoryData?.isDeleted && {
-        isDeleted: categoryData?.isDeleted,
+        isDeleted: true,
       }),
     },
     {

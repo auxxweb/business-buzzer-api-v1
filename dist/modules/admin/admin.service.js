@@ -28,7 +28,7 @@ const adminLogin = async ({ password, email }) => {
     return await generateAPIError(errorMessages.adminNotFound, 400);
   }
   const comparePassword = await bcrypt.compare(password, admin.password ?? "");
-  if (comparePassword) {
+  if (!comparePassword) {
     return await generateAPIError(errorMessages.invalidCredentials, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page
   }
   return {

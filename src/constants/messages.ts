@@ -24,6 +24,10 @@ const errorMessages = {
   paymentNotFound: "Plan not found",
   reviewNotFound: "Review not found",
   planNotValid: "Plan not valid",
+  businessExistsInCategory: (businessCount: number, category: string) =>
+    `Can't delete ${category}, ${businessCount} active businesses are in the ${category} category`,
+  categoryNameExists: (category: string) =>
+    `Category already exists with name ${category} `,
 };
 
 const successMessages = {

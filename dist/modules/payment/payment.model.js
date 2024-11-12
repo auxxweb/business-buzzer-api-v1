@@ -14,7 +14,7 @@ const PaymentSchema = new Schema(
     },
     business: {
       type: ObjectId,
-      ref: "business",
+      ref: "businesses",
       required: true,
     },
     paymentStatus: {

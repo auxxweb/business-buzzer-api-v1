@@ -925,29 +925,58 @@ const getBusinessDashboardData = async (businessId: string): Promise<any> => {
     {
       $match: {
         _id: new ObjectId(businessId),
+        isDeleted: false,
       },
     },
     {
       $lookup: {
         from: "business_reviews",
-        localField: "_id",
-        foreignField: "businessId",
+        let: { businessId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$businessId", "$$businessId"] },
+                  { $eq: ["$isDeleted", false] },
+                ],
+              },
+            },
+          },
+        ],
         as: "reviews",
+      },
+    },
+    {
+      $lookup: {
+        from: "contact_forms",
+        let: { businessId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$business", "$$businessId"] },
+                  { $eq: ["$isDeleted", false] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "leads",
       },
     },
     {
       $project: {
         businessName: 1,
-        totalLeads: { $size: { $ifNull: ["$leads", []] } }, // Ensures `leads` is treated as an array
-        // totalServices: { $size: { $ifNull: ["$services", []] } }, // Ensures `services` is treated as an array
-        // totalSpecialServices: { $size: { $ifNull: ["$specialServices.data", []] } }, // Ensures `specialServices.data` is treated as an array
+        totalLeads: { $size: "$leads" }, // Count of `contact_forms` with `isDelete: false`
         totalServiceCount: {
           $add: [
             { $size: { $ifNull: ["$services", []] } },
             { $size: { $ifNull: ["$specialServices.data", []] } },
           ],
         }, // Combined total of `services` and `specialServices.data`
-        totalReviews: { $size: "$reviews" }, // `reviews` is an array from the $lookup
+        totalReviews: { $size: "$reviews" }, // Count of `business_reviews` with `isDelete: false`
         averageRating: { $ifNull: [{ $avg: "$reviews.rating" }, 0] }, // Sets `averageRating` to 0 if no reviews
       },
     },
