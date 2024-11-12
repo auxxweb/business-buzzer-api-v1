@@ -4,6 +4,7 @@ import { generateAPIError } from "../../errors/apiError.js";
 import { CreatePlanServiceData } from "./plan.interface.js";
 import Plans from "./plans.model.js";
 import { ObjectId } from "../../constants/type.js";
+import { checkAnyActiveBusinessesInPlans } from "./plans.utils.js";
 
 const createPlan = async (planData: CreatePlanServiceData): Promise<any> => {
   const planExist = await Plans.findOne({
@@ -72,6 +73,40 @@ const updatePlan = async (
     return await generateAPIError(errorMessages.planNotFound, 400);
   }
 
+  if (planData?.plan && planExist?.plan !== planData?.plan) {
+    const planNameExists = await Plans.findOne({
+      _id: {
+        $ne: new ObjectId(planId),
+      },
+      plan: {
+        $regex: new RegExp(String(planData?.plan)),
+        $options: "i",
+      },
+      isDeleted: false,
+    });
+
+    if (planNameExists) {
+      return await generateAPIError(
+        errorMessages?.planNameExists(planData?.plan),
+        400,
+      );
+    }
+  }
+
+  if (planData?.isDeleted) {
+    console.log(planData?.isDeleted, "isDeleted");
+
+    const isBusinessExists = await checkAnyActiveBusinessesInPlans(planId);
+    console.log(isBusinessExists, "exists-plan-exists");
+
+    if (isBusinessExists > 0) {
+      return await generateAPIError(
+        errorMessages?.businessExistsInPlan(isBusinessExists, planExist?.plan),
+        400,
+      );
+    }
+  }
+
   return await Plans.findOneAndUpdate(
     {
       _id: new ObjectId(planId),
@@ -94,7 +129,7 @@ const updatePlan = async (
         description: planData?.description,
       }),
       ...(planData?.isDeleted && {
-        isDeleted: planData?.isDeleted,
+        isDeleted: true,
       }),
     },
     { new: true },

@@ -87,6 +87,10 @@ const updateCategory = async (
       _id: {
         $ne: new ObjectId(categoryId),
       },
+      name: {
+        $regex: new RegExp(String(categoryData?.name)),
+        $options: "i",
+      },
       isDeleted: false,
     });
     if (catNameExists) {

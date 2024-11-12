@@ -27,6 +27,9 @@ const errorMessages = {
     `Can't delete ${category}, ${businessCount} active businesses are in the ${category} category`,
   categoryNameExists: (category) =>
     `Category already exists with name ${category} `,
+  planNameExists: (plan) => `Plan already exists with name ${plan}`,
+  businessExistsInPlan: (businessCount, plan) =>
+    `Can't delete ${plan}, ${businessCount} active businesses are in the ${plan} plan`,
 };
 const successMessages = {
   linkSend: "Link successfully send to mail",

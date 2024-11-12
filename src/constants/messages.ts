@@ -28,6 +28,9 @@ const errorMessages = {
     `Can't delete ${category}, ${businessCount} active businesses are in the ${category} category`,
   categoryNameExists: (category: string) =>
     `Category already exists with name ${category} `,
+  planNameExists: (plan: string) => `Plan already exists with name ${plan}`,
+  businessExistsInPlan: (businessCount: number, plan: string) =>
+    `Can't delete ${plan}, ${businessCount} active businesses are in the ${plan} plan`,
 };
 
 const successMessages = {
