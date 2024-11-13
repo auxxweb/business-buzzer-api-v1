@@ -39,6 +39,7 @@ const updatePaymentWebHook = errorWrapper(
     const data = await paymentService.updatePaymentWebHook({
       razorpaySignature,
       expectedSignature,
+      body: req.body,
     });
 
     return responseUtils.success(res, {

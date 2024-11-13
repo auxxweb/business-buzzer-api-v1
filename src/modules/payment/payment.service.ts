@@ -107,9 +107,26 @@ const getCurrentPlan = async (businessId: string): Promise<any> => {
 const updatePaymentWebHook = async ({
   razorpaySignature,
   expectedSignature,
+  body,
 }: any): Promise<any> => {
   console.log(razorpaySignature, "signature");
   console.log(expectedSignature, "expot");
+
+  const metaData = body?.payload?.payment?.entity?.notes;
+
+  switch (body?.event) {
+    case "payment.captured":
+      // Handle payment captured event
+      console.log("Payment captured:", metaData);
+      break;
+    case "payment.failed":
+      // Handle payment failed event
+      console.log("Payment failed:", metaData);
+      break;
+    // Add more cases for different events if needed
+    default:
+      console.log("Unhandled event:", metaData);
+  }
 };
 
 export const paymentService = {
