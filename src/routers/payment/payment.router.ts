@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
 import {
+  checkPaymentStatus,
   createPayment,
   getCurrentPlan,
   getPaymentListing,
@@ -12,6 +13,7 @@ const router = Router();
 // user-endpoints
 router.post("/", protect({ isAdmin: false }), createPayment);
 router.get("/", protect({ isAdmin: true }), getPaymentListing);
+router.get("/status:id", protect({ isAdmin: false }), checkPaymentStatus);
 router.get("/current", protect({ isAdmin: true }), getPaymentListing);
 router.get("/current-plan", protect({ isAdmin: false }), getCurrentPlan);
 

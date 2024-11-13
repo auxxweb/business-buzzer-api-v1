@@ -1,3 +1,5 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable no-unreachable */
 import Business from "../../modules/business/business.model.js";
 import { PaymentData } from "./payment.interface.js";
 import { ObjectId } from "../../constants/type.js";
@@ -8,6 +10,7 @@ import Plans from "../../modules/plans/plans.model.js";
 import { findExpiryDate } from "./payment.utils.js";
 // import { PaymentStatus } from './payment.enums.js'
 import { FilterQuery, QueryOptions } from "mongoose";
+import { PaymentStatus } from "./payment.enums.js";
 
 const createPayment = async (paymentData: PaymentData): Promise<any> => {
   const { paymentId, plan, business, date } = paymentData;
@@ -118,15 +121,87 @@ const updatePaymentWebHook = async ({
     case "payment.captured":
       // Handle payment captured event
       console.log("Payment captured:", metaData);
+      const data = await Payment.findOne({
+        _id: new ObjectId(metaData?.paymentId ?? ""),
+        isDeleted: false,
+      });
+
+      if (data) {
+        return await Payment.findOneAndUpdate(
+          {
+            _id: new ObjectId(metaData?.paymentId ?? ""),
+            isDeleted: false,
+          },
+          {
+            paymentStatus: PaymentStatus.SUCCESS,
+          },
+          {
+            new: true,
+          },
+        );
+      }
+      return false;
       break;
+
     case "payment.failed":
       // Handle payment failed event
       console.log("Payment failed:", metaData);
+      const data1 = await Payment.findOne({
+        _id: new ObjectId(metaData?.paymentId ?? ""),
+        isDeleted: false,
+      });
+      if (data1) {
+        return await Payment.findOneAndUpdate(
+          {
+            _id: new ObjectId(metaData?.paymentId ?? ""),
+            isDeleted: false,
+          },
+          {
+            paymentStatus: PaymentStatus.FAILED,
+          },
+          {
+            new: true,
+          },
+        );
+      }
+      return false;
       break;
     // Add more cases for different events if needed
     default:
       console.log("Unhandled event:", metaData);
+      const data2 = await Payment.findOne({
+        _id: new ObjectId(metaData?.paymentId ?? ""),
+        isDeleted: false,
+      });
+      if (data2) {
+        return await Payment.findOneAndUpdate(
+          {
+            _id: new ObjectId(metaData?.paymentId ?? ""),
+            isDeleted: false,
+          },
+          {
+            paymentStatus: PaymentStatus.FAILED,
+          },
+          {
+            new: true,
+          },
+        );
+      }
+      return false;
   }
+};
+
+const checkPaymentStatus = async (paymentId: string): Promise<any> => {
+  const data = await Payment.findOne({
+    _id: new ObjectId(paymentId),
+    isDeleted: false,
+  });
+
+  if (!data) {
+    return await generateAPIError(errorMessages.paymentNotFound, 400);
+  }
+
+  return { PaymentStatus: data?.paymentStatus };
 };
 
 export const paymentService = {
@@ -134,4 +209,5 @@ export const paymentService = {
   getPaymentListing,
   getCurrentPlan,
   updatePaymentWebHook,
+  checkPaymentStatus,
 };

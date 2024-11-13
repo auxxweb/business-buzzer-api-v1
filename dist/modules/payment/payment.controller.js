@@ -16,6 +16,13 @@ const createPayment = errorWrapper(async (req, res, next) => {
     status: 201,
   });
 });
+const checkPaymentStatus = errorWrapper(async (req, res, next) => {
+  const data = await paymentService.checkPaymentStatus(req?.params?.id);
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const updatePaymentWebHook = errorWrapper(async (req, res, next) => {
   const razorpaySignature = req.headers["x-razorpay-signature"];
   const payload = JSON.stringify(req.body);
@@ -89,4 +96,5 @@ export {
   getPaymentListing,
   getCurrentPlan,
   updatePaymentWebHook,
+  checkPaymentStatus,
 };
