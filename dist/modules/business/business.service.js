@@ -84,11 +84,15 @@ const businessSignUp = async (userData) => {
     isFree: selectedPlan === appConfig.freePlanId,
     password: hashedPassword,
   });
-  const paymentData = await paymentService.createPayment({
-    plan: selectedPlan,
-    business: String(business?._id),
-  });
-  console.log(paymentData, "paymentData");
+  let paymentId = null;
+  if (selectedPlan !== appConfig.freePlanId) {
+    const paymentData = await paymentService.createPayment({
+      plan: selectedPlan,
+      business: String(business?._id),
+    });
+    paymentId = paymentData?._id;
+    console.log(paymentData, "paymentData");
+  }
   return {
     _id: business?._id,
     businessName: business?.businessName,
@@ -117,7 +121,9 @@ const businessSignUp = async (userData) => {
     selectedPlan: business?.selectedPlan,
     paymentStatus: business?.paymentStatus,
     isFree: business?.isFree,
-    paymentId: paymentData?._id,
+    ...(paymentId && {
+      paymentId,
+    }),
     rating: await findRating(business?.testimonial?.reviews),
     token: await generateToken({
       id: String(business?._id),

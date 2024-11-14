@@ -31,6 +31,7 @@ const errorMessages = {
   businessExistsInPlan: (businessCount, plan) =>
     `Can't delete ${plan}, ${businessCount} active businesses are in the ${plan} plan`,
   paymentNotCompleted: "Your plan expired or checking your payment status",
+  freePlanNotDelete: "Can't delete free plan data",
 };
 const successMessages = {
   linkSend: "Link successfully send to mail",

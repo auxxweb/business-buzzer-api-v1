@@ -32,6 +32,7 @@ const errorMessages = {
   businessExistsInPlan: (businessCount: number, plan: string) =>
     `Can't delete ${plan}, ${businessCount} active businesses are in the ${plan} plan`,
   paymentNotCompleted: "Your plan expired or checking your payment status",
+  freePlanNotDelete: "Can't delete free plan data",
 };
 
 const successMessages = {

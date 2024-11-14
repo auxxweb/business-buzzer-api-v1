@@ -170,8 +170,8 @@ const getAllBusiness = errorWrapper(
 
     let query: FilterQuery<typeof Business> = {
       isDeleted: false,
-      paymentStatus: true,
       status: true,
+      $or: [{ isFree: true }, { isFree: false, paymentStatus: true }],
     };
 
     const searchTerm = req.query?.searchTerm;

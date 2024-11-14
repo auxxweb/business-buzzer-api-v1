@@ -5,6 +5,7 @@ import { CreatePlanServiceData } from "./plan.interface.js";
 import Plans from "./plans.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { checkAnyActiveBusinessesInPlans } from "./plans.utils.js";
+import { appConfig } from "config/appConfig.js";
 
 const createPlan = async (planData: CreatePlanServiceData): Promise<any> => {
   const planExist = await Plans.findOne({
@@ -95,6 +96,10 @@ const updatePlan = async (
 
   if (planData?.isDeleted) {
     console.log(planData?.isDeleted, "isDeleted");
+
+    if (planId === appConfig?.freePlanId) {
+      return await generateAPIError(errorMessages.freePlanNotDelete, 400);
+    }
 
     const isBusinessExists = await checkAnyActiveBusinessesInPlans(planId);
     console.log(isBusinessExists, "exists-plan-exists");

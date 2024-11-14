@@ -13,7 +13,24 @@ const createBusinessReview = async (reviewData) => {
   if (business == null) {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
-  return await BusinessReview.create(reviewData);
+  const newReview = await BusinessReview.create(reviewData);
+  const businessRatings = await BusinessReview.find({
+    businessId: new ObjectId(reviewData?.businessId),
+    isDeleted: false,
+  });
+  const averageRating =
+    businessRatings.reduce((sum, review) => sum + review.rating, 0) /
+    businessRatings.length;
+  await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(reviewData?.businessId),
+      isDeleted: false,
+    },
+    {
+      rating: averageRating,
+    },
+  );
+  return newReview;
 };
 const getAllReviews = async ({ query, options }) => {
   const [data, totalCount] = await Promise.all([
