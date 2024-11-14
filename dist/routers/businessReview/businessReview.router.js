@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
-import { createBusinessReview, deleteReviews, getAllReviews, getAllReviewsById, } from "../../modules/businessReviews/businessReview.controller.js";
+import {
+  createBusinessReview,
+  deleteReviews,
+  getAllReviews,
+  getAllReviewsById,
+} from "../../modules/businessReviews/businessReview.controller.js";
 import { protect } from "../../middleware/auth.middleware.js";
 const router = Router();
 // user-endpoints

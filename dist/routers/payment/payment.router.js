@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
-import { checkPaymentStatus, createPayment, getCurrentPlan, getPaymentListing, } from "../../modules/payment/payment.controller.js";
+import {
+  checkPaymentStatus,
+  createPayment,
+  getCurrentPlan,
+  getPaymentListing,
+} from "../../modules/payment/payment.controller.js";
 import { protect } from "../../middleware/auth.middleware.js";
 const router = Router();
 // user-endpoints

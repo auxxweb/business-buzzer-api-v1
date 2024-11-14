@@ -1,25 +1,28 @@
 import { ObjectId } from "../../constants/type.js";
 import { model, Schema } from "mongoose";
-const PrivacyPoliciesSchema = new Schema({
+const PrivacyPoliciesSchema = new Schema(
+  {
     business: {
-        type: ObjectId,
-        ref: "business",
-        required: true,
+      type: ObjectId,
+      ref: "business",
+      required: true,
     },
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     data: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     isDeleted: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
-}, {
+  },
+  {
     timestamps: true,
-});
+  },
+);
 const PrivacyPolicy = model("privacy_policies", PrivacyPoliciesSchema);
 export default PrivacyPolicy;

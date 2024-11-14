@@ -21,37 +21,48 @@ await dbConnect();
 const whitelist = appConfig.whiteList.split(",");
 app.set("trust proxy", 1); // trust first proxy
 const corsOptions = {
-    // eslint-disable-next-line consistent-return
-    origin(origin, callback) {
-        console.log(origin, "origin", whitelist.indexOf(origin) !== -1, "wishList", whitelist);
-        if (!origin) {
-            // for mobile app and postman client
-            return callback(null, true);
-        }
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-        }
-        else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    credentials: true,
+  // eslint-disable-next-line consistent-return
+  origin(origin, callback) {
+    console.log(
+      origin,
+      "origin",
+      whitelist.indexOf(origin) !== -1,
+      "wishList",
+      whitelist,
+    );
+    if (!origin) {
+      // for mobile app and postman client
+      return callback(null, true);
+    }
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
 };
 app.use(cors(corsOptions));
 // Increase the request size limit
 app.use(bodyParser.json({ limit: "50mb" })); // for JSON requests
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true })); // for URL-encoded requests
-app.use(express.json({
+app.use(
+  express.json({
     type: ["application/json", "text/plain"],
-}));
+  }),
+);
 app.use(helmet());
 // app.use(xss());
 app.use(morgan("tiny"));
 app.use("/api/v1", indexRouter);
-app.use("/api/v1/webhook", express.raw({ type: "application/json" }), webHookRouter);
+app.use(
+  "/api/v1/webhook",
+  express.raw({ type: "application/json" }),
+  webHookRouter,
+);
 app.use(notFound);
 app.use(errorHandler);
 const port = process.env.PORT ?? 5000;
 app.listen(port, () => {
-    console.log("Server Running on " + `${port}`);
+  console.log("Server Running on " + `${port}`);
 });

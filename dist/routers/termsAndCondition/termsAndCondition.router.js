@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
-import { getTermsAndConditions, createTermsAndConditions, updateTermsAndConditions, deleteTermsAndConditions, getTermsAndConditionsById, getTermsAndConditionsByBusinessId, } from "../../modules/termsAndConditions/termsAndCondition.controller.js";
+import {
+  getTermsAndConditions,
+  createTermsAndConditions,
+  updateTermsAndConditions,
+  deleteTermsAndConditions,
+  getTermsAndConditionsById,
+  getTermsAndConditionsByBusinessId,
+} from "../../modules/termsAndConditions/termsAndCondition.controller.js";
 import { protect } from "../../middleware/auth.middleware.js";
 const router = Router();
 // user-endpoints

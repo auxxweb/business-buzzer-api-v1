@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
 import { protect } from "../../middleware/auth.middleware.js";
-import { createAdminTerms, getAdminTerms, updateAdminTerms, } from "../../modules/adminTerms/adminTerms.controller.js";
+import {
+  createAdminTerms,
+  getAdminTerms,
+  updateAdminTerms,
+} from "../../modules/adminTerms/adminTerms.controller.js";
 const router = Router();
 // user-endpoints
 router.post("/", protect({ isAdmin: true }), createAdminTerms);

@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
-import { createCategory, getAllCategories, getAllCategoriesForDropDown, getCategoryById, updateCategory, } from "../../modules/category/category.controller.js";
+import {
+  createCategory,
+  getAllCategories,
+  getAllCategoriesForDropDown,
+  getCategoryById,
+  updateCategory,
+} from "../../modules/category/category.controller.js";
 import { protect } from "../../middleware/auth.middleware.js";
 // import { protect } from "middleware/auth.middleware.js";
 const router = Router();

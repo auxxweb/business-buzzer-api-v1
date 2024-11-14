@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
-import { getPrivacyPolicy, createPrivacyPolicy, updatePrivacyPolicy, deletePrivacyPolicy, } from "../../modules/privacyPolicies/privacyPolicies.controller.js";
+import {
+  getPrivacyPolicy,
+  createPrivacyPolicy,
+  updatePrivacyPolicy,
+  deletePrivacyPolicy,
+} from "../../modules/privacyPolicies/privacyPolicies.controller.js";
 import { protect } from "../../middleware/auth.middleware.js";
 const router = Router();
 // user-endpoints
