@@ -7,6 +7,7 @@ import {
   businessLogin,
   businessSignUp,
   deleteBusinessByAdmin,
+  forgotPassword,
   getAllBusiness,
   getAllBusinessByAdmin,
   getAllBusinessForDropDown,
@@ -22,6 +23,7 @@ import {
 const router = Router();
 // user-endpoints
 router.post("/", businessSignUp);
+router.post("/forgot-password", forgotPassword);
 router.post("/product", protect({ isAdmin: false }), addProduct);
 router.post("/check", businessExists);
 router.patch("/", protect({ isAdmin: false }), updateBusiness);

@@ -23,6 +23,13 @@ const businessExists = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const forgotPassword = errorWrapper(async (req, res, next) => {
+  const data = await businessService.forgotPassword(req.body?.email);
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const updateBusiness = errorWrapper(async (req, res, next) => {
   const data = await businessService.updateBusiness(req.user?._id, {
     ...req.body,
@@ -311,4 +318,5 @@ export {
   getAllBusinessForDropDown,
   getBusinessDashboardData,
   addProduct,
+  forgotPassword,
 };

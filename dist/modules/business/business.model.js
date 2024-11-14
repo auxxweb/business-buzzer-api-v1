@@ -187,6 +187,9 @@ const BusinessSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    resetId: {
+      type: String,
+    },
     isDeleted: {
       type: Boolean,
       default: false,

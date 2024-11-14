@@ -83,7 +83,7 @@ width: fit-content;
 Reset Password
 </h2>
 <pre>
-Dear ${tempData.username},<br/>
+Dear ${tempData?.username},<br/>
 We received a request to reset the password for your account associated with this email address. 
 If you made this request, please click on the link below to reset your password:
 </pre>

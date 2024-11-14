@@ -14,6 +14,8 @@ import { FilterQuery, PipelineStage, QueryOptions } from "mongoose";
 import {
   createBusinessId,
   getInformEmailTemplate,
+  getUuid,
+  resetLinkEmailTemplate,
 } from "../../utils/app.utils.js";
 import { appConfig } from "../../config/appConfig.js";
 import { paymentService } from "../../modules/payment/payment.service.js";
@@ -1063,6 +1065,53 @@ const addProduct = async (
   }
 };
 
+const forgotPassword = async (email: string): Promise<any> => {
+  const business = await Business?.findOne({
+    email,
+    isDeleted: false,
+  });
+
+  if (!business) {
+    return await generateAPIError(errorMessages.accountNotFound(email), 400);
+  }
+
+  if (!business?.status) {
+    return await generateAPIError(errorMessages.userAccountBlocked, 400);
+  }
+
+  try {
+    const uuId = getUuid();
+
+    await Business.findOneAndUpdate(
+      {
+        email,
+        isDeleted: false,
+      },
+      {
+        resetId: uuId,
+      },
+    );
+
+    const obj: sendMailData = {
+      to: business?.email,
+      text: await resetLinkEmailTemplate({
+        username: business?.businessName ?? "",
+        uuId,
+      }),
+      subject: "Instant connect",
+    };
+
+    await sendEmail(obj);
+    return { message: "Email sent successfully!" };
+  } catch (error) {
+    return await generateAPIError(errorMessages.emailSendFailed, 400);
+  }
+};
+
+// const resetPassword = async ({resetId:string,password:string}:{}):Promise<any>=>{
+
+// }
+
 export const businessService = {
   businessLogin,
   businessSignUp,
@@ -1078,4 +1127,5 @@ export const businessService = {
   getAllBusinessForDropDown,
   getBusinessDashboardData,
   addProduct,
+  forgotPassword,
 };
