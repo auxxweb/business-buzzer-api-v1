@@ -117,7 +117,7 @@ const getAllBusiness = errorWrapper(async (req, res, next) => {
   let query = {
     isDeleted: false,
     status: true,
-    $or: [{ isFree: true }, { isFree: false, paymentStatus: true }],
+    $or: [{ isFree: true }, { paymentStatus: true }],
   };
   const searchTerm = req.query?.searchTerm;
   if (searchTerm) {

@@ -314,6 +314,7 @@ const getAllBusiness = async ({
         email: 1,
         businessId: 1,
         address: 1,
+        rating: 1,
         contactDetails: 1,
         socialMediaLinks: 1,
         category: 1,
@@ -364,16 +365,9 @@ const getAllBusiness = async ({
   const data = await Business.aggregate(aggregatePipeLine);
 
   // Loop through each business and calculate the rating
-  const businessesWithRating = await Promise.all(
-    data[0]?.data?.map(async (business: any) => {
-      const reviews = business?.testimonial?.reviews || [];
-      business.rating = await findRating(reviews);
-      return business;
-    }),
-  );
 
   return {
-    data: businessesWithRating,
+    data: data[0]?.data,
     totalCount: data[0]?.metadata[0]?.total || 0,
   };
 };
