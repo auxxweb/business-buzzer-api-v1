@@ -173,7 +173,7 @@ const BusinessSchema = new Schema(
     },
     paymentStatus: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     status: {
       type: Boolean,
