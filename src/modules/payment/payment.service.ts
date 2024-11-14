@@ -144,11 +144,15 @@ const updatePaymentWebHook = async ({
             },
           );
 
-          await Business.findOneAndUpdate({
-            _id: new ObjectId(metaData?.businessId ?? ""),
-            isDeleted: false,
-            paymentStatus: true,
-          });
+          await Business.findOneAndUpdate(
+            {
+              _id: new ObjectId(metaData?.businessId ?? ""),
+              isDeleted: false,
+            },
+            {
+              paymentStatus: true,
+            },
+          );
 
           return payData;
         }
@@ -179,11 +183,15 @@ const updatePaymentWebHook = async ({
             },
           );
 
-          await Business.findOneAndUpdate({
-            _id: new ObjectId(metaData?.businessId ?? ""),
-            isDeleted: false,
-            paymentStatus: false,
-          });
+          await Business.findOneAndUpdate(
+            {
+              _id: new ObjectId(metaData?.businessId ?? ""),
+              isDeleted: false,
+            },
+            {
+              paymentStatus: false,
+            },
+          );
 
           return payData1;
         }
@@ -212,11 +220,15 @@ const updatePaymentWebHook = async ({
               new: true,
             },
           );
-          await Business.findOneAndUpdate({
-            _id: new ObjectId(metaData?.businessId ?? ""),
-            isDeleted: false,
-            paymentStatus: false,
-          });
+          await Business.findOneAndUpdate(
+            {
+              _id: new ObjectId(metaData?.businessId ?? ""),
+              isDeleted: false,
+            },
+            {
+              paymentStatus: false,
+            },
+          );
 
           return payData2;
         }
