@@ -1,24 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
 import { protect } from "../../middleware/auth.middleware.js";
-import {
-  addProduct,
-  businessExists,
-  businessLogin,
-  businessSignUp,
-  deleteBusinessByAdmin,
-  getAllBusiness,
-  getAllBusinessByAdmin,
-  getAllBusinessForDropDown,
-  getBusinessByCategory,
-  getBusinessById,
-  getBusinessDashboardData,
-  getBusinessProfile,
-  updateBusiness,
-  updateBusinessByAdmin,
-  updateBusinessPassword,
-  updateBusinessStatusByAdmin,
-} from "../../modules/business/business.controller.js";
+import { addProduct, businessExists, businessLogin, businessSignUp, deleteBusinessByAdmin, getAllBusiness, getAllBusinessByAdmin, getAllBusinessForDropDown, getBusinessByCategory, getBusinessById, getBusinessDashboardData, getBusinessProfile, updateBusiness, updateBusinessByAdmin, updateBusinessPassword, updateBusinessStatusByAdmin, } from "../../modules/business/business.controller.js";
 const router = Router();
 // user-endpoints
 router.post("/", businessSignUp);
@@ -33,11 +16,7 @@ router.post("/login", businessLogin);
 router.get("/", getAllBusiness);
 router.get("/dashboard", protect({ isAdmin: false }), getBusinessDashboardData);
 router.get("/:id", getBusinessById);
-router.patch(
-  "/admin/status/:id",
-  protect({ isAdmin: true }),
-  updateBusinessStatusByAdmin,
-);
+router.patch("/admin/status/:id", protect({ isAdmin: true }), updateBusinessStatusByAdmin);
 router.patch("/admin/:id", protect({ isAdmin: true }), updateBusinessByAdmin);
 router.delete("/admin/:id", protect({ isAdmin: true }), deleteBusinessByAdmin);
 router.patch("/password", protect({ isAdmin: false }), updateBusinessPassword);

@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
 import { protect } from "../../middleware/auth.middleware.js";
-import {
-  createBanner,
-  deleteBanner,
-  getAllBanners,
-  updateBanner,
-} from "../../modules/banner/banner.controller.js";
+import { createBanner, deleteBanner, getAllBanners, updateBanner, } from "../../modules/banner/banner.controller.js";
 const router = Router();
 // user-endpoints
 router.post("/", protect({ isAdmin: true }), createBanner);

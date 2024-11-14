@@ -10,72 +10,73 @@ const secretAccessKey = appConfig.awsSecretKey;
 const bucket = appConfig.awsBucketName;
 const folder = appConfig.awsFolder;
 const s3 = new aws.S3({
-  region,
-  accessKeyId,
-  secretAccessKey,
-  signatureVersion: "v4",
-});
-const getS3Urls = errorWrapper(async (req, res, next) => {
-  // const { file_types } = req.body; // array of file names with extension
-  const urls = []; // array of objects {file_name, url, file_type}
-  // for (let i = 0; i < file_types.length; i++) {
-  //   const uniqueCode = uuidv4();
-  //   const params = {
-  //     Bucket: bucket,
-  //     Key: `${folder}/bb_${uniqueCode}`,
-  //     Expires: 60,
-  //   };
-  //   const url = await s3.getSignedUrlPromise("putObject", params);
-  //   urls.push({
-  //     file_name: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
-  //     file_type: file_types[i],
-  //     url,
-  //   });
-  // }
-  const { files } = req.body;
-  for (let i = 0; i < files?.length; i++) {
-    const uniqueCode = uuidv4();
-    const params = {
-      Bucket: bucket,
-      Key: `${folder}/bb_${uniqueCode}`,
-      Expires: 60,
-    };
-    const url = await s3.getSignedUrlPromise("putObject", params);
-    urls.push({
-      accessLink: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
-      file_type: files[i]?.file_type,
-      position: files[i]?.position,
-      url,
-    });
-  }
-  return responseUtils.success(res, {
-    data: urls,
-    status: 200,
-  });
-});
-const deleteS3 = async ({ bucketName = bucket, key }) => {
-  console.log(key, "key", bucketName);
-  // Ensure that AWS region and credentials are properly configured
-  aws.config.update({
     region,
     accessKeyId,
     secretAccessKey,
     signatureVersion: "v4",
-  });
-  // Create an instance of the S3 client
-  const s3 = new aws.S3();
-  const params = {
-    Bucket: bucketName,
-    Key: `businessBazaar/${key}`,
-  };
-  try {
-    // Delete the image
-    const result = await s3.deleteObject(params).promise();
-    console.log("File deleted successfully:", result);
-    return result; // Ensure you return the result
-  } catch (error) {
-    console.error("Error deleting image:", error);
-    throw error; // Rethrow the error to handle it in the calling function
-  }
+});
+const getS3Urls = errorWrapper(async (req, res, next) => {
+    // const { file_types } = req.body; // array of file names with extension
+    const urls = []; // array of objects {file_name, url, file_type}
+    // for (let i = 0; i < file_types.length; i++) {
+    //   const uniqueCode = uuidv4();
+    //   const params = {
+    //     Bucket: bucket,
+    //     Key: `${folder}/bb_${uniqueCode}`,
+    //     Expires: 60,
+    //   };
+    //   const url = await s3.getSignedUrlPromise("putObject", params);
+    //   urls.push({
+    //     file_name: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
+    //     file_type: file_types[i],
+    //     url,
+    //   });
+    // }
+    const { files } = req.body;
+    for (let i = 0; i < files?.length; i++) {
+        const uniqueCode = uuidv4();
+        const params = {
+            Bucket: bucket,
+            Key: `${folder}/bb_${uniqueCode}`,
+            Expires: 60,
+        };
+        const url = await s3.getSignedUrlPromise("putObject", params);
+        urls.push({
+            accessLink: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
+            file_type: files[i]?.file_type,
+            position: files[i]?.position,
+            url,
+        });
+    }
+    return responseUtils.success(res, {
+        data: urls,
+        status: 200,
+    });
+});
+const deleteS3 = async ({ bucketName = bucket, key, }) => {
+    console.log(key, "key", bucketName);
+    // Ensure that AWS region and credentials are properly configured
+    aws.config.update({
+        region,
+        accessKeyId,
+        secretAccessKey,
+        signatureVersion: "v4",
+    });
+    // Create an instance of the S3 client
+    const s3 = new aws.S3();
+    const params = {
+        Bucket: bucketName,
+        Key: `businessBazaar/${key}`,
+    };
+    try {
+        // Delete the image
+        const result = await s3.deleteObject(params).promise();
+        console.log("File deleted successfully:", result);
+        return result; // Ensure you return the result
+    }
+    catch (error) {
+        console.error("Error deleting image:", error);
+        throw error; // Rethrow the error to handle it in the calling function
+    }
 };
 export { getS3Urls, deleteS3 };
