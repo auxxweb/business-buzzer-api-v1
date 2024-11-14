@@ -55,6 +55,7 @@ const businessSignUp = async (userData) => {
     return await generateAPIError(errorMessages.userExists, 400);
   }
   const hashedPassword = await hashValue(password, 10);
+  const isFreee = String(selectedPlan) === String(appConfig.freePlanId);
   const business = await Business.create({
     businessName,
     logo,
@@ -87,7 +88,7 @@ const businessSignUp = async (userData) => {
     gallery,
     seoData,
     paymentStatus,
-    isFree: selectedPlan === appConfig.freePlanId,
+    isFree: isFreee,
     password: hashedPassword,
   });
   let paymentId = null;

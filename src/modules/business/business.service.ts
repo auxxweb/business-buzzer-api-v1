@@ -64,6 +64,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
   }
 
   const hashedPassword = await hashValue(password, 10);
+  const isFreee = String(selectedPlan) === String(appConfig.freePlanId);
 
   const business = await Business.create({
     businessName,
@@ -97,7 +98,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     gallery,
     seoData,
     paymentStatus,
-    isFree: selectedPlan === appConfig.freePlanId,
+    isFree: isFreee,
     password: hashedPassword,
   });
 
