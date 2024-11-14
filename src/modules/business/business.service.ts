@@ -14,6 +14,8 @@ import { FilterQuery, PipelineStage, QueryOptions } from "mongoose";
 import { createBusinessId } from "../../utils/app.utils.js";
 import { appConfig } from "../../config/appConfig.js";
 import { paymentService } from "../../modules/payment/payment.service.js";
+import { sendMailData } from "../../interface/app.interface.js";
+import { sendEmail } from "../../utils/sendMail.js";
 // import BusinessReview from 'modules/businessReviews/businessReviews.model.js'
 
 const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
@@ -104,6 +106,17 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     paymentId = paymentData?._id;
     console.log(paymentData, "paymentData");
   }
+
+  // const obj: sendMailData = {
+  //   to: business?.email,
+  //   text: await getVerifyEmailLink({
+  //     userName: user != null ? `${user?.firstName} ${user?.lastName}` : '',
+  //     otp,
+  //   }),
+  //   subject:"Instant connect",
+  // }
+
+  // const sendOtpByMail = await sendEmail(obj)
 
   return {
     _id: business?._id,

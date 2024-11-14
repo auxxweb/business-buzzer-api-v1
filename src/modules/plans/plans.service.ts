@@ -5,7 +5,7 @@ import { CreatePlanServiceData } from "./plan.interface.js";
 import Plans from "./plans.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { checkAnyActiveBusinessesInPlans } from "./plans.utils.js";
-import { appConfig } from "config/appConfig.js";
+import { appConfig } from "../../config/appConfig.js";
 
 const createPlan = async (planData: CreatePlanServiceData): Promise<any> => {
   const planExist = await Plans.findOne({

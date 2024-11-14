@@ -12,7 +12,6 @@ export const appConfig = {
   sibUrl: process.env.SIB_URL ?? "",
   sibSource: process.env.SIB_SOURCE ?? "",
   webUrl: process.env.WEB_URL ?? "",
-  StrategicId: process.env.STRATEGIC_ID ?? "",
   assessmentId: process.env.ASSESSMENT_ID ?? "",
   awsBucketRegion: process.env.AWS_BUCKET_REGION ?? "",
   awsAccessKey: process.env.AWS_ACCESS_KEY ?? "",

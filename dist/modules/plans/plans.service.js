@@ -3,7 +3,7 @@ import { generateAPIError } from "../../errors/apiError.js";
 import Plans from "./plans.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { checkAnyActiveBusinessesInPlans } from "./plans.utils.js";
-import { appConfig } from "config/appConfig.js";
+import { appConfig } from "../../config/appConfig.js";
 const createPlan = async (planData) => {
   const planExist = await Plans.findOne({
     plan: planData?.plan?.trim().toLowerCase(),

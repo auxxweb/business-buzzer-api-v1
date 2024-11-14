@@ -93,6 +93,15 @@ const businessSignUp = async (userData) => {
     paymentId = paymentData?._id;
     console.log(paymentData, "paymentData");
   }
+  // const obj: sendMailData = {
+  //   to: business?.email,
+  //   text: await getVerifyEmailLink({
+  //     userName: user != null ? `${user?.firstName} ${user?.lastName}` : '',
+  //     otp,
+  //   }),
+  //   subject:"Instant connect",
+  // }
+  // const sendOtpByMail = await sendEmail(obj)
   return {
     _id: business?._id,
     businessName: business?.businessName,
