@@ -9,7 +9,7 @@ import Plans from "../../modules/plans/plans.model.js";
 import { findExpiryDate } from "./payment.utils.js";
 import { PaymentStatus } from "./payment.enums.js";
 const createPayment = async (paymentData) => {
-  const { paymentId, plan, business, date } = paymentData;
+  const { paymentId, plan, business } = paymentData;
   const businessExists = await Business.findOne({
     _id: new ObjectId(business),
     isDeleted: false,
@@ -28,7 +28,6 @@ const createPayment = async (paymentData) => {
     return await generateAPIError(errorMessages.planNotFound, 400);
   }
   const expiry = await findExpiryDate({
-    date,
     validity: planData?.validity,
   });
   const planDetails = await Plans.findOne({
@@ -41,7 +40,7 @@ const createPayment = async (paymentData) => {
   const paymentDatas = await Payment.create({
     paymentId,
     business,
-    date,
+    date: new Date(),
     plan,
     amount: planDetails?.amount,
     expiryDate: expiry,
@@ -88,82 +87,96 @@ const updatePaymentWebHook = async ({
   console.log(razorpaySignature, "signature");
   console.log(expectedSignature, "expot");
   const metaData = body?.payload?.payment?.entity?.notes;
-  switch (body?.event) {
-    case "payment.captured":
-      // Handle payment captured event
-      console.log("Payment captured:", metaData);
-      const data = await Payment.findOne({
-        _id: new ObjectId(metaData?.paymentId ?? ""),
-        isDeleted: false,
-      });
-      if (data) {
-        return await Payment.findOneAndUpdate(
-          {
-            _id: new ObjectId(metaData?.paymentId ?? ""),
-            isDeleted: false,
-          },
-          {
-            paymentStatus: PaymentStatus.SUCCESS,
-          },
-          {
-            new: true,
-          },
-        );
-      }
-      return false;
-      break;
-    case "payment.failed":
-      // Handle payment failed event
-      console.log("Payment failed:", metaData);
-      const data1 = await Payment.findOne({
-        _id: new ObjectId(metaData?.paymentId ?? ""),
-        isDeleted: false,
-      });
-      if (data1) {
-        return await Payment.findOneAndUpdate(
-          {
-            _id: new ObjectId(metaData?.paymentId ?? ""),
-            isDeleted: false,
-          },
-          {
-            paymentStatus: PaymentStatus.FAILED,
-          },
-          {
-            new: true,
-          },
-        );
-      }
-      return false;
-      break;
-    // Add more cases for different events if needed
-    default:
-      console.log("Unhandled event:", metaData);
-      const data2 = await Payment.findOne({
-        _id: new ObjectId(metaData?.paymentId ?? ""),
-        isDeleted: false,
-      });
-      if (data2) {
-        return await Payment.findOneAndUpdate(
-          {
-            _id: new ObjectId(metaData?.paymentId ?? ""),
-            isDeleted: false,
-          },
-          {
-            paymentStatus: PaymentStatus.FAILED,
-          },
-          {
-            new: true,
-          },
-        );
-      }
-      return false;
+  const rPaymentId = body?.payload?.payment?.entity?.id;
+  if (razorpaySignature === expectedSignature) {
+    switch (body?.event) {
+      case "payment.captured":
+        // Handle payment captured event
+        console.log("Payment captured:", metaData);
+        const data = await Payment.findOne({
+          business: new ObjectId(metaData?.businessId ?? ""),
+          isDeleted: false,
+          paymentStatus: PaymentStatus.PENDING,
+        });
+        if (data) {
+          return await Payment.findOneAndUpdate(
+            {
+              business: new ObjectId(metaData?.businessId ?? ""),
+              isDeleted: false,
+              paymentStatus: PaymentStatus.PENDING,
+            },
+            {
+              paymentId: rPaymentId,
+              paymentStatus: PaymentStatus.SUCCESS,
+            },
+            {
+              new: true,
+            },
+          );
+        }
+        return false;
+        break;
+      case "payment.failed":
+        // Handle payment failed event
+        console.log("Payment failed:", metaData);
+        const data1 = await Payment.findOne({
+          business: new ObjectId(metaData?.businessId ?? ""),
+          isDeleted: false,
+          paymentStatus: PaymentStatus.PENDING,
+        });
+        if (data1) {
+          return await Payment.findOneAndUpdate(
+            {
+              business: new ObjectId(metaData?.businessId ?? ""),
+              isDeleted: false,
+              paymentStatus: PaymentStatus.PENDING,
+            },
+            {
+              paymentId: rPaymentId,
+              paymentStatus: PaymentStatus.FAILED,
+            },
+            {
+              new: true,
+            },
+          );
+        }
+        return false;
+        break;
+      // Add more cases for different events if needed
+      default:
+        console.log("Unhandled event:", metaData);
+        const data2 = await Payment.findOne({
+          business: new ObjectId(metaData?.businessId ?? ""),
+          isDeleted: false,
+          paymentStatus: PaymentStatus.PENDING,
+        });
+        if (data2) {
+          return await Payment.findOneAndUpdate(
+            {
+              business: new ObjectId(metaData?.businessId ?? ""),
+              isDeleted: false,
+              paymentStatus: PaymentStatus.PENDING,
+            },
+            {
+              paymentId: rPaymentId,
+              paymentStatus: PaymentStatus.FAILED,
+            },
+            {
+              new: true,
+            },
+          );
+        }
+        return false;
+    }
   }
 };
-const checkPaymentStatus = async (paymentId) => {
+const checkPaymentStatus = async (businessId) => {
   const data = await Payment.findOne({
-    _id: new ObjectId(paymentId),
+    business: new ObjectId(businessId),
     isDeleted: false,
-  });
+  })
+    .sort({ createdAt: -1 }) // Sort by `createdAt` in descending order
+    .exec();
   if (!data) {
     return await generateAPIError(errorMessages.paymentNotFound, 400);
   }

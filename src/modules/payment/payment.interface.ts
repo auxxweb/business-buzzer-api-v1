@@ -1,7 +1,6 @@
 export interface PaymentData {
-  paymentId: string;
+  paymentId?: string;
   plan: string;
   business: string;
-  date: string;
   expiryDate?: string;
 }

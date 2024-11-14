@@ -1,11 +1,9 @@
 export const findExpiryDate = async ({
-  date,
   validity,
 }: {
-  date: string;
   validity: number;
 }): Promise<Date> => {
-  const expiryDate = new Date(date);
+  const expiryDate = new Date();
   expiryDate.setFullYear(expiryDate.getFullYear() + validity);
 
   return expiryDate;

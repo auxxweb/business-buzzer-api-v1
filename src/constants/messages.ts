@@ -31,6 +31,7 @@ const errorMessages = {
   planNameExists: (plan: string) => `Plan already exists with name ${plan}`,
   businessExistsInPlan: (businessCount: number, plan: string) =>
     `Can't delete ${plan}, ${businessCount} active businesses are in the ${plan} plan`,
+  paymentNotCompleted: "Your plan expired or checking your payment status",
 };
 
 const successMessages = {

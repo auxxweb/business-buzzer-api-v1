@@ -5,7 +5,6 @@ const PaymentSchema = new Schema(
   {
     paymentId: {
       type: String,
-      required: true,
     },
     plan: {
       type: ObjectId,

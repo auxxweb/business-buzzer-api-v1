@@ -9,6 +9,8 @@ import { generateToken } from "../../utils/auth.utils.js";
 import Business from "./business.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { createBusinessId } from "../../utils/app.utils.js";
+import { appConfig } from "../../config/appConfig.js";
+import { paymentService } from "../../modules/payment/payment.service.js";
 // import BusinessReview from 'modules/businessReviews/businessReviews.model.js'
 const businessSignUp = async (userData) => {
   const {
@@ -68,6 +70,7 @@ const businessSignUp = async (userData) => {
     businessTiming,
     description,
     theme,
+    selectedPlan,
     secondaryTheme,
     landingPageHero,
     welcomePart,
@@ -78,7 +81,12 @@ const businessSignUp = async (userData) => {
     gallery,
     seoData,
     paymentStatus,
+    isFree: selectedPlan === appConfig.freePlanId,
     password: hashedPassword,
+  });
+  const paymentData = await paymentService.createPayment({
+    plan: selectedPlan,
+    business: String(business?._id),
   });
   return {
     _id: business?._id,
@@ -107,6 +115,8 @@ const businessSignUp = async (userData) => {
     seoData: business?.seoData,
     selectedPlan: business?.selectedPlan,
     paymentStatus: business?.paymentStatus,
+    isFree: business?.isFree,
+    paymentId: paymentData?._id,
     rating: await findRating(business?.testimonial?.reviews),
     token: await generateToken({
       id: String(business?._id),
@@ -161,6 +171,7 @@ const businessLogin = async (userData) => {
     location: business?.location,
     selectedPlan: business?.selectedPlan,
     paymentStatus: business?.paymentStatus,
+    isFree: business?.isFree,
     rating: await findRating(business?.testimonial?.reviews),
     token: await generateToken({
       id: String(business?._id),
@@ -179,8 +190,11 @@ const getBusinessById = async (businessId) => {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
   // Check business status and paymentStatus
-  if (!business.status || !business.paymentStatus) {
+  if (!business.status) {
     return await generateAPIError(errorMessages.userAccountBlocked, 404);
+  }
+  if (!business.paymentStatus && !business?.isFree) {
+    return await generateAPIError(errorMessages.paymentNotCompleted, 400);
   }
   // Calculate rating from testimonials
   const reviews = business?.testimonial?.reviews || [];

@@ -23,4 +23,5 @@ export const appConfig = {
   awsFolder: process.env.AWS_S3_FOLDER,
   awsUrl: process.env.AWS_S3_URL ?? "",
   webHookSecret: process.env.WEBHOOK_SECRET ?? "",
+  freePlanId: process.env.FREE_PLAN_ID ?? "",
 };
