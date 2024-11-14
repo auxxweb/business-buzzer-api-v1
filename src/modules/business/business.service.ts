@@ -99,6 +99,8 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     business: String(business?._id),
   });
 
+  console.log(paymentData, "paymentData");
+
   return {
     _id: business?._id,
     businessName: business?.businessName,

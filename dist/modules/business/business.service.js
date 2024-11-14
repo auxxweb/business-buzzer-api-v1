@@ -88,6 +88,7 @@ const businessSignUp = async (userData) => {
     plan: selectedPlan,
     business: String(business?._id),
   });
+  console.log(paymentData, "paymentData");
   return {
     _id: business?._id,
     businessName: business?.businessName,

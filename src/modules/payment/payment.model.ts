@@ -20,7 +20,7 @@ const PaymentSchema = new Schema(
     paymentStatus: {
       type: String,
       enum: PaymentStatus,
-      required: PaymentStatus.PENDING,
+      default: PaymentStatus.PENDING,
     },
     amount: {
       type: Number,
