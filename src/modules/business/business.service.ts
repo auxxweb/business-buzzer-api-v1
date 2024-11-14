@@ -11,7 +11,10 @@ import { CreateBusinessData, BusinessLoginData } from "./business.interface.js";
 import Business from "./business.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { FilterQuery, PipelineStage, QueryOptions } from "mongoose";
-import { createBusinessId } from "../../utils/app.utils.js";
+import {
+  createBusinessId,
+  getInformEmailTemplate,
+} from "../../utils/app.utils.js";
 import { appConfig } from "../../config/appConfig.js";
 import { paymentService } from "../../modules/payment/payment.service.js";
 import { sendMailData } from "../../interface/app.interface.js";
@@ -107,16 +110,15 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     console.log(paymentData, "paymentData");
   }
 
-  // const obj: sendMailData = {
-  //   to: business?.email,
-  //   text: await getVerifyEmailLink({
-  //     userName: user != null ? `${user?.firstName} ${user?.lastName}` : '',
-  //     otp,
-  //   }),
-  //   subject:"Instant connect",
-  // }
+  const obj: sendMailData = {
+    to: business?.email,
+    text: await getInformEmailTemplate({
+      businessName: business?.businessName ?? "",
+    }),
+    subject: "Instant connect",
+  };
 
-  // const sendOtpByMail = await sendEmail(obj)
+  await sendEmail(obj);
 
   return {
     _id: business?._id,
