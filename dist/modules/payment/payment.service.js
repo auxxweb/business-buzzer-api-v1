@@ -99,7 +99,7 @@ const updatePaymentWebHook = async ({
           paymentStatus: PaymentStatus.PENDING,
         });
         if (data) {
-          return await Payment.findOneAndUpdate(
+          const payData = await Payment.findOneAndUpdate(
             {
               business: new ObjectId(metaData?.businessId ?? ""),
               isDeleted: false,
@@ -113,6 +113,12 @@ const updatePaymentWebHook = async ({
               new: true,
             },
           );
+          await Business.findOneAndUpdate({
+            _id: new ObjectId(metaData?.businessId ?? ""),
+            isDeleted: false,
+            paymentStatus: true,
+          });
+          return payData;
         }
         return false;
         break;
@@ -125,7 +131,7 @@ const updatePaymentWebHook = async ({
           paymentStatus: PaymentStatus.PENDING,
         });
         if (data1) {
-          return await Payment.findOneAndUpdate(
+          const payData1 = await Payment.findOneAndUpdate(
             {
               business: new ObjectId(metaData?.businessId ?? ""),
               isDeleted: false,
@@ -139,6 +145,12 @@ const updatePaymentWebHook = async ({
               new: true,
             },
           );
+          await Business.findOneAndUpdate({
+            _id: new ObjectId(metaData?.businessId ?? ""),
+            isDeleted: false,
+            paymentStatus: false,
+          });
+          return payData1;
         }
         return false;
         break;
@@ -151,7 +163,7 @@ const updatePaymentWebHook = async ({
           paymentStatus: PaymentStatus.PENDING,
         });
         if (data2) {
-          return await Payment.findOneAndUpdate(
+          const payData2 = await Payment.findOneAndUpdate(
             {
               business: new ObjectId(metaData?.businessId ?? ""),
               isDeleted: false,
@@ -165,6 +177,12 @@ const updatePaymentWebHook = async ({
               new: true,
             },
           );
+          await Business.findOneAndUpdate({
+            _id: new ObjectId(metaData?.businessId ?? ""),
+            isDeleted: false,
+            paymentStatus: false,
+          });
+          return payData2;
         }
         return false;
     }
