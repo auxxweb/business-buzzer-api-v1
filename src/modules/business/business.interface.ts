@@ -20,18 +20,9 @@ export interface CreateBusinessData {
     pinCode: number;
   };
   contactDetails: {
-    primaryNumber: {
-      number: number;
-      countryCode: number;
-    };
-    secondaryNumber: {
-      number: number;
-      countryCode: number;
-    };
-    whatsAppNumber: {
-      number: number;
-      countryCode: number;
-    };
+    primaryNumber: number;
+    secondaryNumber: number;
+    whatsAppNumber: number;
     email: string;
     webSite: string;
   };

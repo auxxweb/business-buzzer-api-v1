@@ -54,16 +54,13 @@ const BusinessSchema = new Schema(
     contactDetails: {
       type: {
         primaryNumber: {
-          number: Number,
-          countryCode: String,
+          type: Number,
         },
         secondaryNumber: {
-          number: Number,
-          countryCode: String,
+          type: Number,
         },
         whatsAppNumber: {
-          number: Number,
-          countryCode: String,
+          type: Number,
         },
         email: String,
         webSite: String,
