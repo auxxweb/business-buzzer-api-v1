@@ -115,14 +115,14 @@ const getAdminDashboardChartData = async () => {
     {
       // Lookup payments related to each plan
       $lookup: {
-        from: "payments",
+        from: "payments", // The collection to join with
         let: { planId: "$_id" },
         pipeline: [
           {
             $match: {
               $expr: {
                 $and: [
-                  { $eq: ["$plan", "$$planId"] },
+                  { $eq: ["$plan", "$$planId"] }, // Match the plan
                   { $eq: ["$isDeleted", false] }, // Only include non-deleted payments
                 ],
               },
@@ -134,8 +134,8 @@ const getAdminDashboardChartData = async () => {
     },
     {
       $project: {
-        _id: 1,
-        plan: 1,
+        _id: 1, // Plan _id
+        plan: 1, // Plan name (assuming you have this field in Plan schema)
         count: { $size: "$paymentDetails" }, // Get the size of the filtered payments array (non-deleted payments count)
       },
     },

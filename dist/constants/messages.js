@@ -33,6 +33,7 @@ const errorMessages = {
   paymentNotCompleted: "Your plan expired or checking your payment status",
   freePlanNotDelete: "Can't delete free plan data",
   accountNotFound: (email) => `Account not found with email :${email}`,
+  newsDataNotFound: "News data not found",
 };
 const successMessages = {
   linkSend: "Link successfully send to mail",
