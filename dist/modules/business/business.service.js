@@ -200,7 +200,7 @@ const businessLogin = async (userData) => {
     }),
   };
 };
-const getBusinessById = async (businessId) => {
+const getBusinessById = async (businessId, isAuth) => {
   // Convert businessId to ObjectId (Mongoose handles it automatically if needed)
   const business = await Business.findOne({
     _id: new ObjectId(businessId),
@@ -215,8 +215,10 @@ const getBusinessById = async (businessId) => {
   if (!business.status) {
     return await generateAPIError(errorMessages.userAccountBlocked, 404);
   }
-  if (!business.paymentStatus && !business?.isFree) {
-    return await generateAPIError(errorMessages.paymentNotCompleted, 400);
+  if (!isAuth) {
+    if (!business.paymentStatus && !business?.isFree) {
+      return await generateAPIError(errorMessages.paymentNotCompleted, 400);
+    }
   }
   // Calculate rating from testimonials
   const reviews = business?.testimonial?.reviews || [];

@@ -224,7 +224,10 @@ const businessLogin = async (userData: BusinessLoginData): Promise<any> => {
   };
 };
 
-const getBusinessById = async (businessId: string): Promise<any> => {
+const getBusinessById = async (
+  businessId: string,
+  isAuth?: boolean,
+): Promise<any> => {
   // Convert businessId to ObjectId (Mongoose handles it automatically if needed)
 
   const business: any = await Business.findOne({
@@ -243,8 +246,10 @@ const getBusinessById = async (businessId: string): Promise<any> => {
     return await generateAPIError(errorMessages.userAccountBlocked, 404);
   }
 
-  if (!business.paymentStatus && !business?.isFree) {
-    return await generateAPIError(errorMessages.paymentNotCompleted, 400);
+  if (!isAuth) {
+    if (!business.paymentStatus && !business?.isFree) {
+      return await generateAPIError(errorMessages.paymentNotCompleted, 400);
+    }
   }
 
   // Calculate rating from testimonials

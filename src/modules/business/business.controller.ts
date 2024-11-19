@@ -138,7 +138,10 @@ const getBusinessById = errorWrapper(
 
 const getBusinessProfile = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    const data = await businessService.getBusinessById(req.user?._id as string);
+    const data = await businessService.getBusinessById(
+      req.user?._id as string,
+      true,
+    );
 
     return responseUtils.success(res, {
       data,

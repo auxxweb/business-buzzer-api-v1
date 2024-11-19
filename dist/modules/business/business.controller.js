@@ -93,7 +93,7 @@ const getBusinessById = errorWrapper(async (req, res, next) => {
   });
 });
 const getBusinessProfile = errorWrapper(async (req, res, next) => {
-  const data = await businessService.getBusinessById(req.user?._id);
+  const data = await businessService.getBusinessById(req.user?._id, true);
   return responseUtils.success(res, {
     data,
     status: 200,
