@@ -1,11 +1,11 @@
-import { ObjectId } from "../../constants/type.js";
-import { model, Schema } from "mongoose";
+import { ObjectId } from '../../constants/type.js'
+import { model, Schema } from 'mongoose'
 
 const BusinessNewsSchema = new Schema(
   {
     businessId: {
       type: ObjectId,
-      ref: "businesses",
+      ref: 'businesses',
       required: true,
     },
     title: {
@@ -15,6 +15,13 @@ const BusinessNewsSchema = new Schema(
     description: {
       type: String,
       required: true,
+    },
+    image: {
+      type: String,
+    },
+    isBanner: {
+      type: Boolean,
+      required: false,
     },
     link: {
       type: String,
@@ -26,7 +33,7 @@ const BusinessNewsSchema = new Schema(
     },
   },
   { timestamps: true },
-);
+)
 
-const BusinessNews = model("business_news", BusinessNewsSchema);
-export default BusinessNews;
+const BusinessNews = model('business_news', BusinessNewsSchema)
+export default BusinessNews

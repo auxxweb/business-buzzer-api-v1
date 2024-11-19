@@ -3,4 +3,5 @@ export interface CreateNews {
   title: string;
   description: string;
   link: string;
+  image:string
 }
