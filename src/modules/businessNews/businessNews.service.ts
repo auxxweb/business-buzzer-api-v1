@@ -1,10 +1,10 @@
-import Business from '../../modules/business/business.model.js'
-import { CreateNews } from './businessNews.interface.js'
-import { ObjectId } from '../../constants/type.js'
-import { generateAPIError } from '../../errors/apiError.js'
-import { errorMessages } from '../../constants/messages.js'
-import BusinessNews from './businessNews.model.js'
-import { FilterQuery, QueryOptions } from 'mongoose'
+import Business from "../../modules/business/business.model.js";
+import { CreateNews } from "./businessNews.interface.js";
+import { ObjectId } from "../../constants/type.js";
+import { generateAPIError } from "../../errors/apiError.js";
+import { errorMessages } from "../../constants/messages.js";
+import BusinessNews from "./businessNews.model.js";
+import { FilterQuery, QueryOptions } from "mongoose";
 
 const createNews = async ({
   businessId,
@@ -13,15 +13,15 @@ const createNews = async ({
   link,
   image,
 }: CreateNews): Promise<any> => {
-  console.log(description, 'description')
+  console.log(description, "description");
 
   const businessExists = await Business.findOne({
     _id: new ObjectId(businessId),
     isDeleted: false,
-  })
+  });
 
   if (!businessExists) {
-    return await generateAPIError(errorMessages.userNotFound, 400)
+    return await generateAPIError(errorMessages.userNotFound, 400);
   }
 
   return await BusinessNews.create({
@@ -32,23 +32,23 @@ const createNews = async ({
     ...(image && {
       image,
     }),
-  })
-}
+  });
+};
 
 const getAllNews = async ({
   query,
   options,
 }: {
-  query: FilterQuery<typeof BusinessNews>
-  options: QueryOptions
+  query: FilterQuery<typeof BusinessNews>;
+  options: QueryOptions;
 }): Promise<any> => {
   const [data, totalCount] = await Promise.all([
     BusinessNews.find(query, {}, options),
     BusinessNews.countDocuments(query),
-  ])
+  ]);
 
-  return { data, totalCount }
-}
+  return { data, totalCount };
+};
 
 const updateNews = async (
   newsId: string,
@@ -57,13 +57,13 @@ const updateNews = async (
   const newsData = await BusinessNews.findOne({
     _id: new ObjectId(newsId),
     isDeleted: false,
-  })
+  });
 
   if (!newsData) {
-    return await generateAPIError(errorMessages.newsDataNotFound, 400)
+    return await generateAPIError(errorMessages.newsDataNotFound, 400);
   }
 
-  console.log(updateData, 'update-data--')
+  console.log(updateData, "update-data--");
 
   return await BusinessNews.findOneAndUpdate(
     {
@@ -87,24 +87,24 @@ const updateNews = async (
     {
       new: true,
     },
-  )
-}
+  );
+};
 
 const deleteNews = async ({
   newsId,
   businessId,
 }: {
-  newsId: string
-  businessId: string
+  newsId: string;
+  businessId: string;
 }): Promise<any> => {
   const newsData = await BusinessNews.findOne({
     _id: new ObjectId(newsId),
     businessId: new ObjectId(businessId),
     isDeleted: false,
-  })
+  });
 
   if (!newsData) {
-    return await generateAPIError(errorMessages.newsDataNotFound, 400)
+    return await generateAPIError(errorMessages.newsDataNotFound, 400);
   }
 
   const data = await BusinessNews.findOneAndUpdate(
@@ -118,16 +118,16 @@ const deleteNews = async ({
     {
       new: true,
     },
-  )
+  );
   if (!data) {
-    return await generateAPIError('Failed to delete news, try again', 400)
+    return await generateAPIError("Failed to delete news, try again", 400);
   }
-  return { message: 'News deleted successfully!' }
-}
+  return { message: "News deleted successfully!" };
+};
 
 export const newsService = {
   createNews,
   getAllNews,
   updateNews,
   deleteNews,
-}
+};

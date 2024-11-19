@@ -15,6 +15,13 @@ const BusinessNewsSchema = new Schema(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+    },
+    isBanner: {
+      type: Boolean,
+      required: false,
+    },
     link: {
       type: String,
       required: true,

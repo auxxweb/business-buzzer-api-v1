@@ -8,12 +8,12 @@ const getTermsAndConditions = async (businessId) => {
     business: new ObjectId(businessId),
     isDeleted: false,
   });
-  if (!termsAndConditions) {
-    return await generateAPIError(
-      errorMessages.termsAndConditionsNotFound,
-      400,
-    );
-  }
+  // if (!termsAndConditions) {
+  //   return await generateAPIError(
+  //     errorMessages.termsAndConditionsNotFound,
+  //     400,
+  //   );
+  // }
   return termsAndConditions;
 };
 const createTermsAndConditions = async (data) => {

@@ -3,7 +3,7 @@ import { ObjectId } from "../../constants/type.js";
 import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages } from "../../constants/messages.js";
 import BusinessNews from "./businessNews.model.js";
-const createNews = async ({ businessId, title, description, link }) => {
+const createNews = async ({ businessId, title, description, link, image }) => {
   console.log(description, "description");
   const businessExists = await Business.findOne({
     _id: new ObjectId(businessId),
@@ -17,6 +17,9 @@ const createNews = async ({ businessId, title, description, link }) => {
     description,
     businessId,
     link,
+    ...(image && {
+      image,
+    }),
   });
 };
 const getAllNews = async ({ query, options }) => {
@@ -34,6 +37,7 @@ const updateNews = async (newsId, updateData) => {
   if (!newsData) {
     return await generateAPIError(errorMessages.newsDataNotFound, 400);
   }
+  console.log(updateData, "update-data--");
   return await BusinessNews.findOneAndUpdate(
     {
       _id: new ObjectId(newsId),
@@ -48,6 +52,9 @@ const updateNews = async (newsId, updateData) => {
       }),
       ...(updateData?.link && {
         link: updateData?.link,
+      }),
+      ...(updateData?.image && {
+        image: updateData?.image,
       }),
     },
     {

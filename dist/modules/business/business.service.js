@@ -269,7 +269,7 @@ const getAllBusiness = async ({ query, options, lat, lon }) => {
               },
             },
           },
-          { $sort: { createdAt: -1 } }, // Sort by `createdAt` in descending order to get the latest document first
+          { $sort: { createdAt: -1 } },
           { $limit: 1 }, // Limit to only one document
         ],
         as: "payment",
@@ -888,14 +888,14 @@ const getBusinessDashboardData = async (businessId) => {
     {
       $project: {
         businessName: 1,
-        totalLeads: { $size: "$leads" }, // Count of `contact_forms` with `isDelete: false`
+        totalLeads: { $size: "$leads" },
         totalServiceCount: {
           $add: [
             { $size: { $ifNull: ["$services", []] } },
             { $size: { $ifNull: ["$specialServices.data", []] } },
           ],
-        }, // Combined total of `services` and `specialServices.data`
-        totalReviews: { $size: "$reviews" }, // Count of `business_reviews` with `isDelete: false`
+        },
+        totalReviews: { $size: "$reviews" },
         averageRating: { $ifNull: [{ $avg: "$reviews.rating" }, 0] }, // Sets `averageRating` to 0 if no reviews
       },
     },
@@ -912,7 +912,7 @@ const addProduct = async (businessId, productData) => {
   }
   // Validate and sanitize product data, add unique _id for the new product
   const sanitizedProductData = {
-    _id: new ObjectId(), // Generate a new ObjectId for the product
+    _id: new ObjectId(),
     title: productData.title,
     description: productData.description,
     price:
