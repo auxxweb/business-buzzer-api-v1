@@ -116,6 +116,15 @@ const getBusinessDashboardData = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const resetPassword = errorWrapper(async (req, res, next) => {
+  const data = await businessService.updatePassword({
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const getAllBusiness = errorWrapper(async (req, res, next) => {
   const paginationOptions = getPaginationOptions({
     limit: req.query?.limit,
@@ -321,4 +330,5 @@ export {
   getBusinessDashboardData,
   addProduct,
   forgotPassword,
+  resetPassword,
 };

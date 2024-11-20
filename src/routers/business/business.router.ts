@@ -16,6 +16,7 @@ import {
   getBusinessById,
   getBusinessDashboardData,
   getBusinessProfile,
+  resetPassword,
   updateBusiness,
   updateBusinessByAdmin,
   updateBusinessPassword,
@@ -25,6 +26,7 @@ import {
 const router = Router();
 // user-endpoints
 router.post("/", businessSignUp);
+router.post("/reset-password", resetPassword);
 router.post("/forgot-password", forgotPassword);
 router.post("/product", protect({ isAdmin: false }), addProduct);
 router.post("/check", businessExists);

@@ -1096,8 +1096,9 @@ const addProduct = async (
 
 const forgotPassword = async (email: string): Promise<any> => {
   const business = await Business?.findOne({
-    email,
+    email: email?.toString(),
     isDeleted: false,
+    status: true,
   });
 
   if (!business) {
@@ -1107,7 +1108,6 @@ const forgotPassword = async (email: string): Promise<any> => {
   if (!business?.status) {
     return await generateAPIError(errorMessages.userAccountBlocked, 400);
   }
-
   try {
     const uuId = getUuid();
 
@@ -1127,7 +1127,7 @@ const forgotPassword = async (email: string): Promise<any> => {
         username: business?.businessName ?? "",
         uuId,
       }),
-      subject: "Instant connect",
+      subject: "En-connect",
     };
 
     await sendEmail(obj);
@@ -1140,6 +1140,33 @@ const forgotPassword = async (email: string): Promise<any> => {
 // const resetPassword = async ({resetId:string,password:string}:{}):Promise<any>=>{
 
 // }
+
+const updatePassword = async ({ resetId, password }: any): Promise<any> => {
+  if (resetId) {
+    const user = await Business.findOne({ resetId, isDeleted: false }).select(
+      "_id status",
+    );
+
+    if (!user) {
+      return await generateAPIError(errorMessages.linkExpired, 400);
+    }
+
+    if (!user?.status) {
+      return await generateAPIError(errorMessages.userAccountBlocked, 400);
+    }
+
+    const hashedPassword = await hashValue(password, 10);
+
+    await Business.findByIdAndUpdate(user?._id, {
+      password: hashedPassword,
+      resetId: "",
+    });
+
+    return {
+      message: "password reset successfully ",
+    };
+  }
+};
 
 export const businessService = {
   businessLogin,
@@ -1157,4 +1184,5 @@ export const businessService = {
   getBusinessDashboardData,
   addProduct,
   forgotPassword,
+  updatePassword,
 };

@@ -11,7 +11,8 @@ export const resetLinkEmailTemplate = async (tempData: {
   username: string;
   uuId: string;
 }): Promise<string> => {
-  const resetLink = `${appConfig.webUrl}/reset-password?id=${tempData?.uuId}`;
+  const resetLink = `${appConfig.webUrl}/changePassword/${tempData?.uuId}`;
+  // const resetLink = `http://localhost:3000/changePassword/${tempData?.uuId}`;
 
   return `
 <!DOCTYPE html>
@@ -87,7 +88,7 @@ Dear ${tempData?.username},<br/>
 We received a request to reset the password for your account associated with this email address. 
 If you made this request, please click on the link below to reset your password:
 </pre>
-<a href="${resetLink}" class="link" style="color: #FFF;">
+<a href="${resetLink}" class="link" style="color: #0a73a1;">
 Reset Password
 </a>
 <pre>

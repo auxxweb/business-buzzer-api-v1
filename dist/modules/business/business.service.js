@@ -959,8 +959,9 @@ const addProduct = async (businessId, productData) => {
 };
 const forgotPassword = async (email) => {
   const business = await Business?.findOne({
-    email,
+    email: email?.toString(),
     isDeleted: false,
+    status: true,
   });
   if (!business) {
     return await generateAPIError(errorMessages.accountNotFound(email), 400);
@@ -985,7 +986,7 @@ const forgotPassword = async (email) => {
         username: business?.businessName ?? "",
         uuId,
       }),
-      subject: "Instant connect",
+      subject: "En-connect",
     };
     await sendEmail(obj);
     return { message: "Email sent successfully!" };
@@ -995,6 +996,27 @@ const forgotPassword = async (email) => {
 };
 // const resetPassword = async ({resetId:string,password:string}:{}):Promise<any>=>{
 // }
+const updatePassword = async ({ resetId, password }) => {
+  if (resetId) {
+    const user = await Business.findOne({ resetId, isDeleted: false }).select(
+      "_id status",
+    );
+    if (!user) {
+      return await generateAPIError(errorMessages.linkExpired, 400);
+    }
+    if (!user?.status) {
+      return await generateAPIError(errorMessages.userAccountBlocked, 400);
+    }
+    const hashedPassword = await hashValue(password, 10);
+    await Business.findByIdAndUpdate(user?._id, {
+      password: hashedPassword,
+      resetId: "",
+    });
+    return {
+      message: "password reset successfully ",
+    };
+  }
+};
 export const businessService = {
   businessLogin,
   businessSignUp,
@@ -1011,4 +1033,5 @@ export const businessService = {
   getBusinessDashboardData,
   addProduct,
   forgotPassword,
+  updatePassword,
 };

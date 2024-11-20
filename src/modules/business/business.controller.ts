@@ -174,6 +174,18 @@ const getBusinessDashboardData = errorWrapper(
     });
   },
 );
+const resetPassword = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await businessService.updatePassword({
+      ...req.body,
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 
 const getAllBusiness = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -409,4 +421,5 @@ export {
   getBusinessDashboardData,
   addProduct,
   forgotPassword,
+  resetPassword,
 };
