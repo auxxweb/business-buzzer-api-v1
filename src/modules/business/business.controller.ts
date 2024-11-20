@@ -185,7 +185,7 @@ const getAllBusiness = errorWrapper(
     let query: FilterQuery<typeof Business> = {
       isDeleted: false,
       status: true,
-      $or: [{ isFree: true }, { paymentStatus: true }],
+      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
     };
 
     const searchTerm = req.query?.searchTerm;
@@ -349,6 +349,8 @@ const getBusinessByCategory = errorWrapper(
     let query: FilterQuery<typeof Business> = {
       isDeleted: false,
       category: new ObjectId(String(req.params?.id)),
+      status: true,
+      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
     };
 
     const searchTerm = req.query?.searchTerm;

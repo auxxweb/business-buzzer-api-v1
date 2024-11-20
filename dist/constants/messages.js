@@ -34,6 +34,7 @@ const errorMessages = {
   freePlanNotDelete: "Can't delete free plan data",
   accountNotFound: (email) => `Account not found with email :${email}`,
   newsDataNotFound: "News data not found",
+  freePlanExired: "Free plan Expired",
 };
 const successMessages = {
   linkSend: "Link successfully send to mail",

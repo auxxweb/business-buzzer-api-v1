@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import { fork } from "child_process";
 // import path from "path";
 // import dotenv from "dotenv";
 import dbConnect from "./utils/dbConnection.js"; // import db connection feature from util folder
@@ -68,8 +69,14 @@ app.use(
   express.raw({ type: "application/json" }),
   webHookRouter,
 );
+
+const planWorker = fork("src/modules/cronjob/cronejob.js");
 app.use(notFound);
 app.use(errorHandler);
+
+process.on("exit", () => {
+  planWorker.kill();
+});
 const port = process.env.PORT ?? 5000;
 
 app.listen(port, () => {

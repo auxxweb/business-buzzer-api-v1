@@ -124,7 +124,7 @@ const getAllBusiness = errorWrapper(async (req, res, next) => {
   let query = {
     isDeleted: false,
     status: true,
-    $or: [{ isFree: true }, { paymentStatus: true }],
+    $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
   };
   const searchTerm = req.query?.searchTerm;
   if (searchTerm) {
@@ -266,6 +266,8 @@ const getBusinessByCategory = errorWrapper(async (req, res, next) => {
   let query = {
     isDeleted: false,
     category: new ObjectId(String(req.params?.id)),
+    status: true,
+    $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
   };
   const searchTerm = req.query?.searchTerm;
   if (searchTerm) {

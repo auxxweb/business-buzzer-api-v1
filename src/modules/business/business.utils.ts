@@ -22,3 +22,15 @@ export const findRating = async (reviews: any): Promise<number> => {
 
   return averageRating;
 };
+
+export const isValidityExpired = async (createdAt: Date): Promise<any> => {
+  // Add 14 days to the createdAt date
+  const validityDate = new Date(createdAt);
+  validityDate.setDate(validityDate.getDate() + 14);
+
+  // Get today's date
+  const today = new Date();
+
+  // Compare the validity date with today's date
+  return today > validityDate;
+};

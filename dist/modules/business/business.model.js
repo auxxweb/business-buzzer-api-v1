@@ -66,10 +66,10 @@ const BusinessSchema = new Schema(
     },
     socialMediaLinks: {
       type: [
-        {
+        new mongoose.Schema({
           tag: String,
           link: String,
-        },
+        }),
       ],
     },
     category: {
@@ -115,11 +115,11 @@ const BusinessSchema = new Schema(
       title: String,
       description: String,
       data: [
-        {
+        new mongoose.Schema({
           image: String,
           title: String,
           description: String,
-        },
+        }),
       ],
     },
     productSection: {
@@ -134,11 +134,11 @@ const BusinessSchema = new Schema(
     },
     service: {
       type: [
-        {
+        new mongoose.Schema({
           title: String,
           description: String,
           image: String,
-        },
+        }),
       ],
     },
     testimonial: {
@@ -181,6 +181,10 @@ const BusinessSchema = new Schema(
       default: 0,
     },
     isFree: {
+      type: Boolean,
+      default: false,
+    },
+    isInFreeTrail: {
       type: Boolean,
       default: false,
     },

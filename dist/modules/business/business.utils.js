@@ -11,3 +11,12 @@ export const findRating = async (reviews) => {
   const averageRating = totalRating / reviews?.length;
   return averageRating;
 };
+export const isValidityExpired = async (createdAt) => {
+  // Add 14 days to the createdAt date
+  const validityDate = new Date(createdAt);
+  validityDate.setDate(validityDate.getDate() + 14);
+  // Get today's date
+  const today = new Date();
+  // Compare the validity date with today's date
+  return today > validityDate;
+};

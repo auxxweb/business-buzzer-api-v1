@@ -50,6 +50,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     selectedPlan,
     paymentStatus,
     location,
+    isFree,
   } = userData;
 
   const businessExists = await Business.findOne({
@@ -98,7 +99,8 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     gallery,
     seoData,
     paymentStatus,
-    isFree: isFreee,
+    isFree,
+    isInFreeTrail: isFreee,
     password: hashedPassword,
   });
 
@@ -233,6 +235,9 @@ const getBusinessById = async (
   const business: any = await Business.findOne({
     _id: new ObjectId(businessId),
     isDeleted: false,
+    ...(!isAuth && {
+      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
+    }),
   })
     .populate("selectedPlan category")
     .select("-password");
@@ -247,9 +252,13 @@ const getBusinessById = async (
   }
 
   if (!isAuth) {
-    if (!business.paymentStatus && !business?.isFree) {
+    if (!business?.paymentStatus && !business?.isFree) {
       return await generateAPIError(errorMessages.paymentNotCompleted, 400);
     }
+
+    // if (!business?.paymentStatus && !business?.isFree&&!business?.isInFreeTrail) {
+    //   return await generateAPIError(errorMessages.freePlanExired, 400)
+    // }
   }
 
   // Calculate rating from testimonials
@@ -554,6 +563,7 @@ const updateBusiness = async (
     services,
     businessTiming,
     description,
+    secondaryTheme,
     theme,
     landingPageHero,
     welcomePart,
@@ -620,6 +630,9 @@ const updateBusiness = async (
       }),
       ...(theme && {
         theme,
+      }),
+      ...(secondaryTheme && {
+        secondaryTheme,
       }),
       ...(landingPageHero && {
         landingPageHero,
@@ -694,7 +707,9 @@ const deleteBusinessByAdmin = async (businessId: string): Promise<any> => {
 };
 const updateBusinessByAdmin = async (
   businessId: string,
-  businessData: Partial<CreateBusinessData & { status: boolean }>,
+  businessData: Partial<
+    CreateBusinessData & { isFree: boolean; status: boolean }
+  >,
 ): Promise<any> => {
   const {
     businessName,
@@ -722,6 +737,8 @@ const updateBusinessByAdmin = async (
     password,
     paymentStatus,
     status,
+    isFree,
+    secondaryTheme,
   } = businessData;
   const business: any = await Business.findOne({
     _id: new ObjectId(businessId),
@@ -783,11 +800,17 @@ const updateBusinessByAdmin = async (
       ...(theme && {
         theme,
       }),
+      ...(secondaryTheme && {
+        secondaryTheme,
+      }),
       ...(landingPageHero && {
         landingPageHero,
       }),
       ...(welcomePart && {
         welcomePart,
+      }),
+      ...(isFree && {
+        isFree,
       }),
       ...(specialServices && {
         specialServices,

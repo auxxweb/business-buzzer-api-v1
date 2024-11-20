@@ -99,6 +99,7 @@ export interface CreateBusinessData {
   };
   selectedPlan: string;
   paymentStatus: boolean;
+  isFree?: boolean;
 }
 
 export interface BusinessLoginData {
