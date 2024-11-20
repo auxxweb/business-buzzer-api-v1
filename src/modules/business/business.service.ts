@@ -252,7 +252,11 @@ const getBusinessById = async (
   }
 
   if (!isAuth) {
-    if (!business?.paymentStatus && !business?.isFree) {
+    if (
+      !business?.paymentStatus &&
+      !business?.isFree &&
+      !business?.isInFreeTrail
+    ) {
       return await generateAPIError(errorMessages.paymentNotCompleted, 400);
     }
 

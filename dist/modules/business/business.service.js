@@ -221,7 +221,11 @@ const getBusinessById = async (businessId, isAuth) => {
     return await generateAPIError(errorMessages.userAccountBlocked, 404);
   }
   if (!isAuth) {
-    if (!business?.paymentStatus && !business?.isFree) {
+    if (
+      !business?.paymentStatus &&
+      !business?.isFree &&
+      !business?.isInFreeTrail
+    ) {
       return await generateAPIError(errorMessages.paymentNotCompleted, 400);
     }
     // if (!business?.paymentStatus && !business?.isFree&&!business?.isInFreeTrail) {
