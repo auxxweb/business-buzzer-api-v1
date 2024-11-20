@@ -18,7 +18,6 @@ import { appConfig } from "./config/appConfig.js";
 import path from "path";
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import cron from "node-cron";
-import { checkFreePlan } from "./modules/cronjob/freePlanCheck.js";
 // import dbConnect from "../../utils/dbConnection.js";
 // import { checkFreePlan } from "./freePlanCheck.js";
 const app = express();
@@ -75,12 +74,12 @@ void (async () => {
       "0 23 * * *",
       async () => {
         console.log("Running billing trigger...");
-        try {
-          await checkFreePlan();
-          console.log("Billing trigger executed successfully.");
-        } catch (error) {
-          console.error("Error executing billing trigger:", error);
-        }
+        // try {
+        //   await checkFreePlan();
+        //   console.log("Billing trigger executed successfully.");
+        // } catch (error) {
+        //   console.error("Error executing billing trigger:", error);
+        // }
         // Fork a worker process for additional tasks
         try {
           const workerPath = path.resolve("src/modules/cronjob/cronejob.js");

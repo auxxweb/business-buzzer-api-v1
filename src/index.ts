@@ -87,12 +87,12 @@ void (async () => {
       async () => {
         console.log("Running billing trigger...");
 
-        try {
-          await checkFreePlan();
-          console.log("Billing trigger executed successfully.");
-        } catch (error) {
-          console.error("Error executing billing trigger:", error);
-        }
+        // try {
+        //   await checkFreePlan();
+        //   console.log("Billing trigger executed successfully.");
+        // } catch (error) {
+        //   console.error("Error executing billing trigger:", error);
+        // }
 
         // Fork a worker process for additional tasks
         try {

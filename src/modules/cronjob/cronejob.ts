@@ -13,7 +13,7 @@ void (async () => {
     cron.schedule(
       "0 23 * * *",
       async () => {
-        console.log("Running billing trigger...");
+        console.log("Running billing trigger...1");
 
         try {
           await checkFreePlan();
