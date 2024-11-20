@@ -60,7 +60,7 @@ line-height: normal;
 .link {
 padding: 15px 24px;
 border-radius: 8px;
-background: var(--Primary,orange);
+background:  #0a73a1;
 box-shadow: 0px 4px 10px 0px #DDBAFF;
 color: #FFF;
 font-family: Trip Sans;
@@ -143,7 +143,7 @@ export const getInformEmailTemplate = async ({
               <p style="margin: 0 0 20px;">Thank you for signing in to Instant Connect. We are thrilled to have you on board and can't wait to help you manage your business <strong>${businessName}</strong> more effectively.</p>
               <p style="margin: 0 0 20px;">To get started, simply click the link below to access your dashboard:</p>
               <p style="margin: 0 0 20px;">
-                <a href="https://admin.instant-connect.in/login" style="color: #1E3A8A; text-decoration: none; font-weight: 600; border: 2px solid #1E3A8A; padding: 12px 20px; border-radius: 6px; display: inline-block; transition: background-color 0.3s;">
+                <a href="https://admin.enconnect.in/login" style="color: #1E3A8A; text-decoration: none; font-weight: 600; border: 2px solid #1E3A8A; padding: 12px 20px; border-radius: 6px; display: inline-block; transition: background-color 0.3s;">
                   Go to Your Dashboard
                 </a>
               </p>
