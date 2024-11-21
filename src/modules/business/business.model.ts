@@ -31,6 +31,9 @@ const BusinessSchema = new Schema(
       unique: true,
     },
     location: {
+      googleMapLink:{
+        type:String,
+      },
       type: {
         type: String,
         enum: ["Point"],
