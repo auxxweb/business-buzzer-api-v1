@@ -125,24 +125,24 @@ const BusinessSchema = new Schema(
       ],
     },
     productSection: {
-      type: [
-        new mongoose.Schema(
-          {
-            title: String,
-            description: String,
-            image: String,
-            price: Number,
-          },
-          // { _id: false } // Prevents Mongoose from adding an _id field to each product
-        ),
+      title: String,
+      description: String,
+      data: [
+        new mongoose.Schema({
+          image: String,
+          title: String,
+          description: String,
+        }),
       ],
     },
     service: {
-      type: [
+      title: String,
+      description: String,
+      data: [
         new mongoose.Schema({
+          image: String,
           title: String,
           description: String,
-          image: String,
         }),
       ],
     },

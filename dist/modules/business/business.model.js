@@ -123,21 +123,24 @@ const BusinessSchema = new Schema(
       ],
     },
     productSection: {
-      type: [
+      title: String,
+      description: String,
+      data: [
         new mongoose.Schema({
+          image: String,
           title: String,
           description: String,
-          image: String,
-          price: Number,
         }),
       ],
     },
     service: {
-      type: [
+      title: String,
+      description: String,
+      data: [
         new mongoose.Schema({
+          image: String,
           title: String,
           description: String,
-          image: String,
         }),
       ],
     },

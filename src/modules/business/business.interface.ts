@@ -65,21 +65,28 @@ export interface CreateBusinessData {
       },
     ];
   };
-  productSection: [
-    {
-      title: string;
-      description: string;
-      image: string;
-      price: number;
-    },
-  ];
-  service: [
-    {
-      title: string;
-      description: string;
-      image: string;
-    },
-  ];
+  productSection: {
+    title: string;
+    description: string;
+    data: [
+      {
+        image: string;
+        title: string;
+        description: string;
+      },
+    ];
+  };
+  service: {
+    title: string;
+    description: string;
+    data: [
+      {
+        image: string;
+        title: string;
+        description: string;
+      },
+    ];
+  };
   testimonial: {
     description: string;
     reviews: [
