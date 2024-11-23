@@ -21,7 +21,7 @@ const createBusinessReview = async (reviewData) => {
   const averageRating = (
     businessRatings.reduce((sum, review) => sum + review.rating, 0) /
     businessRatings.length
-  ).toFixed(3);
+  ).toFixed(1);
   await Business.findOneAndUpdate(
     {
       _id: new ObjectId(reviewData?.businessId),
