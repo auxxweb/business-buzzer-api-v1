@@ -193,6 +193,10 @@ const BusinessSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isFreeTrailUsed: {
+      type: Boolean,
+      default: false,
+    },
     resetId: {
       type: String,
     },

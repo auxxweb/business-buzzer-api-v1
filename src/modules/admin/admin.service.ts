@@ -7,11 +7,7 @@ import { errorMessages } from "../../constants/messages.js";
 import { generateToken } from "../../utils/auth.utils.js";
 import { UpdateData } from "./admin.interface.js";
 import { ObjectId } from "../../constants/type.js";
-import {
-  adminResetLinkEmailTemplate,
-  getUuid,
-  resetLinkEmailTemplate,
-} from "../../utils/app.utils.js";
+import { adminResetLinkEmailTemplate, getUuid } from "../../utils/app.utils.js";
 import { sendMailData } from "../../interface/app.interface.js";
 import { sendEmail } from "../../utils/sendMail.js";
 

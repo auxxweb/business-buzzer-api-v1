@@ -94,7 +94,7 @@ const businessSignUp = async (userData) => {
     password: hashedPassword,
   });
   let paymentId = null;
-  if (selectedPlan !== appConfig.freePlanId) {
+  if (isFree) {
     const paymentData = await paymentService.createPayment({
       plan: selectedPlan,
       business: String(business?._id),

@@ -9,7 +9,7 @@ import Plans from "../../modules/plans/plans.model.js";
 import { findExpiryDate } from "./payment.utils.js";
 import { PaymentStatus } from "./payment.enums.js";
 const createPayment = async (paymentData) => {
-  const { paymentId, plan, business } = paymentData;
+  const { plan, business } = paymentData;
   const businessExists = await Business.findOne({
     _id: new ObjectId(business),
     isDeleted: false,
@@ -20,16 +20,9 @@ const createPayment = async (paymentData) => {
   if (!businessExists?.status) {
     return await generateAPIError(errorMessages.userAccountBlocked, 400); // changed from 401 to 404 to fix frontend issue with redirect to login page
   }
-  const planData = await Plans.findOne({
-    _id: new ObjectId(plan),
-    isDeleted: false,
-  });
-  if (!planData) {
-    return await generateAPIError(errorMessages.planNotFound, 400);
+  if (businessExists?.isFreeTrailUsed) {
+    return await generateAPIError(errorMessages.freePlanCompleted, 400);
   }
-  const expiry = await findExpiryDate({
-    validity: planData?.validity,
-  });
   const planDetails = await Plans.findOne({
     _id: new ObjectId(plan),
     isDeleted: false,
@@ -37,8 +30,10 @@ const createPayment = async (paymentData) => {
   if (!planDetails) {
     return await generateAPIError(errorMessages.planNotValid, 400);
   }
+  const expiry = await findExpiryDate({
+    validity: planDetails?.validity ?? 0,
+  });
   const paymentDatas = await Payment.create({
-    paymentId,
     business,
     date: new Date(),
     plan,

@@ -36,6 +36,8 @@ const errorMessages = {
   accountNotFound: (email: string) => `Account not found with email :${email}`,
   newsDataNotFound: "News data not found",
   freePlanExired: "Free plan Expired",
+  freePlanCompleted:
+    "You can't subscribe to the free plan because you have already completed the free trial.",
 };
 
 const successMessages = {
