@@ -79,7 +79,7 @@ export const resetLinkEmailTemplate = async (tempData) => {
           border-top: 1px solid #e3e6ec;
           padding-top: 15px;
         ">
-        © 2024 Instant Connect. All rights reserved.
+        © 2024 En Connect. All rights reserved.
       </p>
     </div>
   </body>
@@ -161,7 +161,7 @@ export const adminResetLinkEmailTemplate = async (tempData) => {
           border-top: 1px solid #e3e6ec;
           padding-top: 15px;
         ">
-        © 2024 Instant Connect. All rights reserved.
+        © 2024 En Connect. All rights reserved.
       </p>
     </div>
   </body>

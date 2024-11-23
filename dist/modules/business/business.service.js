@@ -107,7 +107,7 @@ const businessSignUp = async (userData) => {
     text: await getInformEmailTemplate({
       businessName: business?.businessName ?? "",
     }),
-    subject: "Instant connect",
+    subject: "En connect",
   };
   await sendEmail(obj);
   return {
