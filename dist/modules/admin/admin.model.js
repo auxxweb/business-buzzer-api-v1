@@ -20,6 +20,9 @@ const AdminSchema = new Schema(
     image: {
       type: String,
     },
+    resetId: {
+      type: String,
+    },
     isDeleted: {
       type: Boolean,
       default: false,

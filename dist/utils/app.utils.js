@@ -9,93 +9,164 @@ export const resetLinkEmailTemplate = async (tempData) => {
   const resetLink = `${appConfig.webUrl}/changePassword/${tempData?.uuId}`;
   // const resetLink = `http://localhost:3000/changePassword/${tempData?.uuId}`;
   return `
-<!DOCTYPE html>
-<html>
-
-<head>
-<style>
-.center {
-display: block;
-margin-left: auto;
-margin-right: auto;
-width:15rem
-}
-
-.email-container {
-max-width: 600px;
-padding: 24px;
-gap: 40px;
-flex-shrink: 0;
-border-radius: 8px;
-border: 1px solid var(--Purple-purple-100, #E8D1FF);
-background: #FFF;
-}
-
-pre {
-align-self: stretch;
-color: var(--Grey-grey-400, #5C5C5C);
-font-family: system-ui ;
-font-size: 18px;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-}
-
-h2 {
-align-self: stretch;
-color: var(--Grey-grey-400, #5C5C5C);
-font-family: Trip Sans;
-font-size: 25px;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
-}
-
-.link {
-padding: 15px 24px;
-border-radius: 8px;
-background:  #0a73a1;
-box-shadow: 0px 4px 10px 0px #DDBAFF;
-color: #FFF;
-font-family: Trip Sans;
-font-size: 20px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-text-decoration: none;
-display: block;
-margin-left: auto;
-margin-right: auto;
-width: fit-content;
-}
-</style>
-</head>
-
-<body>
-<div class="email-container">
-
-<h2>
-Reset Password
-</h2>
-<pre>
-Dear ${tempData?.username},<br/>
-We received a request to reset the password for your account associated with this email address. 
-If you made this request, please click on the link below to reset your password:
-</pre>
-<a href="${resetLink}" class="link" style="color: #0a73a1;">
-Reset Password
-</a>
-<pre>
-If you didn't request a password reset, please ignore this email or contact our support team if you have any concerns.<br/>
-You can reach us at inconnect.nfc@gmail.com<br><br/>
-
-Thank you,
-Instant connect
-</pre>
-</div>
-</body>
-
-</html>
+  <!DOCTYPE html>
+  <html>
+  
+  <body style="margin: 0; padding: 0; background-color: #f5f7fb; font-family: Arial, sans-serif;">
+    <div style="
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+        border-radius: 15px;
+        background-color: #ffffff;
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e3e6ec;
+        text-align: center;
+        color: #333333;
+      ">
+      <h2 style="
+          font-size: 24px;
+          font-weight: bold;
+          color: #004ba0;
+          margin-bottom: 15px;
+        ">
+        Reset Your Password
+      </h2>
+      <p style="
+          font-size: 16px;
+          line-height: 1.5;
+          margin-bottom: 20px;
+          color: #555555;
+        ">
+        Hello <strong>${tempData?.username}</strong>,<br/>
+        We received a request to reset your password. Please click the button below to continue. If this wasn't you, kindly disregard this email.
+      </p>
+      <a href="${resetLink}" style="
+          display: inline-block;
+          margin: 20px auto;
+          padding: 12px 25px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #ffffff;
+          background-color: #0066cc;
+          text-decoration: none;
+          border-radius: 8px;
+          box-shadow: 0px 4px 10px rgba(0, 102, 204, 0.3);
+          transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        " onmouseover="this.style.backgroundColor='#005bb5'; this.style.boxShadow='0px 6px 12px rgba(0, 91, 181, 0.3)';" 
+          onmouseout="this.style.backgroundColor='#0066cc'; this.style.boxShadow='0px 4px 10px rgba(0, 102, 204, 0.3)';">
+        Reset Password
+      </a>
+      <p style="
+          font-size: 14px;
+          line-height: 1.4;
+          margin-top: 20px;
+          color: #777777;
+        ">
+        For any assistance, contact us at<br/>
+        <a href="mailto:inconnect.nfc@gmail.com" style="
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+          ">
+          inconnect.nfc@gmail.com
+        </a>.
+      </p>
+      <p style="
+          font-size: 12px;
+          color: #999999;
+          margin-top: 20px;
+          border-top: 1px solid #e3e6ec;
+          padding-top: 15px;
+        ">
+        © 2024 Instant Connect. All rights reserved.
+      </p>
+    </div>
+  </body>
+  
+  </html>
+  `;
+};
+export const adminResetLinkEmailTemplate = async (tempData) => {
+  const resetLink = `${appConfig.adminUrl}/changePassword/${tempData?.uuId}`;
+  // const resetLink = `http://localhost:3000/changePassword/${tempData?.uuId}`;
+  return `
+  <!DOCTYPE html>
+  <html>
+  
+  <body style="margin: 0; padding: 0; background-color: #f5f7fb; font-family: Arial, sans-serif;">
+    <div style="
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+        border-radius: 15px;
+        background-color: #ffffff;
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e3e6ec;
+        text-align: center;
+        color: #333333;
+      ">
+      <h2 style="
+          font-size: 24px;
+          font-weight: bold;
+          color: #004ba0;
+          margin-bottom: 15px;
+        ">
+        Reset Your Password
+      </h2>
+      <p style="
+          font-size: 16px;
+          line-height: 1.5;
+          margin-bottom: 20px;
+          color: #555555;
+        ">
+        Hello <strong>${tempData?.username}</strong>,<br/>
+        We received a request to reset your password. Please click the button below to continue. If this wasn't you, kindly disregard this email.
+      </p>
+      <a href="${resetLink}" style="
+          display: inline-block;
+          margin: 20px auto;
+          padding: 12px 25px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #ffffff;
+          background-color: #0066cc;
+          text-decoration: none;
+          border-radius: 8px;
+          box-shadow: 0px 4px 10px rgba(0, 102, 204, 0.3);
+          transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        " onmouseover="this.style.backgroundColor='#005bb5'; this.style.boxShadow='0px 6px 12px rgba(0, 91, 181, 0.3)';" 
+          onmouseout="this.style.backgroundColor='#0066cc'; this.style.boxShadow='0px 4px 10px rgba(0, 102, 204, 0.3)';">
+        Reset Password
+      </a>
+      <p style="
+          font-size: 14px;
+          line-height: 1.4;
+          margin-top: 20px;
+          color: #777777;
+        ">
+        For any assistance, contact us at<br/>
+        <a href="mailto:inconnect.nfc@gmail.com" style="
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+          ">
+          inconnect.nfc@gmail.com
+        </a>.
+      </p>
+      <p style="
+          font-size: 12px;
+          color: #999999;
+          margin-top: 20px;
+          border-top: 1px solid #e3e6ec;
+          padding-top: 15px;
+        ">
+        © 2024 Instant Connect. All rights reserved.
+      </p>
+    </div>
+  </body>
+  
+  </html>
   `;
 };
 export const createBusinessId = async () => {

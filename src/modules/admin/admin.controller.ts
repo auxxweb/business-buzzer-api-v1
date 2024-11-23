@@ -19,6 +19,18 @@ const createAdmin = errorWrapper(
     });
   },
 );
+const forgotPasswordAdmin = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await adminService.forgotPasswordAdmin(
+      req.body?.email as string,
+    );
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 const adminLogin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await adminService.adminLogin({
@@ -44,5 +56,24 @@ const updatePassword = errorWrapper(
     });
   },
 );
+const resetPassword = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const data = await adminService.resetPassword({
+      adminId: req.user?._id,
+      ...req.body,
+    });
 
-export { createAdmin, adminLogin, updatePassword };
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+export {
+  createAdmin,
+  resetPassword,
+  adminLogin,
+  updatePassword,
+  forgotPasswordAdmin,
+};

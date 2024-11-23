@@ -7,6 +7,13 @@ import { errorMessages } from "../../constants/messages.js";
 import { generateToken } from "../../utils/auth.utils.js";
 import { UpdateData } from "./admin.interface.js";
 import { ObjectId } from "../../constants/type.js";
+import {
+  adminResetLinkEmailTemplate,
+  getUuid,
+  resetLinkEmailTemplate,
+} from "../../utils/app.utils.js";
+import { sendMailData } from "../../interface/app.interface.js";
+import { sendEmail } from "../../utils/sendMail.js";
 
 const createAdmin = async (adminData: any): Promise<any> => {
   const hashedPassword = await hashValue(adminData?.password ?? "", 10);
@@ -86,8 +93,72 @@ const updatePassword = async (updateData: UpdateData): Promise<any> => {
   );
 };
 
+const forgotPasswordAdmin = async (email: string): Promise<any> => {
+  const admin = await Admin?.findOne({
+    email: email?.toString(),
+    isDeleted: false,
+  });
+
+  if (!admin) {
+    return await generateAPIError(errorMessages.accountNotFound(email), 400);
+  }
+
+  try {
+    const uuId = getUuid();
+
+    await Admin.findOneAndUpdate(
+      {
+        email,
+        isDeleted: false,
+      },
+      {
+        resetId: uuId,
+      },
+    );
+
+    const obj: sendMailData = {
+      to: admin?.email,
+      text: await adminResetLinkEmailTemplate({
+        username: admin?.name ?? "",
+        uuId,
+      }),
+      subject: "En-connect",
+    };
+
+    await sendEmail(obj);
+    return { message: "Email sent successfully!" };
+  } catch (error) {
+    return await generateAPIError(errorMessages.emailSendFailed, 400);
+  }
+};
+
+const resetPassword = async ({ resetId, password }: any): Promise<any> => {
+  if (resetId) {
+    const user = await Admin.findOne({ resetId, isDeleted: false }).select(
+      "_id status",
+    );
+
+    if (!user) {
+      return await generateAPIError(errorMessages.linkExpired, 400);
+    }
+
+    const hashedPassword = await hashValue(password, 10);
+
+    await Admin.findByIdAndUpdate(user?._id, {
+      password: hashedPassword,
+      resetId: "",
+    });
+
+    return {
+      message: "password reset successfully ",
+    };
+  }
+};
+
 export const adminService = {
   createAdmin,
   adminLogin,
   updatePassword,
+  forgotPasswordAdmin,
+  resetPassword,
 };
