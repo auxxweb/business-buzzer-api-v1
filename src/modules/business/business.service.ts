@@ -896,6 +896,35 @@ const updateBusinessStatusByAdmin = async (
     message: successMessages.statusUpdated,
   };
 };
+const updateBusinessIsFreeByAdmin = async (
+  businessId: string,
+  isFree: string,
+): Promise<any> => {
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  }).select("-password");
+
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+
+  await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(businessId),
+      isDeleted: false,
+    },
+    {
+      ...(isFree && {
+        isFree,
+      }),
+    },
+  );
+
+  return {
+    message: successMessages.statusUpdated,
+  };
+};
 
 const updateBusinessPassword = async ({
   oldPassword,
@@ -1192,4 +1221,5 @@ export const businessService = {
   addProduct,
   forgotPassword,
   updatePassword,
+  updateBusinessIsFreeByAdmin,
 };

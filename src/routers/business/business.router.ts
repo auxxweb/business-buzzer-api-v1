@@ -19,6 +19,7 @@ import {
   resetPassword,
   updateBusiness,
   updateBusinessByAdmin,
+  updateBusinessIsFreeByAdmin,
   updateBusinessPassword,
   updateBusinessStatusByAdmin,
 } from "../../modules/business/business.controller.js";
@@ -43,6 +44,11 @@ router.patch(
   "/admin/status/:id",
   protect({ isAdmin: true }),
   updateBusinessStatusByAdmin,
+);
+router.patch(
+  "/admin/is-free/:id",
+  protect({ isAdmin: true }),
+  updateBusinessIsFreeByAdmin,
 );
 router.patch("/admin/:id", protect({ isAdmin: true }), updateBusinessByAdmin);
 router.delete("/admin/:id", protect({ isAdmin: true }), deleteBusinessByAdmin);

@@ -86,6 +86,20 @@ const updateBusinessByAdmin = errorWrapper(
   },
 );
 
+const updateBusinessIsFreeByAdmin = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body, "req body");
+    const data = await businessService.updateBusinessIsFreeByAdmin(
+      req.params.id,
+      req.body?.isFree,
+    );
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 const updateBusinessStatusByAdmin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     console.log(req.body, "req body");
@@ -422,4 +436,5 @@ export {
   addProduct,
   forgotPassword,
   resetPassword,
+  updateBusinessIsFreeByAdmin,
 };
