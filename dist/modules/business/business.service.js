@@ -446,6 +446,9 @@ const getAllBusinessByAdmin = async ({ query, options, lat, lon }) => {
         status: 1,
         payment: 1,
         createdAt: 1,
+        isFree: 1,
+        isInFreeTrail: 1,
+        isFreeTrailUsed: 1,
       },
     },
     {
