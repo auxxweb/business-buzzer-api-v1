@@ -58,7 +58,7 @@ const updateBusinessByAdmin = errorWrapper(async (req, res, next) => {
   });
 });
 const updateBusinessIsFreeByAdmin = errorWrapper(async (req, res, next) => {
-  console.log(req.body, "req body");
+  console.log(req.body, "req body-----");
   const data = await businessService.updateBusinessIsFreeByAdmin(
     req.params.id,
     req.body?.isFree,

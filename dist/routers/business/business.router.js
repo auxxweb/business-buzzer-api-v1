@@ -44,7 +44,7 @@ router.patch(
   updateBusinessStatusByAdmin,
 );
 router.patch(
-  "/admin/is-free/:id",
+  "/admin/isfree/:id",
   protect({ isAdmin: true }),
   updateBusinessIsFreeByAdmin,
 );
