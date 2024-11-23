@@ -130,6 +130,7 @@ const BusinessSchema = new Schema(
           image: String,
           title: String,
           description: String,
+          price: Number,
         }),
       ],
     },

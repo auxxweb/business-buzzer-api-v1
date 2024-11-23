@@ -73,6 +73,7 @@ export interface CreateBusinessData {
         image: string;
         title: string;
         description: string;
+        price: number;
       },
     ];
   };
