@@ -915,9 +915,9 @@ const updateBusinessIsFreeByAdmin = async (
       isDeleted: false,
     },
     {
-      ...(isFree && {
-        isFree,
-      }),
+    
+        isFree:!business?.isFree,
+   
     },
   );
 
