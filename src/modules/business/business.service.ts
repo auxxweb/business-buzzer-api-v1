@@ -172,7 +172,7 @@ const businessLogin = async (userData: BusinessLoginData): Promise<any> => {
   });
 
   if (business == null) {
-    return await generateAPIError(errorMessages.userNotFound, 404);
+    return await generateAPIError(errorMessages.invalidEmailId, 404);
   }
 
   if (!business?.status) {

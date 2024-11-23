@@ -154,7 +154,7 @@ const businessLogin = async (userData) => {
     isDeleted: false,
   });
   if (business == null) {
-    return await generateAPIError(errorMessages.userNotFound, 404);
+    return await generateAPIError(errorMessages.invalidEmailId, 404);
   }
   if (!business?.status) {
     return await generateAPIError(errorMessages.userAccountBlocked, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page

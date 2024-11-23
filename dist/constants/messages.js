@@ -1,6 +1,7 @@
 const errorMessages = {
   userExists: "Business already exists with this Email",
   userNotFound: "Business not found",
+  invalidEmailId: "Invalid Email",
   userAccountBlocked:
     "Your account has been blocked, contact Admin for more details",
   unauthorized: "You are unauthorized to access this platform",
