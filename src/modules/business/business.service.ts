@@ -596,6 +596,18 @@ const updateBusiness = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
+  if (email) {
+    const emailExists = await Business.findOne({
+      $and: [{ email }, { email: { $ne: email } }],
+      status: true,
+      isDeleted: false,
+    });
+
+    if (!emailExists) {
+      return await generateAPIError(errorMessages.userExists, 400);
+    }
+  }
+
   const updatedBusiness: any = await Business.findOneAndUpdate(
     {
       _id: new ObjectId(businessId),

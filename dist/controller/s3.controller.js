@@ -65,7 +65,7 @@ const deleteS3 = async ({ bucketName = bucket, key }) => {
   // Create an instance of the S3 client
   const s3 = new aws.S3();
   const params = {
-    Bucket: bucketName, // Your bucket name
+    Bucket: bucketName,
     Key: `businessBazaar/${key}`,
   };
   try {

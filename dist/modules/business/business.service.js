@@ -283,7 +283,7 @@ const getAllBusiness = async ({ query, options, lat, lon }) => {
               },
             },
           },
-          { $sort: { createdAt: -1 } }, // Sort by `createdAt` in descending order to get the latest document first
+          { $sort: { createdAt: -1 } },
           { $limit: 1 }, // Limit to only one document
         ],
         as: "payment",
@@ -523,6 +523,16 @@ const updateBusiness = async (businessId, businessData) => {
     .select("-password");
   if (business == null) {
     return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+  if (email) {
+    const emailExists = await Business.findOne({
+      $and: [{ email }, { email: { $ne: email } }],
+      status: true,
+      isDeleted: false,
+    });
+    if (!emailExists) {
+      return await generateAPIError(errorMessages.userExists, 400);
+    }
   }
   const updatedBusiness = await Business.findOneAndUpdate(
     {
@@ -940,14 +950,14 @@ const getBusinessDashboardData = async (businessId) => {
     {
       $project: {
         businessName: 1,
-        totalLeads: { $size: "$leads" }, // Count of `contact_forms` with `isDelete: false`
+        totalLeads: { $size: "$leads" },
         totalServiceCount: {
           $add: [
             { $size: { $ifNull: ["$services", []] } },
             { $size: { $ifNull: ["$specialServices.data", []] } },
           ],
-        }, // Combined total of `services` and `specialServices.data`
-        totalReviews: { $size: "$reviews" }, // Count of `business_reviews` with `isDelete: false`
+        },
+        totalReviews: { $size: "$reviews" },
         averageRating: { $ifNull: [{ $avg: "$reviews.rating" }, 0] }, // Sets `averageRating` to 0 if no reviews
       },
     },
@@ -964,7 +974,7 @@ const addProduct = async (businessId, productData) => {
   }
   // Validate and sanitize product data, add unique _id for the new product
   const sanitizedProductData = {
-    _id: new ObjectId(), // Generate a new ObjectId for the product
+    _id: new ObjectId(),
     title: productData.title,
     description: productData.description,
     price:
