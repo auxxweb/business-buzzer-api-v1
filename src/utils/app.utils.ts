@@ -207,7 +207,7 @@ export const getInformEmailTemplate = async ({
           <tr>
             <td style="padding: 30px; text-align: center; background-color: #1E3A8A; color: #ffffff; border-bottom: 1px solid #ddd;">
               <h1 style="margin: 0; font-size: 28px; font-weight: 600;">Thank You for Signing In, ${businessName}!</h1>
-              <p style="margin: 10px 0 0; font-size: 16px; font-weight: 400;">We're excited to help you manage your business with Instant Connect.</p>
+              <p style="margin: 10px 0 0; font-size: 16px; font-weight: 400;">We're excited to help you manage your business with En Connect.</p>
             </td>
           </tr>
 
