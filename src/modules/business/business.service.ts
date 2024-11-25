@@ -104,16 +104,16 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     password: hashedPassword,
   });
 
-  // const paymentId = null;
+  let paymentId = null;
 
-  // if (!isFreee) {
-  //   const paymentData = await paymentService.createPayment({
-  //     plan: selectedPlan,
-  //     business: String(business?._id),
-  //   });
-  //   paymentId = paymentData?._id;
-  //   console.log(paymentData, "paymentData");
-  // }
+  if (!isFreee) {
+    const paymentData = await paymentService.createPayment({
+      plan: selectedPlan,
+      business: String(business?._id),
+    });
+    paymentId = paymentData?._id;
+    console.log(paymentData, "paymentData");
+  }
 
   const obj: sendMailData = {
     to: business?.email,
@@ -153,6 +153,9 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     selectedPlan: business?.selectedPlan,
     paymentStatus: business?.paymentStatus,
     isFree: business?.isFree,
+    ...(!isFreee && {
+      paymentId,
+    }),
     rating: await findRating(business?.testimonial?.reviews),
     token: await generateToken({
       id: String(business?._id),
