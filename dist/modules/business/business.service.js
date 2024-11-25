@@ -15,7 +15,6 @@ import {
   resetLinkEmailTemplate,
 } from "../../utils/app.utils.js";
 import { appConfig } from "../../config/appConfig.js";
-import { paymentService } from "../../modules/payment/payment.service.js";
 import { sendEmail } from "../../utils/sendMail.js";
 // import BusinessReview from 'modules/businessReviews/businessReviews.model.js'
 const businessSignUp = async (userData) => {
@@ -93,15 +92,15 @@ const businessSignUp = async (userData) => {
     isInFreeTrail: isFreee,
     password: hashedPassword,
   });
-  let paymentId = null;
-  if (isFree) {
-    const paymentData = await paymentService.createPayment({
-      plan: selectedPlan,
-      business: String(business?._id),
-    });
-    paymentId = paymentData?._id;
-    console.log(paymentData, "paymentData");
-  }
+  // const paymentId = null;
+  // if (!isFreee) {
+  //   const paymentData = await paymentService.createPayment({
+  //     plan: selectedPlan,
+  //     business: String(business?._id),
+  //   });
+  //   paymentId = paymentData?._id;
+  //   console.log(paymentData, "paymentData");
+  // }
   const obj = {
     to: business?.email,
     text: await getInformEmailTemplate({
@@ -138,9 +137,6 @@ const businessSignUp = async (userData) => {
     selectedPlan: business?.selectedPlan,
     paymentStatus: business?.paymentStatus,
     isFree: business?.isFree,
-    ...(paymentId && {
-      paymentId,
-    }),
     rating: await findRating(business?.testimonial?.reviews),
     token: await generateToken({
       id: String(business?._id),
