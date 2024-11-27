@@ -58,7 +58,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     isDeleted: false,
   });
 
-  console.log(businessExists, "user", userData);
+  console.log(businessExists, "user");
 
   if (businessExists != null) {
     return await generateAPIError(errorMessages.userExists, 400);

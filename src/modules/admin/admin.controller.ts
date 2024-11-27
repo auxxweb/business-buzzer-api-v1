@@ -20,7 +20,7 @@ const createAdmin = errorWrapper(
   },
 );
 const forgotPasswordAdmin = errorWrapper(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {    
     const data = await adminService.forgotPasswordAdmin(
       req.body?.email as string,
     );

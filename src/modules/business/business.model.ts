@@ -17,7 +17,6 @@ const BusinessSchema = new Schema(
       type: String,
       trim: true,
       required: true,
-      unique: true,
       set: (value: string) => value.toLowerCase(),
     },
     password: {
@@ -208,6 +207,8 @@ const BusinessSchema = new Schema(
   },
   { timestamps: true },
 );
+
+BusinessSchema.index({ email: 1, isDeleted: 1 });
 
 const Business = model("business", BusinessSchema);
 
