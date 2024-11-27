@@ -61,6 +61,50 @@ const getAllCategories = errorWrapper(
     });
   },
 );
+
+
+const getTrashCategories = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const paginationOptions = getPaginationOptions({
+      limit: req.query?.limit,
+      page: req.query?.page,
+    });
+
+    let query: FilterQuery<typeof Category> = {
+      isDeleted: true,
+    };
+
+    const searchTerm = req.query?.searchTerm;
+    if (searchTerm) {
+      query = {
+        ...query,
+        $or: [
+          {
+            name: {
+              $regex: new RegExp(String(searchTerm)),
+              $options: "i",
+            },
+          },
+        ],
+      };
+    }
+
+    const data = await categoryService.getAllCategories({
+      query: {
+        ...query,
+      },
+      options: {
+        ...paginationOptions,
+        sort: { createdAt: -1 },
+      },
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 const getAllCategoriesForDropDown = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     let query: FilterQuery<typeof Category> = {
@@ -124,6 +168,7 @@ const getCategoryById = errorWrapper(
 export {
   createCategory,
   getAllCategories,
+  getTrashCategories,
   updateCategory,
   getCategoryById,
   getAllCategoriesForDropDown,

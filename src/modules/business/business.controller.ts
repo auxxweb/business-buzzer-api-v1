@@ -126,6 +126,19 @@ const deleteBusinessByAdmin = errorWrapper(
   },
 );
 
+
+const unDeleteBusinessByAdmin = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.params.id, "hasasasreq body");
+    const data = await businessService.unDeleteBusinessByAdmin(req?.params?.id);
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
 const businessLogin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await businessService.businessLogin({
@@ -201,8 +214,10 @@ const resetPassword = errorWrapper(
   },
 );
 
+
 const getAllBusiness = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.query, 'query dataaaa');
     const paginationOptions = getPaginationOptions({
       limit: req.query?.limit,
       page: req.query?.page,
@@ -259,6 +274,67 @@ const getAllBusiness = errorWrapper(
     });
   },
 );
+
+const getTrashBusiness = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const paginationOptions = getPaginationOptions({
+      limit: req.query?.limit,
+      page: req.query?.page,
+    });
+
+    let query: FilterQuery<typeof Business> = {
+      isDeleted: true,
+      status: true,
+      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
+    };
+
+    const searchTerm = req.query?.searchTerm;
+    if (searchTerm) {
+      query = {
+        ...query,
+        $or: [
+          {
+            businessName: {
+              $regex: new RegExp(String(searchTerm)),
+              $options: "i",
+            },
+          },
+        ],
+      };
+    }
+
+    console.log(req.query?.lat, req.query?.lon, "lat-logn-loatt");
+
+    const data = await businessService.getAllBusiness({
+      query: {
+        ...query,
+        ...(req.query?.selectedPlan && {
+          selectedPlan: new ObjectId(String(req.query?.selectedPlan)),
+        }),
+        ...(req.query?.category && {
+          category: new ObjectId(String(req.query?.category)),
+        }),
+      },
+      ...(req.query?.lat && {
+        lat: Number(req.query?.lat),
+      }),
+      ...(req.query?.lon && {
+        lon: Number(req.query?.lon),
+      }),
+      options: {
+        ...paginationOptions,
+        sort: { createdAt: -1 },
+      },
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+
 const getAllBusinessForDropDown = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const paginationOptions = getPaginationOptions({
@@ -422,6 +498,7 @@ export {
   businessLogin,
   getBusinessById,
   getAllBusiness,
+  getTrashBusiness,
   getBusinessByCategory,
   updateBusiness,
   updateBusinessByAdmin,
@@ -430,6 +507,7 @@ export {
   updateBusinessPassword,
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
+  unDeleteBusinessByAdmin,
   businessExists,
   getAllBusinessForDropDown,
   getBusinessDashboardData,

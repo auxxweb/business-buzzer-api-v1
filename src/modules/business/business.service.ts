@@ -699,6 +699,8 @@ const updateBusiness = async (
   return updatedBusiness;
 };
 
+
+
 const deleteBusinessByAdmin = async (businessId: string): Promise<any> => {
   const business: any = await Business.findOne({
     _id: new ObjectId(businessId),
@@ -724,6 +726,38 @@ const deleteBusinessByAdmin = async (businessId: string): Promise<any> => {
     },
   );
 };
+
+
+const unDeleteBusinessByAdmin = async (businessId: string): Promise<any> => {
+  const business: any = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: true,
+  })
+    .populate("selectedPlan category")
+    .select("-password");
+
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+
+  return await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(businessId),
+      isDeleted: true,
+    },
+    { 
+      isDeleted: false,
+    },
+    {
+      new: true,
+    },
+  );
+};
+
+
+
+
+
 const updateBusinessByAdmin = async (
   businessId: string,
   businessData: Partial<
@@ -1225,6 +1259,7 @@ export const businessService = {
   updateBusinessPassword,
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
+  unDeleteBusinessByAdmin,
   businessExists,
   getAllBusinessForDropDown,
   getBusinessDashboardData,

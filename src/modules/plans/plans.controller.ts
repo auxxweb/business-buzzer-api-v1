@@ -85,4 +85,48 @@ const getAllPlans = errorWrapper(
   },
 );
 
-export { createPlan, getAllPlans, getPlanById, updatePlan };
+
+const getTrashPlans = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const paginationOptions = getPaginationOptions({
+      limit: req.query?.limit,
+      page: req.query?.page,
+    });
+
+    let query: FilterQuery<typeof Plans> = {
+      isDeleted: true,
+    };
+
+    const searchTerm = req.query?.searchTerm;
+    if (searchTerm) {
+      query = {
+        ...query,
+        $or: [
+          {
+            plan: {
+              $regex: new RegExp(String(searchTerm)),
+              $options: "i",
+            },
+          },
+        ],
+      };
+    }
+
+    const data = await planService.getAllPlans({
+      query: {
+        ...query,
+      },
+      options: {
+        ...paginationOptions,
+        sort: { createdAt: -1 },
+      },
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+export { createPlan, getAllPlans,getTrashPlans, getPlanById, updatePlan };

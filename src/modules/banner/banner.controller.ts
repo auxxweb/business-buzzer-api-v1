@@ -62,4 +62,27 @@ const getAllBanners = errorWrapper(
   },
 );
 
-export { createBanner, getAllBanners, deleteBanner, updateBanner };
+
+const getTrashBanners = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const query: FilterQuery<typeof Banner> = {
+      isDeleted: true,
+    };
+
+    const data = await bannerService.getAllBanners({
+      query: {
+        ...query,
+      },
+      options: {
+        sort: { createdAt: -1 },
+      },
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+export { createBanner, getAllBanners,getTrashBanners, deleteBanner, updateBanner };
