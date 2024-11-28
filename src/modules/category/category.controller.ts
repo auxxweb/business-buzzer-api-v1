@@ -154,6 +154,23 @@ const updateCategory = errorWrapper(
     });
   },
 );
+
+
+const updateTrashCategory = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await categoryService.updateTrashCategory(req.params.id, {
+      ...req.body,
+    });
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+
+
 const getCategoryById = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await categoryService.getCategoryById(req.params.id);
@@ -170,6 +187,7 @@ export {
   getAllCategories,
   getTrashCategories,
   updateCategory,
+  updateTrashCategory,
   getCategoryById,
   getAllCategoriesForDropDown,
 };

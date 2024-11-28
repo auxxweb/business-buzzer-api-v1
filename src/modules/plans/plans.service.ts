@@ -141,9 +141,97 @@ const updatePlan = async (
   );
 };
 
+const updateTrashPlan = async (
+  planId: string,
+  planData: {
+    plan: string;
+    validity: number;
+    amount: number;
+    description: string;
+    isDeleted: boolean;
+    isPremium: boolean;
+  },
+): Promise<any> => {
+  const planExist = await Plans.findOne({
+    _id: new ObjectId(planId),
+    isDeleted: true,
+  });
+
+  if (!planExist) {
+    return await generateAPIError(errorMessages.planNotFound, 400);
+  }
+
+  if (planData?.plan && planExist?.plan !== planData?.plan) {
+    const planNameExists = await Plans.findOne({
+      _id: {
+        $ne: new ObjectId(planId),
+      },
+      plan: {
+        $regex: new RegExp(String(planData?.plan)),
+        $options: "i",
+      },
+      isDeleted: true,
+    });
+
+    if (planNameExists) {
+      return await generateAPIError(
+        errorMessages?.planNameExists(planData?.plan),
+        400,
+      );
+    }
+  }
+
+  if (planData?.isDeleted) {
+    console.log(planData?.isDeleted, "isDeleted");
+
+    if (planId === appConfig?.freePlanId) {
+      return await generateAPIError(errorMessages.freePlanNotDelete, 400);
+    }
+
+    const isBusinessExists = await checkAnyActiveBusinessesInPlans(planId);
+    console.log(isBusinessExists, "exists-plan-exists");
+
+    if (isBusinessExists > 0) {
+      return await generateAPIError(
+        errorMessages?.businessExistsInPlan(isBusinessExists, planExist?.plan),
+        400,
+      );
+    }
+  }
+
+  return await Plans.findOneAndUpdate(
+    {
+      _id: new ObjectId(planId),
+      isDeleted: true,
+    },
+    {
+      ...(planData?.plan && {
+        plan: planData?.plan,
+      }),
+      ...(planData?.validity && {
+        validity: planData?.validity,
+      }),
+      ...(planData?.amount && {
+        amount: planData?.amount,
+      }),
+      ...(planData?.isPremium && {
+        isPremium: planData?.isPremium,
+      }),
+      ...(planData?.description && {
+        description: planData?.description,
+      }),
+      ...(planData?.isDeleted && {
+        isDeleted: false,
+      }),
+    },
+    { new: true },
+  );
+};
+
 export const planService = {
   createPlan,
   getAllPlans,
   getPlanById,
   updatePlan,
+  updateTrashPlan
 };

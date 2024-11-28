@@ -5,6 +5,7 @@ import { protect } from "../../middleware/auth.middleware.js";
 import {
   createBanner,
   deleteBanner,
+  deleteTrashBanner,
   getAllBanners,
   getTrashBanners,
   updateBanner,
@@ -17,5 +18,6 @@ router.get("/", getAllBanners);
 router.get("/trash-banner", getTrashBanners);
 router.patch("/:id", protect({ isAdmin: true }), updateBanner);
 router.delete("/:id", protect({ isAdmin: true }), deleteBanner);
+router.delete("/undelete/:id", protect({ isAdmin: true }), deleteTrashBanner);
 
 export default router;

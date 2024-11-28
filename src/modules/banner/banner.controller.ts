@@ -28,6 +28,19 @@ const deleteBanner = errorWrapper(
     });
   },
 );
+
+
+const deleteTrashBanner = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await bannerService.deleteTrashBanner(req.params?.id);
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
 const updateBanner = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await bannerService.updateBanner(req.params?.id, {
@@ -40,6 +53,10 @@ const updateBanner = errorWrapper(
     });
   },
 );
+
+
+
+
 const getAllBanners = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const query: FilterQuery<typeof Banner> = {
@@ -85,4 +102,4 @@ const getTrashBanners = errorWrapper(
   },
 );
 
-export { createBanner, getAllBanners,getTrashBanners, deleteBanner, updateBanner };
+export { createBanner, getAllBanners,getTrashBanners, deleteBanner,deleteTrashBanner, updateBanner };

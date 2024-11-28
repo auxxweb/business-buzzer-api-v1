@@ -141,10 +141,84 @@ const updateCategory = async (
   );
 };
 
+
+const updateTrashCategory = async (
+  categoryId: string,
+  categoryData: any,
+): Promise<any> => {
+  const categoryExists = await Category.findOne({
+    _id: new ObjectId(categoryId),
+    isDeleted: true,
+  });
+
+  if (!categoryExists) {
+    return await generateAPIError(errorMessages.categoryNotFound, 400);
+  }
+
+  if (categoryData?.name && categoryExists?.name !== categoryData?.name) {
+    const catNameExists = await Category.findOne({
+      _id: {
+        $ne: new ObjectId(categoryId),
+      },
+      name: {
+        $regex: new RegExp(String(categoryData?.name)),
+        $options: "i",
+      },
+      isDeleted: true,
+    });
+    if (catNameExists) {
+      return await generateAPIError(
+        errorMessages.categoryNameExists(categoryData?.name),
+        400,
+      );
+    }
+  }
+
+  if (categoryData?.isDeleted === true || categoryData?.isDeleted === "true") {
+    const isBusinessExists = await checkAnyActiveBusinesses(categoryId);
+    console.log(isBusinessExists, "isbusinessExists");
+
+    if (isBusinessExists > 0) {
+      return await generateAPIError(
+        errorMessages.businessExistsInCategory(
+          isBusinessExists,
+          categoryExists?.name,
+        ),
+        400,
+      );
+    }
+  }
+
+  return await Category.findOneAndUpdate(
+    {
+      _id: new ObjectId(categoryId),
+      isDeleted: true,
+    },
+    {
+      ...(categoryData?.name && {
+        name: categoryData?.name,
+      }),
+      ...(categoryData?.image && {
+        image: categoryData?.image,
+      }),
+      ...(categoryData?.coverImage && {
+        coverImage: categoryData?.coverImage,
+      }),
+      ...(categoryData?.isDeleted && {
+        isDeleted: false,
+      }),
+    },
+    {
+      new: true,
+    },
+  );
+};
+
 export const categoryService = {
   createCategory,
   getAllCategories,
   updateCategory,
+  updateTrashCategory,
   getCategoryById,
   getAllCategoriesForDropDown,
 };
