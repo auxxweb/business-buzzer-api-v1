@@ -141,7 +141,6 @@ const updateCategory = async (
   );
 };
 
-
 const updateTrashCategory = async (
   categoryId: string,
   categoryData: any,

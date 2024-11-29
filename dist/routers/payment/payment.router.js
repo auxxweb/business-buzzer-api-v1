@@ -11,7 +11,7 @@ const router = Router();
 // user-endpoints
 router.post("/", protect({ isAdmin: false }), createPayment);
 router.get("/", protect({ isAdmin: true }), getPaymentListing);
-router.get("/status/:id", protect({ isAdmin: false }), checkPaymentStatus);
+router.get("/status", protect({ isAdmin: false }), checkPaymentStatus);
 router.get("/current", protect({ isAdmin: true }), getPaymentListing);
 router.get("/current-plan", protect({ isAdmin: false }), getCurrentPlan);
 export default router;

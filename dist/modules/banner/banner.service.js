@@ -66,9 +66,33 @@ const deleteBanner = async (bannerId) => {
   }
   return data;
 };
+const deleteTrashBanner = async (bannerId) => {
+  const bannerExists = await Banner.findOne({
+    _id: new ObjectId(bannerId),
+    isDeleted: true,
+  });
+  console.log(bannerExists, "banner");
+  if (!bannerExists) {
+    return await generateAPIError(errorMessages.bannerNOtFound, 400);
+  }
+  const data = await Banner.findOneAndUpdate(
+    {
+      _id: new ObjectId(bannerId),
+      isDeleted: true,
+    },
+    {
+      isDeleted: false,
+    },
+  );
+  if (!data) {
+    return await generateAPIError(errorMessages.bannerDeleteFailed, 400);
+  }
+  return data;
+};
 export const bannerService = {
   createBanner,
   getAllBanners,
   updateBanner,
   deleteBanner,
+  deleteTrashBanner,
 };

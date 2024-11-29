@@ -699,8 +699,6 @@ const updateBusiness = async (
   return updatedBusiness;
 };
 
-
-
 const deleteBusinessByAdmin = async (businessId: string): Promise<any> => {
   const business: any = await Business.findOne({
     _id: new ObjectId(businessId),
@@ -727,7 +725,6 @@ const deleteBusinessByAdmin = async (businessId: string): Promise<any> => {
   );
 };
 
-
 const unDeleteBusinessByAdmin = async (businessId: string): Promise<any> => {
   const business: any = await Business.findOne({
     _id: new ObjectId(businessId),
@@ -745,7 +742,7 @@ const unDeleteBusinessByAdmin = async (businessId: string): Promise<any> => {
       _id: new ObjectId(businessId),
       isDeleted: true,
     },
-    { 
+    {
       isDeleted: false,
     },
     {
@@ -753,10 +750,6 @@ const unDeleteBusinessByAdmin = async (businessId: string): Promise<any> => {
     },
   );
 };
-
-
-
-
 
 const updateBusinessByAdmin = async (
   businessId: string,

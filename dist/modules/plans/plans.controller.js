@@ -27,6 +27,15 @@ const updatePlan = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const updateTrashPlan = errorWrapper(async (req, res, next) => {
+  const data = await planService.updateTrashPlan(req.params?.id, {
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const getAllPlans = errorWrapper(async (req, res, next) => {
   const paginationOptions = getPaginationOptions({
     limit: req.query?.limit,
@@ -63,4 +72,47 @@ const getAllPlans = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
-export { createPlan, getAllPlans, getPlanById, updatePlan };
+const getTrashPlans = errorWrapper(async (req, res, next) => {
+  const paginationOptions = getPaginationOptions({
+    limit: req.query?.limit,
+    page: req.query?.page,
+  });
+  let query = {
+    isDeleted: true,
+  };
+  const searchTerm = req.query?.searchTerm;
+  if (searchTerm) {
+    query = {
+      ...query,
+      $or: [
+        {
+          plan: {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+      ],
+    };
+  }
+  const data = await planService.getAllPlans({
+    query: {
+      ...query,
+    },
+    options: {
+      ...paginationOptions,
+      sort: { createdAt: -1 },
+    },
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+export {
+  createPlan,
+  getAllPlans,
+  getTrashPlans,
+  updateTrashPlan,
+  getPlanById,
+  updatePlan,
+};

@@ -62,7 +62,6 @@ const getAllCategories = errorWrapper(
   },
 );
 
-
 const getTrashCategories = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const paginationOptions = getPaginationOptions({
@@ -155,7 +154,6 @@ const updateCategory = errorWrapper(
   },
 );
 
-
 const updateTrashCategory = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await categoryService.updateTrashCategory(req.params.id, {
@@ -168,8 +166,6 @@ const updateTrashCategory = errorWrapper(
     });
   },
 );
-
-
 
 const getCategoryById = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {

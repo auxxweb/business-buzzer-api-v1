@@ -61,8 +61,6 @@ const updateBanner = async (
   );
 };
 
-
-
 const deleteBanner = async (bannerId: string): Promise<any> => {
   const bannerExists = await Banner.findOne({
     _id: new ObjectId(bannerId),
@@ -90,7 +88,6 @@ const deleteBanner = async (bannerId: string): Promise<any> => {
 
   return data;
 };
-
 
 const deleteTrashBanner = async (bannerId: string): Promise<any> => {
   const bannerExists = await Banner.findOne({
@@ -125,5 +122,5 @@ export const bannerService = {
   getAllBanners,
   updateBanner,
   deleteBanner,
-  deleteTrashBanner
+  deleteTrashBanner,
 };

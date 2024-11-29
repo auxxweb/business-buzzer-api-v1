@@ -7,17 +7,19 @@ import crypto from "crypto";
 import { appConfig } from "../../config/appConfig.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 const createPayment = errorWrapper(async (req, res, next) => {
+  console.log(req.body, "ppppppppppppppp");
   const data = await paymentService.createPayment({
     ...req.body,
     business: req?.user?._id,
   });
+  console.log(data, "ithaaanjsbcjhbshbshbshbhsb");
   return responseUtils.success(res, {
     data,
     status: 201,
   });
 });
 const checkPaymentStatus = errorWrapper(async (req, res, next) => {
-  const data = await paymentService.checkPaymentStatus(req?.params?.id);
+  const data = await paymentService.checkPaymentStatus(req?.user?._id);
   return responseUtils.success(res, {
     data,
     status: 200,

@@ -126,7 +126,6 @@ const deleteBusinessByAdmin = errorWrapper(
   },
 );
 
-
 const unDeleteBusinessByAdmin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     console.log(req.params.id, "hasasasreq body");
@@ -214,10 +213,9 @@ const resetPassword = errorWrapper(
   },
 );
 
-
 const getAllBusiness = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.query, 'query dataaaa');
+    console.log(req.query, "query dataaaa");
     const paginationOptions = getPaginationOptions({
       limit: req.query?.limit,
       page: req.query?.page,
@@ -333,7 +331,6 @@ const getTrashBusiness = errorWrapper(
     });
   },
 );
-
 
 const getAllBusinessForDropDown = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {

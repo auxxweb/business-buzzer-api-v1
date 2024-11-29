@@ -51,7 +51,7 @@ const businessSignUp = async (userData) => {
     email,
     isDeleted: false,
   });
-  console.log(businessExists, "user", userData);
+  console.log(businessExists, "user");
   if (businessExists != null) {
     return await generateAPIError(errorMessages.userExists, 400);
   }
@@ -645,6 +645,29 @@ const deleteBusinessByAdmin = async (businessId) => {
     },
   );
 };
+const unDeleteBusinessByAdmin = async (businessId) => {
+  const business = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: true,
+  })
+    .populate("selectedPlan category")
+    .select("-password");
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+  return await Business.findOneAndUpdate(
+    {
+      _id: new ObjectId(businessId),
+      isDeleted: true,
+    },
+    {
+      isDeleted: false,
+    },
+    {
+      new: true,
+    },
+  );
+};
 const updateBusinessByAdmin = async (businessId, businessData) => {
   const {
     businessName,
@@ -1066,6 +1089,7 @@ export const businessService = {
   updateBusinessPassword,
   getAllBusinessByAdmin,
   deleteBusinessByAdmin,
+  unDeleteBusinessByAdmin,
   businessExists,
   getAllBusinessForDropDown,
   getBusinessDashboardData,

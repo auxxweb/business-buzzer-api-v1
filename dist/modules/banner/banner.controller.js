@@ -17,6 +17,13 @@ const deleteBanner = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const deleteTrashBanner = errorWrapper(async (req, res, next) => {
+  const data = await bannerService.deleteTrashBanner(req.params?.id);
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const updateBanner = errorWrapper(async (req, res, next) => {
   const data = await bannerService.updateBanner(req.params?.id, {
     ...req.body,
@@ -43,4 +50,28 @@ const getAllBanners = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
-export { createBanner, getAllBanners, deleteBanner, updateBanner };
+const getTrashBanners = errorWrapper(async (req, res, next) => {
+  const query = {
+    isDeleted: true,
+  };
+  const data = await bannerService.getAllBanners({
+    query: {
+      ...query,
+    },
+    options: {
+      sort: { createdAt: -1 },
+    },
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
+export {
+  createBanner,
+  getAllBanners,
+  getTrashBanners,
+  deleteBanner,
+  deleteTrashBanner,
+  updateBanner,
+};

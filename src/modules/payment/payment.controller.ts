@@ -14,25 +14,27 @@ import { appConfig } from "../../config/appConfig.js";
 
 const createPayment = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    console.log(req.body,'ppppppppppppppp')
+    console.log(req.body, "ppppppppppppppp");
     const data = await paymentService.createPayment({
       ...req.body,
       business: req?.user?._id,
-    }); 
-   console.log(data,'ithaaanjsbcjhbshbshbshbhsb')
+    });
+    console.log(data, "ithaaanjsbcjhbshbshbshbhsb");
     return responseUtils.success(res, {
       data,
       status: 201,
     });
-  }, 
+  },
 );
-const checkPaymentStatus = errorWrapper(   
+const checkPaymentStatus = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    const data = await paymentService.checkPaymentStatus(req?.user?._id as string);
+    const data = await paymentService.checkPaymentStatus(
+      req?.user?._id as string,
+    );
 
     return responseUtils.success(res, {
       data,
-      status: 200,                        
+      status: 200,
     });
   },
 );
