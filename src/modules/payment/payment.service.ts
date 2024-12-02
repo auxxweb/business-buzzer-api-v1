@@ -84,18 +84,33 @@ const getPaymentListing = async ({
 const getCurrentPlan = async (businessId: string): Promise<any> => {
   console.log(businessId, "businessId");
 
-  const data = await Payment.findOne({
+  const payment: any = await Payment.findOne({
     business: new ObjectId(businessId),
     isDeleted: false,
-  })
-    .sort({ createdAt: -1 })
+    paymentStatus: PaymentStatus.SUCCESS
+  }).sort({ createdAt: -1 })
     .populate({
       path: "plan",
-      select: "plan amount validity",
+      select: "plan amount expiryDate",
     });
 
-  if (!data) {
-    return await generateAPIError(errorMessages.paymentNotFound, 400);
+  const business = await Business.findById(businessId).select('validity isFree plan isValid isFreeTrailUsed isInFreeTrail')
+
+  if (!business) {
+    return await generateAPIError(errorMessages.userNotFound, 400)
+  }
+
+  const data = {
+    plan: payment?.plan?.plan ?? "",
+    PlanAmount: payment?.plan?.amount ?? "",
+    amount: payment?.amount,
+    planValidity: payment?.plain?.expiryDate ?? "",
+    businessPlan: business?.plan,
+    businessValidity: business?.validity,
+    isValid: business?.isValid,
+    isFree: business?.isFree,
+    isFreeTrailUsed: business?.isFreeTrailUsed,
+    isInFreeTrail: business?.isInFreeTrail
   }
   return data;
 };
