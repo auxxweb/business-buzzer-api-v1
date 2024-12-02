@@ -1,6 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
 
 import { ObjectId } from "../../constants/type.js";
+import { PlanStatus } from "./business.enum.js";
 
 const BusinessSchema = new Schema(
   {
@@ -188,6 +189,19 @@ const BusinessSchema = new Schema(
     isFree: {
       type: Boolean,
       default: false,
+    },
+    // this plan means current plan like free, paid,special or cancelled based on payments
+    plan: {
+      type: String,
+      enum: PlanStatus,
+      default: PlanStatus.FREE_TRAIL
+    },
+    isValid: {
+      type: Boolean,
+      default: false
+    },
+    validity: {
+      type: Date,
     },
     isInFreeTrail: {
       type: Boolean,

@@ -7,10 +7,11 @@ import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages } from "../../constants/messages.js";
 import Payment from "./payment.model.js";
 import Plans from "../../modules/plans/plans.model.js";
-import { findExpiryDate } from "./payment.utils.js";
+import { DateCalculationUtil, findExpiryDate } from "./payment.utils.js";
 // import { PaymentStatus } from './payment.enums.js'
 import { FilterQuery, QueryOptions } from "mongoose";
 import { PaymentStatus } from "./payment.enums.js";
+import { PlanStatus } from "../business/business.enum.js";
 
 const createPayment = async (paymentData: PaymentData): Promise<any> => {
   const { plan, business } = paymentData;
@@ -121,8 +122,8 @@ const updatePaymentWebHook = async ({
           isDeleted: false,
           paymentStatus: PaymentStatus.PENDING,
         });
-
         if (data) {
+          const planValidity = await Plans.findById(data?.plan, { validity: 1 })
           const payData = await Payment.findOneAndUpdate(
             {
               business: new ObjectId(metaData?.businessId ?? ""),
@@ -145,13 +146,15 @@ const updatePaymentWebHook = async ({
             },
             {
               paymentStatus: true,
+              plan: PlanStatus.PAID,
+              isValid: true,
+              validity: DateCalculationUtil.calculateFutureDate(planValidity?.validity ?? 1)
             },
           );
 
           return payData;
         }
         return false;
-        break;
 
       case "payment.failed":
         // Handle payment failed event
@@ -176,6 +179,16 @@ const updatePaymentWebHook = async ({
               new: true,
             },
           );
+          const businessData = await Business.findById(metaData?.businessId)
+          let updatedValidity = businessData?.validity instanceof Date
+            ? businessData?.validity
+            : new Date(businessData?.validity as string | Date | any);
+
+          const currentDate = new Date();
+          let isStillValid = false
+          if (updatedValidity > currentDate) {
+            isStillValid = true
+          }
 
           await Business.findOneAndUpdate(
             {
@@ -184,13 +197,14 @@ const updatePaymentWebHook = async ({
             },
             {
               paymentStatus: false,
+              plan: isStillValid ? businessData?.plan : PlanStatus.CANCELLED,
+              isValid: isStillValid
             },
           );
 
           return payData1;
         }
         return false;
-        break;
       // Add more cases for different events if needed
       default:
         console.log("Unhandled event:", metaData);
