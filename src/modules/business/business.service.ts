@@ -237,7 +237,7 @@ const getBusinessById = async (
     _id: new ObjectId(businessId),
     isDeleted: false,
     ...(!isAuth && {
-      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
+      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }, { isValid: true }, { plan: PlanStatus.SPECIAL_TRAIL }],
     }),
   })
     .populate("selectedPlan category")
@@ -595,6 +595,10 @@ const updateBusiness = async (
 
   if (business == null) {
     return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+
+  if (!business?.isValid && business.plain !== PlanStatus.SPECIAL_TRAIL) {
+    return await generateAPIError(errorMessages.planNotValid, 400)
   }
 
   if (email) {
@@ -972,8 +976,8 @@ const updateBusinessIsFreeByAdmin = async (
 };
 
 const activateSpecialTail = async (
-  { businessId, validity }:
-    { businessId: string, validity: Date }
+  { businessId }:
+    { businessId: string }
 ): Promise<any> => {
 
   const business: any = await Business.findOne({
@@ -996,7 +1000,6 @@ const activateSpecialTail = async (
       {
         plan: PlanStatus.SPECIAL_TRAIL,
         isValid: true,
-        validity: validity
       }
     )
 
@@ -1033,7 +1036,6 @@ const deactivateSpecialTail = async (
       {
         plan: PlanStatus.SPECIAL_TRAIL,
         isValid: false,
-        validity: new Date()
       }
     )
 
@@ -1219,6 +1221,10 @@ const addProduct = async (
 
   if (!business) {
     return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+
+  if (!business.isValid || !business.paymentStatus) {
+    return await generateAPIError(errorMessages.planNotValid, 404);
   }
 
   // Validate and sanitize product data, add unique _id for the new product

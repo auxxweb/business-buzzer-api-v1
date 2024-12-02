@@ -7,8 +7,7 @@ import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages } from "../../constants/messages.js";
 import Payment from "./payment.model.js";
 import Plans from "../../modules/plans/plans.model.js";
-import { DateCalculationUtil, findExpiryDate } from "./payment.utils.js";
-// import { PaymentStatus } from './payment.enums.js'
+import { findExpiryDate } from "./payment.utils.js";
 import { FilterQuery, QueryOptions } from "mongoose";
 import { PaymentStatus } from "./payment.enums.js";
 import { PlanStatus } from "../business/business.enum.js";
@@ -123,7 +122,7 @@ const updatePaymentWebHook = async ({
           paymentStatus: PaymentStatus.PENDING,
         });
         if (data) {
-          const planValidity = await Plans.findById(data?.plan, { validity: 1 })
+          const planValidity = await Plans.findById(data?.plan)
           const payData = await Payment.findOneAndUpdate(
             {
               business: new ObjectId(metaData?.businessId ?? ""),
@@ -138,7 +137,9 @@ const updatePaymentWebHook = async ({
               new: true,
             },
           );
-
+          const validity = await findExpiryDate({
+            validity: planValidity?.validity ?? 0,
+          });
           await Business.findOneAndUpdate(
             {
               _id: new ObjectId(metaData?.businessId ?? ""),
@@ -148,10 +149,9 @@ const updatePaymentWebHook = async ({
               paymentStatus: true,
               plan: PlanStatus.PAID,
               isValid: true,
-              validity: DateCalculationUtil.calculateFutureDate(planValidity?.validity ?? 1)
+              validity: validity
             },
           );
-
           return payData;
         }
         return false;

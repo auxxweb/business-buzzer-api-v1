@@ -38,8 +38,8 @@ const checkFreePlan = async (): Promise<void> => {
         business.isInFreeTrail = false;
         business.plan = PlanStatus.CANCELLED
       } else if (await isValidityExpired(business?.validity) && business.plan === PlanStatus.SPECIAL_TRAIL) {
-        business.isInFreeTrail = false;
-        business.plan = PlanStatus.CANCELLED
+        business.plan = PlanStatus.SPECIAL_TRAIL
+        business.isValid = true
       } else {
         business.isInFreeTrail = true;
         business.isValid = true

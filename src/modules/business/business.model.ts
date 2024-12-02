@@ -202,6 +202,11 @@ const BusinessSchema = new Schema(
     },
     validity: {
       type: Date,
+      default: () => {
+        const futureDate = new Date();
+        futureDate.setDate(futureDate.getDate() + 14);
+        return futureDate;
+      }
     },
     isInFreeTrail: {
       type: Boolean,

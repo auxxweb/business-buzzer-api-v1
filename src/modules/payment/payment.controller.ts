@@ -127,9 +127,9 @@ const getCurrentPlan = errorWrapper(
 const activateSpecialTrail = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
 
-    const { businessId, validity } = req.body
+    const { businessId } = req.body
 
-    const data = businessService.activateSpecialTail({ businessId, validity })
+    const data = businessService.activateSpecialTail({ businessId })
     return responseUtils.success(res, {
       data,
       status: 201,
