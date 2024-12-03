@@ -3,7 +3,7 @@ import express, { Router } from "express";
 import { updatePaymentWebHook } from "../../modules/payment/payment.controller.js";
 
 const router = Router();
-router.post(
+router.post( 
   "/",
   express.raw({ type: "application/json" }),
   updatePaymentWebHook,
