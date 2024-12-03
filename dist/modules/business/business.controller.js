@@ -163,6 +163,42 @@ const getAllBusiness = errorWrapper(async (req, res, next) => {
         {
           businessName: {
             $regex: new RegExp(String(searchTerm)),
+            $options: "i", // Case-insensitive
+          },
+        },
+        {
+          "address.buildingName": {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+        {
+          "address.city": {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+        {
+          "address.landMark": {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+        {
+          description: {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+        {
+          category: {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+        {
+          "contactDetails.primaryNumber": {
+            $regex: new RegExp(String(searchTerm)),
             $options: "i",
           },
         },

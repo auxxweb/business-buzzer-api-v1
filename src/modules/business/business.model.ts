@@ -194,11 +194,11 @@ const BusinessSchema = new Schema(
     plan: {
       type: String,
       enum: PlanStatus,
-      default: PlanStatus.FREE_TRAIL
+      default: PlanStatus.FREE_TRAIL,
     },
     isValid: {
       type: Boolean,
-      default: false
+      default: false,
     },
     validity: {
       type: Date,
@@ -206,7 +206,7 @@ const BusinessSchema = new Schema(
         const futureDate = new Date();
         futureDate.setDate(futureDate.getDate() + 14);
         return futureDate;
-      }
+      },
     },
     isInFreeTrail: {
       type: Boolean,

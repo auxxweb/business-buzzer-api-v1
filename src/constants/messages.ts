@@ -50,7 +50,7 @@ const successMessages = {
   statusUpdated: "Business status updated successfully",
   deleteSuccess: "Data deleted successfully",
   activateSpecialTrail: "Special trail activated Successfully ",
-  deactivateSpecialTrail: "Special trail deactivated Successfully "
+  deactivateSpecialTrail: "Special trail deactivated Successfully ",
 };
 
 export { errorMessages, successMessages };

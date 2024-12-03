@@ -16,7 +16,6 @@ const createPayment = async (paymentData: PaymentData): Promise<any> => {
   const { plan, business } = paymentData;
   console.log({ paymentData });
 
-
   const businessExists = await Business.findOne({
     _id: new ObjectId(business),
     isDeleted: false,
@@ -89,14 +88,17 @@ const getCurrentPlan = async (businessId: string): Promise<any> => {
   const payment: any = await Payment.findOne({
     business: new ObjectId(businessId),
     isDeleted: false,
-    paymentStatus: PaymentStatus.SUCCESS
-  }).sort({ createdAt: -1 })
-    .populate('plan', 'amount validity isPremium description');
+    paymentStatus: PaymentStatus.SUCCESS,
+  })
+    .sort({ createdAt: -1 })
+    .populate("plan", "amount validity isPremium description");
 
-  const business = await Business.findById(businessId).select('validity isFree plan isValid isFreeTrailUsed isInFreeTrail ').populate('selectedPlan')
+  const business = await Business.findById(businessId)
+    .select("validity isFree plan isValid isFreeTrailUsed isInFreeTrail ")
+    .populate("selectedPlan");
 
   if (!business) {
-    return await generateAPIError(errorMessages.userNotFound, 400)
+    return await generateAPIError(errorMessages.userNotFound, 400);
   }
 
   return { business, payment };
@@ -124,7 +126,7 @@ const updatePaymentWebHook = async ({
           paymentStatus: PaymentStatus.PENDING,
         });
         if (data) {
-          const planValidity = await Plans.findById(data?.plan)
+          const planValidity = await Plans.findById(data?.plan);
           const payData = await Payment.findOneAndUpdate(
             {
               business: new ObjectId(metaData?.businessId ?? ""),
@@ -152,7 +154,7 @@ const updatePaymentWebHook = async ({
               plan: PlanStatus.PAID,
               isValid: true,
               validity: validity,
-              selectedPlan: planValidity?._id
+              selectedPlan: planValidity?._id,
             },
           );
           return payData;
@@ -182,15 +184,16 @@ const updatePaymentWebHook = async ({
               new: true,
             },
           );
-          const businessData = await Business.findById(metaData?.businessId)
-          let updatedValidity = businessData?.validity instanceof Date
-            ? businessData?.validity
-            : new Date(businessData?.validity as string | Date | any);
+          const businessData = await Business.findById(metaData?.businessId);
+          let updatedValidity =
+            businessData?.validity instanceof Date
+              ? businessData?.validity
+              : new Date(businessData?.validity as string | Date | any);
 
           const currentDate = new Date();
-          let isStillValid = false
+          let isStillValid = false;
           if (updatedValidity > currentDate) {
-            isStillValid = true
+            isStillValid = true;
           }
 
           await Business.findOneAndUpdate(
@@ -201,7 +204,7 @@ const updatePaymentWebHook = async ({
             {
               paymentStatus: false,
               plan: isStillValid ? businessData?.plan : PlanStatus.CANCELLED,
-              isValid: isStillValid
+              isValid: isStillValid,
             },
           );
 

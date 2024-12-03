@@ -245,13 +245,13 @@ const getAllBusiness = errorWrapper(
             },
           },
           {
-            'address.city': {
+            "address.city": {
               $regex: new RegExp(String(searchTerm)),
               $options: "i",
             },
           },
           {
-            'address.landMark': {
+            "address.landMark": {
               $regex: new RegExp(String(searchTerm)),
               $options: "i",
             },
@@ -269,7 +269,7 @@ const getAllBusiness = errorWrapper(
             },
           },
           {
-            'contactDetails.primaryNumber': {
+            "contactDetails.primaryNumber": {
               $regex: new RegExp(String(searchTerm)),
               $options: "i",
             },

@@ -10,7 +10,6 @@ export const findExpiryDate = async ({
 };
 
 export class DateCalculationUtil {
-
   private static BASE_DATE = new Date(); // Month is 0-indexed
 
   /**
@@ -36,7 +35,7 @@ export class DateCalculationUtil {
       inputYears: years,
       futureDate: futureDate,
       formattedDate: this.formatDate(dayBeforeDate),
-      dayBefore: this.formatDate(dayBeforeDate)
+      dayBefore: this.formatDate(dayBeforeDate),
     };
   }
 
@@ -47,7 +46,7 @@ export class DateCalculationUtil {
    */
   static generateMultipleFutureDates(maxYears: number) {
     return Array.from({ length: maxYears }, (_, index) =>
-      this.calculateFutureDate(index + 1)
+      this.calculateFutureDate(index + 1),
     );
   }
 
@@ -57,8 +56,8 @@ export class DateCalculationUtil {
    * @returns Formatted date string
    */
   private static formatDate(date: Date): string {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
 
     return `${day}/${month}/${year}`;
@@ -70,7 +69,7 @@ export class DateCalculationUtil {
    * @returns Date object
    */
   static parseDate(dateString: string): Date {
-    const [day, month, year] = dateString.split('/').map(Number);
+    const [day, month, year] = dateString.split("/").map(Number);
     return new Date(year, month - 1, day);
   }
 
@@ -90,8 +89,7 @@ export class DateCalculationUtil {
     return {
       years,
       days: remainingDays,
-      totalDays: diffDays
+      totalDays: diffDays,
     };
   }
 }
-

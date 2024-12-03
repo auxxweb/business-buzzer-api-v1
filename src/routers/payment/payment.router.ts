@@ -6,7 +6,7 @@ import {
   getCurrentPlan,
   getPaymentListing,
   activateSpecialTrail,
-  deactivateSpecialTrail
+  deactivateSpecialTrail,
 } from "../../modules/payment/payment.controller.js";
 
 import { protect } from "../../middleware/auth.middleware.js";
@@ -18,7 +18,15 @@ router.get("/", protect({ isAdmin: true }), getPaymentListing);
 router.get("/status", protect({ isAdmin: false }), checkPaymentStatus);
 router.get("/current", protect({ isAdmin: true }), getPaymentListing);
 router.get("/current-plan", protect({ isAdmin: false }), getCurrentPlan);
-router.patch("/activate-special-trail", protect({ isAdmin: true }), activateSpecialTrail)
-router.patch("/deactivate-special-trail", protect({ isAdmin: true }), deactivateSpecialTrail)
+router.patch(
+  "/activate-special-trail",
+  protect({ isAdmin: true }),
+  activateSpecialTrail,
+);
+router.patch(
+  "/deactivate-special-trail",
+  protect({ isAdmin: true }),
+  deactivateSpecialTrail,
+);
 
 export default router;

@@ -24,6 +24,8 @@ const errorMessages = {
   paymentNotFound: "Plan not found",
   reviewNotFound: "Review not found",
   planNotValid: "Plan not valid",
+  specialTrailNotActivated: "Special Trail pack not activated",
+  specialTrailNotDeactivated: "Special Trail pack not deactivated",
   businessExistsInCategory: (businessCount, category) =>
     `Can't delete ${category}, ${businessCount} active businesses are in the ${category} category`,
   categoryNameExists: (category) =>
@@ -45,5 +47,7 @@ const successMessages = {
   passwordUpdated: "Password updated successfully",
   statusUpdated: "Business status updated successfully",
   deleteSuccess: "Data deleted successfully",
+  activateSpecialTrail: "Special trail activated Successfully ",
+  deactivateSpecialTrail: "Special trail deactivated Successfully ",
 };
 export { errorMessages, successMessages };
