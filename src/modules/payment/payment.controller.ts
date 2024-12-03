@@ -10,16 +10,17 @@ import { FilterQuery } from "mongoose";
 import Payment from "./payment.model.js";
 import crypto from "crypto";
 import { appConfig } from "../../config/appConfig.js";
+import { businessService } from "../business/business.service.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 
 const createPayment = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    console.log(req.body, "ppppppppppppppp");
+    console.log(req.body, 'ppppppppppppppp')
     const data = await paymentService.createPayment({
       ...req.body,
       business: req?.user?._id,
     });
-    console.log(data, "ithaaanjsbcjhbshbshbshbhsb");
+    console.log(data, 'ithaaanjsbcjhbshbshbshbhsb')
     return responseUtils.success(res, {
       data,
       status: 201,
@@ -28,9 +29,8 @@ const createPayment = errorWrapper(
 );
 const checkPaymentStatus = errorWrapper(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    const data = await paymentService.checkPaymentStatus(
-      req?.user?._id as string,
-    );
+    const data = await paymentService.checkPaymentStatus(req?.user?._id as string);
+    console.log("something");
 
     return responseUtils.success(res, {
       data,
@@ -124,10 +124,38 @@ const getCurrentPlan = errorWrapper(
   },
 );
 
+const activateSpecialTrail = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+
+    const { businessId } = req.body
+
+    const data = businessService.activateSpecialTail({ businessId })
+    return responseUtils.success(res, {
+      data,
+      status: 201,
+    });
+  }
+)
+
+const deactivateSpecialTrail = errorWrapper(
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+
+    const { businessId } = req.body
+
+    const data = await businessService.deactivateSpecialTail({ businessId })
+    return responseUtils.success(res, {
+      data,
+      status: 201,
+    });
+  }
+)
+
 export {
   createPayment,
   getPaymentListing,
   getCurrentPlan,
   updatePaymentWebHook,
   checkPaymentStatus,
+  activateSpecialTrail,
+  deactivateSpecialTrail
 };

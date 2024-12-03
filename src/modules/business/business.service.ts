@@ -21,6 +21,7 @@ import { appConfig } from "../../config/appConfig.js";
 import { paymentService } from "../../modules/payment/payment.service.js";
 import { sendMailData } from "../../interface/app.interface.js";
 import { sendEmail } from "../../utils/sendMail.js";
+import { PlanStatus } from "./business.enum.js";
 // import BusinessReview from 'modules/businessReviews/businessReviews.model.js'
 
 const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
@@ -76,11 +77,11 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     businessId: await createBusinessId(),
     ...(location?.lat &&
       location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+      location: {
+        type: "Point",
+        coordinates: [location?.lon, location?.lat],
+      },
+    }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -236,7 +237,7 @@ const getBusinessById = async (
     _id: new ObjectId(businessId),
     isDeleted: false,
     ...(!isAuth && {
-      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
+      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }, { isValid: true }, { plan: PlanStatus.SPECIAL_TRAIL }],
     }),
   })
     .populate("selectedPlan category")
@@ -596,6 +597,10 @@ const updateBusiness = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
+  if (!business?.isValid && business.plain !== PlanStatus.SPECIAL_TRAIL) {
+    return await generateAPIError(errorMessages.planNotValid, 400)
+  }
+
   if (email) {
     const emailExists = await Business.findOne({
       $and: [{ email }, { email: { $ne: email } }],
@@ -682,11 +687,11 @@ const updateBusiness = async (
       }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -887,15 +892,15 @@ const updateBusinessByAdmin = async (
       }),
       ...(password &&
         !comparePassword && {
-          password: hashedPassword,
-        }),
+        password: hashedPassword,
+      }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -962,6 +967,78 @@ const updateBusinessIsFreeByAdmin = async (
     message: successMessages.statusUpdated,
   };
 };
+
+const activateSpecialTail = async (
+  { businessId }:
+    { businessId: string }
+): Promise<any> => {
+
+  const business: any = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  });
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+
+  if (!business?.status) {
+    return await generateAPIError(errorMessages.userAccountBlocked, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page
+  }
+
+  try {
+    await Business.findByIdAndUpdate({
+      _id: new ObjectId(businessId),
+      isDeleted: false,
+    },
+      {
+        plan: PlanStatus.SPECIAL_TRAIL,
+        isValid: true,
+      }
+    )
+
+    return {
+      message: successMessages.activateSpecialTrail,
+    };
+  } catch (error) {
+    return await generateAPIError(errorMessages.specialTrailNotActivated, 400);
+  }
+}
+
+const deactivateSpecialTail = async (
+  { businessId }:
+    { businessId: string }
+): Promise<any> => {
+
+  const business: any = await Business.findOne({
+    _id: new ObjectId(businessId),
+    isDeleted: false,
+  });
+  if (business == null) {
+    return await generateAPIError(errorMessages.userNotFound, 404);
+  }
+
+  if (!business?.status) {
+    return await generateAPIError(errorMessages.userAccountBlocked, 404); // changed from 401 to 404 to fix frontend issue with redirect to login page
+  }
+
+  try {
+    await Business.findByIdAndUpdate({
+      _id: new ObjectId(businessId),
+      isDeleted: false,
+    },
+      {
+        plan: PlanStatus.SPECIAL_TRAIL,
+        isValid: false,
+      }
+    )
+
+    return {
+      message: successMessages.deactivateSpecialTrail,
+    };
+  } catch (error) {
+    return await generateAPIError(errorMessages.specialTrailNotDeactivated, 400);
+  }
+}
 
 const updateBusinessPassword = async ({
   oldPassword,
@@ -1139,6 +1216,10 @@ const addProduct = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
+  if (!business.isValid || !business.paymentStatus) {
+    return await generateAPIError(errorMessages.planNotValid, 404);
+  }
+
   // Validate and sanitize product data, add unique _id for the new product
   const sanitizedProductData = {
     _id: new ObjectId(), // Generate a new ObjectId for the product
@@ -1148,8 +1229,8 @@ const addProduct = async (
       typeof productData.price === "number" && !isNaN(productData.price)
         ? productData.price
         : typeof productData.price === "string"
-        ? Number(productData.price)
-        : 0,
+          ? Number(productData.price)
+          : 0,
     image: productData.image || "", // Default to empty string if null or undefined
   };
 
@@ -1260,4 +1341,6 @@ export const businessService = {
   forgotPassword,
   updatePassword,
   updateBusinessIsFreeByAdmin,
+  activateSpecialTail,
+  deactivateSpecialTail
 };
