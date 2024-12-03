@@ -60,6 +60,15 @@ const BusinessSchema = new Schema(
         whatsAppNumber: {
           type: Number,
         },
+        primaryCountryCode: {
+          type: Number,
+        },
+        secondaryCountryCode: {
+          type: Number,
+        },
+        whatsappCountryCode: {
+          type: Number,
+        },
         email: String,
         webSite: String,
       },

@@ -23,9 +23,9 @@ export interface CreateBusinessData {
     primaryNumber: number;
     secondaryNumber: number;
     whatsAppNumber: number;
-    primaryCountryCode:number;
-    secondaryCountryCode:number;
-    whatsappCountryCode:number;
+    primaryCountryCode: number;
+    secondaryCountryCode: number;
+    whatsappCountryCode: number;
     email: string;
     webSite: string;
   };
