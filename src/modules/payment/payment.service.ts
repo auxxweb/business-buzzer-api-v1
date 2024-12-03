@@ -120,10 +120,11 @@ const updatePaymentWebHook = async ({
       case "payment.captured":
         // Handle payment captured event
         console.log("Payment captured:", metaData);
-        const data = await Payment.findById(metaData?.payment_id)
+        const data = await Payment.findById(metaData?.payment_id);
         if (data) {
           const planValidity = await Plans.findById(data?.plan);
-          const payData = await Payment.findByIdAndUpdate(metaData?.payment_id,
+          const payData = await Payment.findByIdAndUpdate(
+            metaData?.payment_id,
             {
               paymentId: rPaymentId,
               paymentStatus: PaymentStatus.SUCCESS,
@@ -155,7 +156,7 @@ const updatePaymentWebHook = async ({
       case "payment.failed":
         // Handle payment failed event
         console.log("Payment failed:", metaData);
-        const data1 = await Payment.findById(metaData?.payment_id)
+        const data1 = await Payment.findById(metaData?.payment_id);
         if (data1) {
           const payData1 = await Payment.findByIdAndUpdate(
             metaData?.payment_id,
@@ -197,7 +198,7 @@ const updatePaymentWebHook = async ({
       // Add more cases for different events if needed
       default:
         console.log("Unhandled event:", metaData);
-        const data2 = await Payment.findById(metaData?.payment_id)
+        const data2 = await Payment.findById(metaData?.payment_id);
         if (data2) {
           const payData2 = await Payment.findByIdAndUpdate(
             metaData?.payment_id,
