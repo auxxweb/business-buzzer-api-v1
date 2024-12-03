@@ -14,6 +14,8 @@ import { PlanStatus } from "../business/business.enum.js";
 
 const createPayment = async (paymentData: PaymentData): Promise<any> => {
   const { plan, business } = paymentData;
+  console.log({ paymentData });
+
 
   const businessExists = await Business.findOne({
     _id: new ObjectId(business),
@@ -89,30 +91,15 @@ const getCurrentPlan = async (businessId: string): Promise<any> => {
     isDeleted: false,
     paymentStatus: PaymentStatus.SUCCESS
   }).sort({ createdAt: -1 })
-    .populate({
-      path: "plan",
-      select: "plan amount expiryDate",
-    });
+    .populate('plan', 'amount validity isPremium description');
 
-  const business = await Business.findById(businessId).select('validity isFree plan isValid isFreeTrailUsed isInFreeTrail')
+  const business = await Business.findById(businessId).select('validity isFree plan isValid isFreeTrailUsed isInFreeTrail ').populate('selectedPlan')
 
   if (!business) {
     return await generateAPIError(errorMessages.userNotFound, 400)
   }
 
-  const data = {
-    plan: payment?.plan?.plan ?? "",
-    PlanAmount: payment?.plan?.amount ?? "",
-    amount: payment?.amount,
-    planValidity: payment?.plain?.expiryDate ?? "",
-    businessPlan: business?.plan,
-    businessValidity: business?.validity,
-    isValid: business?.isValid,
-    isFree: business?.isFree,
-    isFreeTrailUsed: business?.isFreeTrailUsed,
-    isInFreeTrail: business?.isInFreeTrail
-  }
-  return data;
+  return { business, payment };
 };
 
 const updatePaymentWebHook = async ({
@@ -164,7 +151,8 @@ const updatePaymentWebHook = async ({
               paymentStatus: true,
               plan: PlanStatus.PAID,
               isValid: true,
-              validity: validity
+              validity: validity,
+              selectedPlan: planValidity?._id
             },
           );
           return payData;
