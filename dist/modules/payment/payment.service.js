@@ -109,14 +109,14 @@ const updatePaymentWebHook = async ({
           });
           await Business.findOneAndUpdate(
             {
-              _id: new ObjectId(metaData?.businessId ?? ""),
+              _id: new ObjectId(String(data?.business)),
               isDeleted: false,
             },
             {
               paymentStatus: true,
               plan: PlanStatus.PAID,
               isValid: true,
-              validity: validity,
+              validity,
               selectedPlan: planValidity?._id,
             },
           );
@@ -139,10 +139,10 @@ const updatePaymentWebHook = async ({
             },
           );
           const businessData = await Business.findById(data1?.business);
-          let updatedValidity =
+          const updatedValidity =
             businessData?.validity instanceof Date
               ? businessData?.validity
-              : new Date(businessData?.validity);
+              : new Date(businessData?.validity ?? "");
           const currentDate = new Date();
           let isStillValid = false;
           if (updatedValidity > currentDate) {
