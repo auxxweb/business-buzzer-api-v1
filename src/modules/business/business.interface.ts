@@ -24,7 +24,7 @@ export interface CreateBusinessData {
     secondaryNumber: number;
     whatsAppNumber: number;
     email: string;
-    webSite: string;
+    website: string;
   };
   socialMediaLinks: [
     {
