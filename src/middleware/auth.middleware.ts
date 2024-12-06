@@ -16,7 +16,7 @@ export const protect = ({ isAdmin = false }: { isAdmin: boolean }) => {
       try {
         token = req.headers.authorization.split(" ")[1];
         let decoded: any = {};
-        console.log(token)
+        console.log(token);
         decoded = jwt.verify(token, appConfig.jwtSecret);
 
         if (decoded) {

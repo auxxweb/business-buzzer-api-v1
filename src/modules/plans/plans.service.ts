@@ -233,5 +233,5 @@ export const planService = {
   getAllPlans,
   getPlanById,
   updatePlan,
-  updateTrashPlan
+  updateTrashPlan,
 };

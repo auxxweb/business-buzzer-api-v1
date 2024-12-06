@@ -8,12 +8,13 @@ import { errorMessages } from "../../constants/messages.js";
 import Payment from "./payment.model.js";
 import Plans from "../../modules/plans/plans.model.js";
 import { findExpiryDate } from "./payment.utils.js";
-// import { PaymentStatus } from './payment.enums.js'
 import { FilterQuery, QueryOptions } from "mongoose";
 import { PaymentStatus } from "./payment.enums.js";
+import { PlanStatus } from "../business/business.enum.js";
 
 const createPayment = async (paymentData: PaymentData): Promise<any> => {
   const { plan, business } = paymentData;
+  console.log({ paymentData });
 
   const businessExists = await Business.findOne({
     _id: new ObjectId(business),
@@ -84,20 +85,23 @@ const getPaymentListing = async ({
 const getCurrentPlan = async (businessId: string): Promise<any> => {
   console.log(businessId, "businessId");
 
-  const data = await Payment.findOne({
+  const payment: any = await Payment.findOne({
     business: new ObjectId(businessId),
     isDeleted: false,
+    paymentStatus: PaymentStatus.SUCCESS,
   })
     .sort({ createdAt: -1 })
-    .populate({
-      path: "plan",
-      select: "plan amount validity",
-    });
+    .populate("plan", "amount validity isPremium description");
 
-  if (!data) {
-    return await generateAPIError(errorMessages.paymentNotFound, 400);
+  const business = await Business.findById(businessId)
+    .select("validity isFree plan isValid isFreeTrailUsed isInFreeTrail ")
+    .populate("selectedPlan");
+
+  if (!business) {
+    return await generateAPIError(errorMessages.userNotFound, 400);
   }
-  return data;
+
+  return { business, payment };
 };
 
 const updatePaymentWebHook = async ({
@@ -116,19 +120,11 @@ const updatePaymentWebHook = async ({
       case "payment.captured":
         // Handle payment captured event
         console.log("Payment captured:", metaData);
-        const data = await Payment.findOne({
-          business: new ObjectId(metaData?.businessId ?? ""),
-          isDeleted: false,
-          paymentStatus: PaymentStatus.PENDING,
-        });
-
+        const data = await Payment.findById(metaData?.payment_id);
         if (data) {
-          const payData = await Payment.findOneAndUpdate(
-            {
-              business: new ObjectId(metaData?.businessId ?? ""),
-              isDeleted: false,
-              paymentStatus: PaymentStatus.PENDING,
-            },
+          const planValidity = await Plans.findById(data?.plan);
+          const payData = await Payment.findByIdAndUpdate(
+            metaData?.payment_id,
             {
               paymentId: rPaymentId,
               paymentStatus: PaymentStatus.SUCCESS,
@@ -137,37 +133,33 @@ const updatePaymentWebHook = async ({
               new: true,
             },
           );
-
+          const validity = await findExpiryDate({
+            validity: planValidity?.validity ?? 0,
+          });
           await Business.findOneAndUpdate(
             {
-              _id: new ObjectId(metaData?.businessId ?? ""),
+              _id: new ObjectId(String(data?.business)),
               isDeleted: false,
             },
             {
               paymentStatus: true,
+              plan: PlanStatus.PAID,
+              isValid: true,
+              validity,
+              selectedPlan: planValidity?._id,
             },
           );
-
           return payData;
         }
         return false;
-        break;
 
       case "payment.failed":
         // Handle payment failed event
         console.log("Payment failed:", metaData);
-        const data1 = await Payment.findOne({
-          business: new ObjectId(metaData?.businessId ?? ""),
-          isDeleted: false,
-          paymentStatus: PaymentStatus.PENDING,
-        });
+        const data1 = await Payment.findById(metaData?.payment_id);
         if (data1) {
-          const payData1 = await Payment.findOneAndUpdate(
-            {
-              business: new ObjectId(metaData?.businessId ?? ""),
-              isDeleted: false,
-              paymentStatus: PaymentStatus.PENDING,
-            },
+          const payData1 = await Payment.findByIdAndUpdate(
+            metaData?.payment_id,
             {
               paymentId: rPaymentId,
               paymentStatus: PaymentStatus.FAILED,
@@ -176,36 +168,40 @@ const updatePaymentWebHook = async ({
               new: true,
             },
           );
+          const businessData = await Business.findById(data1?.business);
+          const updatedValidity =
+            businessData?.validity instanceof Date
+              ? businessData?.validity
+              : new Date(businessData?.validity ?? "");
+
+          const currentDate = new Date();
+          let isStillValid = false;
+          if (updatedValidity > currentDate) {
+            isStillValid = true;
+          }
 
           await Business.findOneAndUpdate(
             {
-              _id: new ObjectId(metaData?.businessId ?? ""),
+              _id: new ObjectId(String(data1?.business)),
               isDeleted: false,
             },
             {
               paymentStatus: false,
+              plan: isStillValid ? businessData?.plan : PlanStatus.CANCELLED,
+              isValid: isStillValid,
             },
           );
 
           return payData1;
         }
         return false;
-        break;
       // Add more cases for different events if needed
       default:
         console.log("Unhandled event:", metaData);
-        const data2 = await Payment.findOne({
-          business: new ObjectId(metaData?.businessId ?? ""),
-          isDeleted: false,
-          paymentStatus: PaymentStatus.PENDING,
-        });
+        const data2 = await Payment.findById(metaData?.payment_id);
         if (data2) {
-          const payData2 = await Payment.findOneAndUpdate(
-            {
-              business: new ObjectId(metaData?.businessId ?? ""),
-              isDeleted: false,
-              paymentStatus: PaymentStatus.PENDING,
-            },
+          const payData2 = await Payment.findByIdAndUpdate(
+            metaData?.payment_id,
             {
               paymentId: rPaymentId,
               paymentStatus: PaymentStatus.FAILED,
@@ -216,7 +212,7 @@ const updatePaymentWebHook = async ({
           );
           await Business.findOneAndUpdate(
             {
-              _id: new ObjectId(metaData?.businessId ?? ""),
+              _id: new ObjectId(String(data2?.business)),
               isDeleted: false,
             },
             {

@@ -47,6 +47,42 @@ const getAllCategories = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const getTrashCategories = errorWrapper(async (req, res, next) => {
+  const paginationOptions = getPaginationOptions({
+    limit: req.query?.limit,
+    page: req.query?.page,
+  });
+  let query = {
+    isDeleted: true,
+  };
+  const searchTerm = req.query?.searchTerm;
+  if (searchTerm) {
+    query = {
+      ...query,
+      $or: [
+        {
+          name: {
+            $regex: new RegExp(String(searchTerm)),
+            $options: "i",
+          },
+        },
+      ],
+    };
+  }
+  const data = await categoryService.getAllCategories({
+    query: {
+      ...query,
+    },
+    options: {
+      ...paginationOptions,
+      sort: { createdAt: -1 },
+    },
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const getAllCategoriesForDropDown = errorWrapper(async (req, res, next) => {
   let query = {
     isDeleted: false,
@@ -87,6 +123,15 @@ const updateCategory = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const updateTrashCategory = errorWrapper(async (req, res, next) => {
+  const data = await categoryService.updateTrashCategory(req.params.id, {
+    ...req.body,
+  });
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const getCategoryById = errorWrapper(async (req, res, next) => {
   const data = await categoryService.getCategoryById(req.params.id);
   return responseUtils.success(res, {
@@ -97,7 +142,9 @@ const getCategoryById = errorWrapper(async (req, res, next) => {
 export {
   createCategory,
   getAllCategories,
+  getTrashCategories,
   updateCategory,
+  updateTrashCategory,
   getCategoryById,
   getAllCategoriesForDropDown,
 };

@@ -1,6 +1,7 @@
 import { getPaginationOptions } from "../../utils/pagination.utils.js";
 import Business from "../../modules/business/business.model.js";
 import { isValidityExpired } from "../../modules/business/business.utils.js";
+import { PlanStatus } from "../business/business.enum.js";
 
 const checkFreePlan = async (): Promise<void> => {
   const limit = 10; // Number of items per page
@@ -29,10 +30,27 @@ const checkFreePlan = async (): Promise<void> => {
 
     // Process the businesses for the current page
     const updates = businesses.map(async (business) => {
-      if (await isValidityExpired(business?.createdAt)) {
+      if (
+        (await isValidityExpired(business?.createdAt)) &&
+        business.plan === PlanStatus.FREE_TRAIL
+      ) {
         business.isInFreeTrail = false;
+        business.plan = PlanStatus.CANCELLED;
+      } else if (
+        (await isValidityExpired(business?.validity)) &&
+        business.plan === PlanStatus.PAID
+      ) {
+        business.isInFreeTrail = false;
+        business.plan = PlanStatus.CANCELLED;
+      } else if (
+        (await isValidityExpired(business?.validity)) &&
+        business.plan === PlanStatus.SPECIAL_TRAIL
+      ) {
+        business.plan = PlanStatus.SPECIAL_TRAIL;
+        business.isValid = true;
       } else {
         business.isInFreeTrail = true;
+        business.isValid = true;
       }
       return business.save(); // Save the updated business
     });

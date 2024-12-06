@@ -42,7 +42,6 @@ const updatePlan = errorWrapper(
   },
 );
 
-
 const updateTrashPlan = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await planService.updateTrashPlan(req.params?.id, {
@@ -55,7 +54,6 @@ const updateTrashPlan = errorWrapper(
     });
   },
 );
-
 
 const getAllPlans = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -100,7 +98,6 @@ const getAllPlans = errorWrapper(
   },
 );
 
-
 const getTrashPlans = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const paginationOptions = getPaginationOptions({
@@ -144,4 +141,11 @@ const getTrashPlans = errorWrapper(
   },
 );
 
-export { createPlan, getAllPlans,getTrashPlans,updateTrashPlan, getPlanById, updatePlan };
+export {
+  createPlan,
+  getAllPlans,
+  getTrashPlans,
+  updateTrashPlan,
+  getPlanById,
+  updatePlan,
+};

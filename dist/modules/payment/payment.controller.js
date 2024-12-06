@@ -5,19 +5,23 @@ import { paymentService } from "./payment.service.js";
 import { getPaginationOptions } from "../../utils/pagination.utils.js";
 import crypto from "crypto";
 import { appConfig } from "../../config/appConfig.js";
+import { businessService } from "../business/business.service.js";
 // import { getPaginationOptions } from '../../utils/pagination.utils.js'
 const createPayment = errorWrapper(async (req, res, next) => {
+  console.log(req.body, "ppppppppppppppp");
   const data = await paymentService.createPayment({
     ...req.body,
     business: req?.user?._id,
   });
+  console.log(data, "ithaaanjsbcjhbshbshbshbhsb");
   return responseUtils.success(res, {
     data,
     status: 201,
   });
 });
 const checkPaymentStatus = errorWrapper(async (req, res, next) => {
-  const data = await paymentService.checkPaymentStatus(req?.params?.id);
+  const data = await paymentService.checkPaymentStatus(req?.user?._id);
+  console.log("something");
   return responseUtils.success(res, {
     data,
     status: 200,
@@ -91,10 +95,28 @@ const getCurrentPlan = errorWrapper(async (req, res, next) => {
     status: 201,
   });
 });
+const activateSpecialTrail = errorWrapper(async (req, res, next) => {
+  const { businessId } = req.body;
+  const data = businessService.activateSpecialTail({ businessId });
+  return responseUtils.success(res, {
+    data,
+    status: 201,
+  });
+});
+const deactivateSpecialTrail = errorWrapper(async (req, res, next) => {
+  const { businessId } = req.body;
+  const data = await businessService.deactivateSpecialTail({ businessId });
+  return responseUtils.success(res, {
+    data,
+    status: 201,
+  });
+});
 export {
   createPayment,
   getPaymentListing,
   getCurrentPlan,
   updatePaymentWebHook,
   checkPaymentStatus,
+  activateSpecialTrail,
+  deactivateSpecialTrail,
 };

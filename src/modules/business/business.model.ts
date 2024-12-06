@@ -1,6 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
 
 import { ObjectId } from "../../constants/type.js";
+import { PlanStatus } from "./business.enum.js";
 
 const BusinessSchema = new Schema(
   {
@@ -61,6 +62,16 @@ const BusinessSchema = new Schema(
         whatsAppNumber: {
           type: Number,
         },
+        primaryCountryCode: {
+          type: Number,
+        },
+        secondaryCountryCode: {
+          type: Number,
+        },
+        whatsappCountryCode: {
+          type: Number,
+        },
+
         email: String,
         website: String,
       },
@@ -188,6 +199,24 @@ const BusinessSchema = new Schema(
     isFree: {
       type: Boolean,
       default: false,
+    },
+    // this plan means current plan like free, paid,special or cancelled based on payments
+    plan: {
+      type: String,
+      enum: PlanStatus,
+      default: PlanStatus.FREE_TRAIL,
+    },
+    isValid: {
+      type: Boolean,
+      default: false,
+    },
+    validity: {
+      type: Date,
+      default: () => {
+        const futureDate = new Date();
+        futureDate.setDate(futureDate.getDate() + 14);
+        return futureDate;
+      },
     },
     isInFreeTrail: {
       type: Boolean,

@@ -22,5 +22,4 @@ router.get("/:id", getCategoryById);
 router.patch("/:id", protect({ isAdmin: true }), updateCategory);
 router.patch("/undelete/:id", protect({ isAdmin: true }), updateTrashCategory);
 
-
 export default router;

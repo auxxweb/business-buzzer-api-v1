@@ -70,12 +70,12 @@ export const resetLinkEmailTemplate = async (tempData: {
           color: #777777;
         ">
         For any assistance, contact us at<br/>
-        <a href="mailto:inconnect.nfc@gmail.com" style="
+        <a href="mailto:enconnect.nfc@gmail.com" style="
             color: #0066cc;
             text-decoration: none;
             font-weight: bold;
           ">
-          inconnect.nfc@gmail.com
+          enconnect.nfc@gmail.com
         </a>.
       </p>
       <p style="
@@ -156,12 +156,12 @@ export const adminResetLinkEmailTemplate = async (tempData: {
           color: #777777;
         ">
         For any assistance, contact us at<br/>
-        <a href="mailto:inconnect.nfc@gmail.com" style="
+        <a href="mailto:enconnect.nfc@gmail.com" style="
             color: #0066cc;
             text-decoration: none;
             font-weight: bold;
           ">
-          inconnect.nfc@gmail.com
+          enconnect.nfc@gmail.com
         </a>.
       </p>
       <p style="

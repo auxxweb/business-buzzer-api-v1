@@ -20,5 +20,4 @@ router.get("/:id", getPlanById);
 router.patch("/:id", protect({ isAdmin: true }), updatePlan);
 router.patch("/undelete/:id", protect({ isAdmin: true }), updateTrashPlan);
 
-
 export default router;

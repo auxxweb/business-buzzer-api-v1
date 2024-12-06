@@ -126,7 +126,6 @@ const deleteBusinessByAdmin = errorWrapper(
   },
 );
 
-
 const unDeleteBusinessByAdmin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     console.log(req.params.id, "hasasasreq body");
@@ -214,10 +213,9 @@ const resetPassword = errorWrapper(
   },
 );
 
-
 const getAllBusiness = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.query, 'query dataaaa');
+    console.log(req.query, "query dataaaa");
     const paginationOptions = getPaginationOptions({
       limit: req.query?.limit,
       page: req.query?.page,
@@ -247,13 +245,13 @@ const getAllBusiness = errorWrapper(
             },
           },
           {
-            'address.city': {
+            "address.city": {
               $regex: new RegExp(String(searchTerm)),
               $options: "i",
             },
           },
           {
-            'address.landMark': {
+            "address.landMark": {
               $regex: new RegExp(String(searchTerm)),
               $options: "i",
             },
@@ -271,7 +269,7 @@ const getAllBusiness = errorWrapper(
             },
           },
           {
-            'contactDetails.primaryNumber': {
+            "contactDetails.primaryNumber": {
               $regex: new RegExp(String(searchTerm)),
               $options: "i",
             },
@@ -369,7 +367,6 @@ const getTrashBusiness = errorWrapper(
     });
   },
 );
-
 
 const getAllBusinessForDropDown = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {

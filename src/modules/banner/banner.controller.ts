@@ -29,7 +29,6 @@ const deleteBanner = errorWrapper(
   },
 );
 
-
 const deleteTrashBanner = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await bannerService.deleteTrashBanner(req.params?.id);
@@ -54,9 +53,6 @@ const updateBanner = errorWrapper(
   },
 );
 
-
-
-
 const getAllBanners = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const query: FilterQuery<typeof Banner> = {
@@ -78,7 +74,6 @@ const getAllBanners = errorWrapper(
     });
   },
 );
-
 
 const getTrashBanners = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -102,4 +97,11 @@ const getTrashBanners = errorWrapper(
   },
 );
 
-export { createBanner, getAllBanners,getTrashBanners, deleteBanner,deleteTrashBanner, updateBanner };
+export {
+  createBanner,
+  getAllBanners,
+  getTrashBanners,
+  deleteBanner,
+  deleteTrashBanner,
+  updateBanner,
+};

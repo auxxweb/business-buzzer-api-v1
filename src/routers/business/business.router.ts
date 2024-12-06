@@ -40,7 +40,7 @@ router.get("/dropdown", getAllBusinessForDropDown);
 router.get("/all", protect({ isAdmin: true }), getAllBusinessByAdmin);
 router.post("/login", businessLogin);
 router.get("/", getAllBusiness);
-router.get('/trash-business',protect({ isAdmin: true }),getTrashBusiness)
+router.get("/trash-business", protect({ isAdmin: true }), getTrashBusiness);
 router.get("/dashboard", protect({ isAdmin: false }), getBusinessDashboardData);
 router.get("/:id", getBusinessById);
 router.patch(
@@ -55,8 +55,11 @@ router.patch(
 );
 router.patch("/admin/:id", protect({ isAdmin: true }), updateBusinessByAdmin);
 router.delete("/admin/:id", protect({ isAdmin: true }), deleteBusinessByAdmin);
-router.delete("/admin/undelete/:id", protect({ isAdmin: true }), unDeleteBusinessByAdmin);
-
+router.delete(
+  "/admin/undelete/:id",
+  protect({ isAdmin: true }),
+  unDeleteBusinessByAdmin,
+);
 
 router.patch("/password", protect({ isAdmin: false }), updateBusinessPassword);
 
