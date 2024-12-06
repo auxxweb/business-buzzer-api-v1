@@ -5,6 +5,7 @@ import { CreateCategoryData } from "./category.interface.js";
 import Category from "./category.model.js";
 import { ObjectId } from "../../constants/type.js";
 import { checkAnyActiveBusinesses } from "./category.utils.js";
+import { deleteS3 } from "../../controller/s3.controller.js";
 
 const createCategory = async (category: CreateCategoryData): Promise<any> => {
   const categoryExists = await Category.findOne({
@@ -73,12 +74,21 @@ const updateCategory = async (
   categoryId: string,
   categoryData: any,
 ): Promise<any> => {
-  const categoryExists = await Category.findOne({
+  const categoryExists :any  = await Category.findOne({
     _id: new ObjectId(categoryId),
     isDeleted: false,
   });
 
-  if (!categoryExists) {
+
+  if (categoryExists?.image !== categoryData?.image ) {
+    await deleteS3(categoryExists?.image)
+  }
+  if (categoryExists?.coverImage !== categoryData?.coverImage) {
+    await deleteS3(categoryExists?.coverImage)
+  }
+
+
+  if (!categoryExists) {   
     return await generateAPIError(errorMessages.categoryNotFound, 400);
   }
 

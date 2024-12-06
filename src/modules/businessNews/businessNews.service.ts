@@ -5,6 +5,7 @@ import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages } from "../../constants/messages.js";
 import BusinessNews from "./businessNews.model.js";
 import { FilterQuery, QueryOptions } from "mongoose";
+import { deleteS3 } from "../../controller/s3.controller.js";
 
 const createNews = async ({
   businessId,
@@ -54,10 +55,17 @@ const updateNews = async (
   newsId: string,
   updateData: Partial<CreateNews>,
 ): Promise<any> => {
-  const newsData = await BusinessNews.findOne({
+  const newsData :any = await BusinessNews.findOne({
     _id: new ObjectId(newsId),
     isDeleted: false,
   });
+
+  console.log(newsData,'nesssssssssssssssssss')
+  console.log(updateData,'updateeeeee')
+
+  if(newsData?.image !== updateData?.image){
+    await deleteS3(newsData?.image)
+  }
 
   if (!newsData) {
     return await generateAPIError(errorMessages.newsDataNotFound, 400);

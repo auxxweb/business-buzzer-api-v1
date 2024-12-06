@@ -3,6 +3,7 @@ import Banner from "./banner.model.js";
 import { errorMessages } from "../../constants/messages.js";
 import { FilterQuery, QueryOptions } from "mongoose";
 import { ObjectId } from "../../constants/type.js";
+import { deleteS3 } from "../../controller/s3.controller.js";
 
 const createBanner = async ({ image }: { image: string }): Promise<any> => {
   const bannerCount = await Banner.countDocuments({
@@ -37,10 +38,16 @@ const updateBanner = async (
   bannerId: string,
   bannerData: any,
 ): Promise<any> => {
-  const bannerExists = await Banner.findOne({
+  const bannerExists :any  = await Banner.findOne({
     _id: new ObjectId(bannerId),
     isDeleted: false,
   });
+
+  console.log(bannerExists.image,'lllllllllll')
+
+  if(bannerExists?.image !==bannerData?.image){
+    await deleteS3(bannerExists?.image)
+  }
 
   if (!bannerExists) {
     return await generateAPIError(errorMessages.categoryNotFound, 400);

@@ -21,6 +21,7 @@ import { appConfig } from "../../config/appConfig.js";
 import { paymentService } from "../../modules/payment/payment.service.js";
 import { sendMailData } from "../../interface/app.interface.js";
 import { sendEmail } from "../../utils/sendMail.js";
+import { deleteS3 } from "../../controller/s3.controller.js";
 import { PlanStatus } from "./business.enum.js";
 // import BusinessReview from 'modules/businessReviews/businessReviews.model.js'
 
@@ -77,11 +78,11 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     businessId: await createBusinessId(),
     ...(location?.lat &&
       location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+      location: {
+        type: "Point",
+        coordinates: [location?.lon, location?.lat],
+      },
+    }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -603,6 +604,56 @@ const updateBusiness = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
+  //remove s3 url after update
+  if (business?.landingPageHero?.coverImage !== businessData?.landingPageHero?.coverImage) {
+    await deleteS3(business?.landingPageHero?.coverImage)
+  }
+
+  if (business?.welcomePart?.coverImage !== businessData?.welcomePart?.coverImage) {
+    await deleteS3(business?.welcomePart?.coverImage)
+  }
+
+  if (business?.logo !== businessData?.logo) {
+    await deleteS3(business?.logo)
+  }
+
+  if (business?.productSection?.data && businessData?.productSection?.data) {
+    for (let i = 0; i < business.productSection.data.length; i++) {
+      if (business?.productSection?.data[i].image != businessData?.productSection?.data[i].image) {
+        await deleteS3(business.productSection.data[i].image)
+      }
+    }
+  }
+
+  if (business?.specialServices?.data && businessData?.specialServices?.data) {
+    for (let i = 0; i < business.specialServices.data.length; i++) {
+      if (business?.specialServices?.data[i].image != businessData?.specialServices?.data[i].image) {
+        await deleteS3(business.specialServices.data[i].image)
+      }
+    }
+  }
+
+  if (business?.service?.data && businessData?.service?.data) {
+    for (let i = 0; i < business.service.data.length; i++) {
+      if (business?.service?.data[i].image != businessData?.service?.data[i].image) {
+        await deleteS3(business.service.data[i].image)
+      }
+    }
+  }
+
+  if (business?.gallery && businessData?.gallery) {
+    for (let i = 0; i < business.gallery.length; i++) {
+      if (business?.gallery[i] !== businessData?.gallery[i]) {//+
+        await deleteS3(business.gallery[i])
+
+      }
+    }
+  }
+
+
+
+
+
   if (!business?.isValid && business.plain !== PlanStatus.SPECIAL_TRAIL) {
     return await generateAPIError(errorMessages.planNotValid, 400);
   }
@@ -614,7 +665,7 @@ const updateBusiness = async (
       isDeleted: false,
     });
 
-    if (!emailExists) {
+    if (emailExists) {
       return await generateAPIError(errorMessages.userExists, 400);
     }
   }
@@ -693,11 +744,11 @@ const updateBusiness = async (
       }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -898,15 +949,15 @@ const updateBusinessByAdmin = async (
       }),
       ...(password &&
         !comparePassword && {
-          password: hashedPassword,
-        }),
+        password: hashedPassword,
+      }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -1240,8 +1291,8 @@ const addProduct = async (
       typeof productData.price === "number" && !isNaN(productData.price)
         ? productData.price
         : typeof productData.price === "string"
-        ? Number(productData.price)
-        : 0,
+          ? Number(productData.price)
+          : 0,
     image: productData.image || "", // Default to empty string if null or undefined
   };
 

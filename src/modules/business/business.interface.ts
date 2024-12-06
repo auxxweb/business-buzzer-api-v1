@@ -27,7 +27,7 @@ export interface CreateBusinessData {
     secondaryCountryCode: number;
     whatsappCountryCode: number;
     email: string;
-    webSite: string;
+    website: string;
   };
   socialMediaLinks: [
     {

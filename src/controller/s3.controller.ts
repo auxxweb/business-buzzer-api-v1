@@ -25,23 +25,9 @@ const getS3Urls = errorWrapper(
 
     const urls = []; // array of objects {file_name, url, file_type}
 
-    // for (let i = 0; i < file_types.length; i++) {
-    //   const uniqueCode = uuidv4();
-    //   const params = {
-    //     Bucket: bucket,
-    //     Key: `${folder}/bb_${uniqueCode}`,
-    //     Expires: 60,
-    //   };
-    //   const url = await s3.getSignedUrlPromise("putObject", params);
-    //   urls.push({
-    //     file_name: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
-    //     file_type: file_types[i],
-    //     url,
-    //   });
-    // }
 
     const { files } = req.body;
-
+     console.log(files,'asasaasasas')
     for (let i = 0; i < files?.length; i++) {
       const uniqueCode = uuidv4();
 
@@ -67,16 +53,16 @@ const getS3Urls = errorWrapper(
   },
 );
 
+
+
 interface DeleteS3Params {
-  bucketName?: string;
   key: string;
 }
 
-const deleteS3 = async ({
-  bucketName = bucket,
-  key,
-}: DeleteS3Params): Promise<any> => {
-  console.log(key, "key", bucketName);
+const deleteS3 = async (key:string): Promise<any> => {
+
+  const keyy = key.split("inconnect/")[1];
+  console.log(`inconnect/${keyy}`, "key");
 
   // Ensure that AWS region and credentials are properly configured
   aws.config.update({
@@ -90,10 +76,10 @@ const deleteS3 = async ({
   const s3 = new aws.S3();
 
   const params = {
-    Bucket: bucketName, // Your bucket name
-    Key: `businessBazaar/${key}`,
+    Bucket: bucket, // Your bucket name
+    Key:`inconnect/${keyy}`,
   };
-
+  
   try {
     // Delete the image
     const result = await s3.deleteObject(params).promise();
