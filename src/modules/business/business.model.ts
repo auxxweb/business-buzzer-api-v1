@@ -208,7 +208,7 @@ const BusinessSchema = new Schema(
     },
     isValid: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     validity: {
       type: Date,
