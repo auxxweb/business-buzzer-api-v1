@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import bcrypt from "bcryptjs";
@@ -78,11 +79,11 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     businessId: await createBusinessId(),
     ...(location?.lat &&
       location?.lon && {
-      location: {
-        type: "Point",
-        coordinates: [location?.lon, location?.lat],
-      },
-    }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -605,54 +606,63 @@ const updateBusiness = async (
   }
 
   //remove s3 url after update
-  if (business?.landingPageHero?.coverImage !== businessData?.landingPageHero?.coverImage) {
-    await deleteS3(business?.landingPageHero?.coverImage)
+  if (
+    business?.landingPageHero?.coverImage !==
+    businessData?.landingPageHero?.coverImage
+  ) {
+    await deleteS3(business?.landingPageHero?.coverImage);
   }
 
-  if (business?.welcomePart?.coverImage !== businessData?.welcomePart?.coverImage) {
-    await deleteS3(business?.welcomePart?.coverImage)
+  if (
+    business?.welcomePart?.coverImage !== businessData?.welcomePart?.coverImage
+  ) {
+    await deleteS3(business?.welcomePart?.coverImage);
   }
 
   if (business?.logo !== businessData?.logo) {
-    await deleteS3(business?.logo)
+    await deleteS3(business?.logo);
   }
 
   if (business?.productSection?.data && businessData?.productSection?.data) {
     for (let i = 0; i < business.productSection.data.length; i++) {
-      if (business?.productSection?.data[i].image != businessData?.productSection?.data[i].image) {
-        await deleteS3(business.productSection.data[i].image)
+      if (
+        business?.productSection?.data[i].image !=
+        businessData?.productSection?.data[i].image
+      ) {
+        await deleteS3(business.productSection.data[i].image);
       }
     }
   }
 
   if (business?.specialServices?.data && businessData?.specialServices?.data) {
     for (let i = 0; i < business.specialServices.data.length; i++) {
-      if (business?.specialServices?.data[i].image != businessData?.specialServices?.data[i].image) {
-        await deleteS3(business.specialServices.data[i].image)
+      if (
+        business?.specialServices?.data[i].image !=
+        businessData?.specialServices?.data[i].image
+      ) {
+        await deleteS3(business.specialServices.data[i].image);
       }
     }
   }
 
   if (business?.service?.data && businessData?.service?.data) {
     for (let i = 0; i < business.service.data.length; i++) {
-      if (business?.service?.data[i].image != businessData?.service?.data[i].image) {
-        await deleteS3(business.service.data[i].image)
+      if (
+        business?.service?.data[i].image != businessData?.service?.data[i].image
+      ) {
+        await deleteS3(business.service.data[i].image);
       }
     }
   }
 
   if (business?.gallery && businessData?.gallery) {
     for (let i = 0; i < business.gallery.length; i++) {
-      if (business?.gallery[i] !== businessData?.gallery[i]) {//+
-        await deleteS3(business.gallery[i])
-
+      if (business?.gallery[i] !== businessData?.gallery[i]) {
+        //+
+        await deleteS3(business.gallery[i]);
       }
     }
   }
-
-
-
-
 
   if (!business?.isValid && business.plain !== PlanStatus.SPECIAL_TRAIL) {
     return await generateAPIError(errorMessages.planNotValid, 400);
@@ -744,11 +754,11 @@ const updateBusiness = async (
       }),
       ...(location?.lat &&
         location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
     },
     {
       new: true,
@@ -949,15 +959,15 @@ const updateBusinessByAdmin = async (
       }),
       ...(password &&
         !comparePassword && {
-        password: hashedPassword,
-      }),
+          password: hashedPassword,
+        }),
       ...(location?.lat &&
         location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
     },
     {
       new: true,
@@ -1291,8 +1301,8 @@ const addProduct = async (
       typeof productData.price === "number" && !isNaN(productData.price)
         ? productData.price
         : typeof productData.price === "string"
-          ? Number(productData.price)
-          : 0,
+        ? Number(productData.price)
+        : 0,
     image: productData.image || "", // Default to empty string if null or undefined
   };
 

@@ -38,15 +38,15 @@ const updateBanner = async (
   bannerId: string,
   bannerData: any,
 ): Promise<any> => {
-  const bannerExists :any  = await Banner.findOne({
+  const bannerExists: any = await Banner.findOne({
     _id: new ObjectId(bannerId),
     isDeleted: false,
   });
 
-  console.log(bannerExists.image,'lllllllllll')
+  console.log(bannerExists.image, "lllllllllll");
 
-  if(bannerExists?.image !==bannerData?.image){
-    await deleteS3(bannerExists?.image)
+  if (bannerExists?.image !== bannerData?.image) {
+    await deleteS3(bannerExists?.image);
   }
 
   if (!bannerExists) {

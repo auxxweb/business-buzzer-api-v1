@@ -55,16 +55,16 @@ const updateNews = async (
   newsId: string,
   updateData: Partial<CreateNews>,
 ): Promise<any> => {
-  const newsData :any = await BusinessNews.findOne({
+  const newsData: any = await BusinessNews.findOne({
     _id: new ObjectId(newsId),
     isDeleted: false,
   });
 
-  console.log(newsData,'nesssssssssssssssssss')
-  console.log(updateData,'updateeeeee')
+  console.log(newsData, "nesssssssssssssssssss");
+  console.log(updateData, "updateeeeee");
 
-  if(newsData?.image !== updateData?.image){
-    await deleteS3(newsData?.image)
+  if (newsData?.image !== updateData?.image) {
+    await deleteS3(newsData?.image);
   }
 
   if (!newsData) {

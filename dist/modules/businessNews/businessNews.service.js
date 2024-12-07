@@ -3,6 +3,7 @@ import { ObjectId } from "../../constants/type.js";
 import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages } from "../../constants/messages.js";
 import BusinessNews from "./businessNews.model.js";
+import { deleteS3 } from "../../controller/s3.controller.js";
 const createNews = async ({ businessId, title, description, link, image }) => {
   console.log(description, "description");
   const businessExists = await Business.findOne({
@@ -34,6 +35,11 @@ const updateNews = async (newsId, updateData) => {
     _id: new ObjectId(newsId),
     isDeleted: false,
   });
+  console.log(newsData, "nesssssssssssssssssss");
+  console.log(updateData, "updateeeeee");
+  if (newsData?.image !== updateData?.image) {
+    await deleteS3(newsData?.image);
+  }
   if (!newsData) {
     return await generateAPIError(errorMessages.newsDataNotFound, 400);
   }

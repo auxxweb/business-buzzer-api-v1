@@ -2,6 +2,7 @@ import { generateAPIError } from "../../errors/apiError.js";
 import Banner from "./banner.model.js";
 import { errorMessages } from "../../constants/messages.js";
 import { ObjectId } from "../../constants/type.js";
+import { deleteS3 } from "../../controller/s3.controller.js";
 const createBanner = async ({ image }) => {
   const bannerCount = await Banner.countDocuments({
     isDeleted: false,
@@ -25,6 +26,10 @@ const updateBanner = async (bannerId, bannerData) => {
     _id: new ObjectId(bannerId),
     isDeleted: false,
   });
+  console.log(bannerExists.image, "lllllllllll");
+  if (bannerExists?.image !== bannerData?.image) {
+    await deleteS3(bannerExists?.image);
+  }
   if (!bannerExists) {
     return await generateAPIError(errorMessages.categoryNotFound, 400);
   }

@@ -74,21 +74,19 @@ const updateCategory = async (
   categoryId: string,
   categoryData: any,
 ): Promise<any> => {
-  const categoryExists :any  = await Category.findOne({
+  const categoryExists: any = await Category.findOne({
     _id: new ObjectId(categoryId),
     isDeleted: false,
   });
 
-
-  if (categoryExists?.image !== categoryData?.image ) {
-    await deleteS3(categoryExists?.image)
+  if (categoryExists?.image !== categoryData?.image) {
+    await deleteS3(categoryExists?.image);
   }
   if (categoryExists?.coverImage !== categoryData?.coverImage) {
-    await deleteS3(categoryExists?.coverImage)
+    await deleteS3(categoryExists?.coverImage);
   }
 
-
-  if (!categoryExists) {   
+  if (!categoryExists) {
     return await generateAPIError(errorMessages.categoryNotFound, 400);
   }
 

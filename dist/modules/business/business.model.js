@@ -70,7 +70,7 @@ const BusinessSchema = new Schema(
           type: Number,
         },
         email: String,
-        webSite: String,
+        website: String,
       },
     },
     socialMediaLinks: {

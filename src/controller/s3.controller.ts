@@ -25,9 +25,8 @@ const getS3Urls = errorWrapper(
 
     const urls = []; // array of objects {file_name, url, file_type}
 
-
     const { files } = req.body;
-     console.log(files,'asasaasasas')
+    console.log(files, "asasaasasas");
     for (let i = 0; i < files?.length; i++) {
       const uniqueCode = uuidv4();
 
@@ -53,14 +52,11 @@ const getS3Urls = errorWrapper(
   },
 );
 
-
-
 interface DeleteS3Params {
   key: string;
 }
 
-const deleteS3 = async (key:string): Promise<any> => {
-
+const deleteS3 = async (key: string): Promise<any> => {
   const keyy = key.split("inconnect/")[1];
   console.log(`inconnect/${keyy}`, "key");
 
@@ -77,9 +73,9 @@ const deleteS3 = async (key:string): Promise<any> => {
 
   const params = {
     Bucket: bucket, // Your bucket name
-    Key:`inconnect/${keyy}`,
+    Key: `inconnect/${keyy}`,
   };
-  
+
   try {
     // Delete the image
     const result = await s3.deleteObject(params).promise();
