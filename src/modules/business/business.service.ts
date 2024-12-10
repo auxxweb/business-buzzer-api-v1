@@ -79,11 +79,11 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     businessId: await createBusinessId(),
     ...(location?.lat &&
       location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+      location: {
+        type: "Point",
+        coordinates: [location?.lon, location?.lat],
+      },
+    }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -605,6 +605,11 @@ const updateBusiness = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
+
+  if (!business?.isValid && business.plain !== PlanStatus.SPECIAL_TRAIL) {
+    return await generateAPIError(errorMessages.planNotValid, 400);
+  }
+
   //remove s3 url after update
   if (
     business?.landingPageHero?.coverImage !==
@@ -664,9 +669,6 @@ const updateBusiness = async (
     }
   }
 
-  if (!business?.isValid && business.plain !== PlanStatus.SPECIAL_TRAIL) {
-    return await generateAPIError(errorMessages.planNotValid, 400);
-  }
 
   if (email) {
     const emailExists = await Business.findOne({
@@ -754,11 +756,11 @@ const updateBusiness = async (
       }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -959,15 +961,15 @@ const updateBusinessByAdmin = async (
       }),
       ...(password &&
         !comparePassword && {
-          password: hashedPassword,
-        }),
+        password: hashedPassword,
+      }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -1061,6 +1063,7 @@ const activateSpecialTail = async ({
       {
         plan: PlanStatus.SPECIAL_TRAIL,
         isValid: true,
+        isFree: true
       },
     );
 
@@ -1288,7 +1291,7 @@ const addProduct = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
-  if (!business.isValid || !business.paymentStatus) {
+  if ((!business.isValid || !business.paymentStatus) && business.plan !== PlanStatus.SPECIAL_TRAIL) {
     return await generateAPIError(errorMessages.planNotValid, 404);
   }
 
@@ -1301,8 +1304,8 @@ const addProduct = async (
       typeof productData.price === "number" && !isNaN(productData.price)
         ? productData.price
         : typeof productData.price === "string"
-        ? Number(productData.price)
-        : 0,
+          ? Number(productData.price)
+          : 0,
     image: productData.image || "", // Default to empty string if null or undefined
   };
 
