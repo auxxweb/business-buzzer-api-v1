@@ -264,7 +264,8 @@ const getBusinessById = async (
     if (
       !business?.paymentStatus &&
       !business?.isFree &&
-      !business?.isInFreeTrail
+      !business?.isInFreeTrail &&
+      business?.plan !== PlanStatus.SPECIAL_TRAIL
     ) {
       return await generateAPIError(errorMessages.paymentNotCompleted, 400);
     }
