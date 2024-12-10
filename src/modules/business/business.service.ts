@@ -1030,6 +1030,8 @@ const updateBusinessIsFreeByAdmin = async (
     },
     {
       isFree: !business?.isFree,
+      plan: business?.plan === PlanStatus.SPECIAL_TRAIL ? PlanStatus.PAID : PlanStatus.SPECIAL_TRAIL,
+      isValid: business?.plan !== PlanStatus.SPECIAL_TRAIL ? true : false
     },
   );
 
