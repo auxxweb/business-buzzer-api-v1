@@ -10,6 +10,7 @@ import Business from "./business.model.js";
 import { FilterQuery } from "mongoose";
 import { ObjectId } from "../../constants/type.js";
 import { RequestWithUser } from "../../interface/app.interface.js";
+import { PlanStatus } from "./business.enum.js";
 
 const businessSignUp = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -224,7 +225,7 @@ const getAllBusiness = errorWrapper(
     let query: FilterQuery<typeof Business> = {
       isDeleted: false,
       status: true,
-      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
+      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }, { plan: PlanStatus.SPECIAL_TRAIL }],
     };
 
     const searchTerm = req.query?.searchTerm;
@@ -485,7 +486,7 @@ const getBusinessByCategory = errorWrapper(
       isDeleted: false,
       category: new ObjectId(String(req.params?.id)),
       status: true,
-      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
+      $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }, { plan: PlanStatus.SPECIAL_TRAIL }],
     };
 
     const searchTerm = req.query?.searchTerm;

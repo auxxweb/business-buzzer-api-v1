@@ -1,5 +1,6 @@
 import { FilterQuery, QueryOptions } from "mongoose";
 import User from "./business.model.js";
+import { PlanStatus } from "./business.enum.js";
 
 export interface CreateBusinessData {
   businessName: string;
@@ -103,6 +104,7 @@ export interface CreateBusinessData {
     ];
   };
   gallery: [string];
+  plan: PlanStatus;
   seoData: {
     title: string;
     description: string;

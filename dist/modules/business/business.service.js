@@ -69,11 +69,11 @@ const businessSignUp = async (userData) => {
     businessId: await createBusinessId(),
     ...(location?.lat &&
       location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+      location: {
+        type: "Point",
+        coordinates: [location?.lon, location?.lat],
+      },
+    }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -672,11 +672,11 @@ const updateBusiness = async (businessId, businessData) => {
       }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -860,15 +860,15 @@ const updateBusinessByAdmin = async (businessId, businessData) => {
       }),
       ...(password &&
         !comparePassword && {
-          password: hashedPassword,
-        }),
+        password: hashedPassword,
+      }),
       ...(location?.lat &&
         location?.lon && {
-          location: {
-            type: "Point",
-            coordinates: [location?.lon, location?.lat],
-          },
-        }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     },
     {
       new: true,
@@ -914,6 +914,7 @@ const updateBusinessIsFreeByAdmin = async (businessId, isFree) => {
     },
     {
       isFree: !business?.isFree,
+      plan: business?.isFreeTrailUsed ? PlanStatus.PAID : PlanStatus.FREE_TRAIL,
     },
   );
   return {
@@ -1130,8 +1131,8 @@ const addProduct = async (businessId, productData) => {
       typeof productData.price === "number" && !isNaN(productData.price)
         ? productData.price
         : typeof productData.price === "string"
-        ? Number(productData.price)
-        : 0,
+          ? Number(productData.price)
+          : 0,
     image: productData.image || "", // Default to empty string if null or undefined
   };
   try {
