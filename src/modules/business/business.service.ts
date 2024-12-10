@@ -592,6 +592,7 @@ const updateBusiness = async (
     seoData,
     selectedPlan,
     location,
+    plan
   } = businessData;
   console.log();
 
@@ -1102,7 +1103,7 @@ const deactivateSpecialTail = async ({
         isDeleted: false,
       },
       {
-        plan: PlanStatus.SPECIAL_TRAIL,
+        plan: PlanStatus.CANCELLED,
         isValid: false,
       },
     );
