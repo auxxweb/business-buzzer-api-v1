@@ -612,61 +612,72 @@ const updateBusiness = async (
     return await generateAPIError(errorMessages.planNotValid, 400);
   }
 
+  
   //remove s3 url after update
-  if (
-    business?.landingPageHero?.coverImage !==
-    businessData?.landingPageHero?.coverImage
-  ) {
-    await deleteS3(business?.landingPageHero?.coverImage);
+
+  if (businessData.landingPageHero?.coverImage) {
+    if (business?.landingPageHero?.coverImage !== businessData?.landingPageHero?.coverImage) {
+      await deleteS3(business?.landingPageHero?.coverImage);
+    }
   }
 
-  if (
-    business?.welcomePart?.coverImage !== businessData?.welcomePart?.coverImage
-  ) {
-    await deleteS3(business?.welcomePart?.coverImage);
+  if (businessData.welcomePart?.coverImage){
+    if (business?.welcomePart?.coverImage !== businessData?.welcomePart?.coverImage) {
+      await deleteS3(business?.welcomePart?.coverImage);
+    }
   }
 
-  if (business?.logo !== businessData?.logo) {
-    await deleteS3(business?.logo);
+  if (businessData.logo) {
+    if (business?.logo !== businessData?.logo) {
+      await deleteS3(business?.logo);
+    }
   }
 
-  if (business?.productSection?.data && businessData?.productSection?.data) {
-    for (let i = 0; i < business.productSection.data.length; i++) {
-      if (
-        business?.productSection?.data[i].image !=
-        businessData?.productSection?.data[i].image
-      ) {
-        await deleteS3(business.productSection.data[i].image);
+  if (businessData?.productSection?.data) {
+    if (business?.productSection?.data && businessData?.productSection?.data) {
+      for (let i = 0; i < business.productSection.data.length; i++) {
+        if (
+          business?.productSection?.data[i].image !=
+          businessData?.productSection?.data[i].image
+        ) {
+          await deleteS3(business.productSection.data[i].image);
+        }
       }
     }
   }
 
-  if (business?.specialServices?.data && businessData?.specialServices?.data) {
-    for (let i = 0; i < business.specialServices.data.length; i++) {
-      if (
-        business?.specialServices?.data[i].image !=
-        businessData?.specialServices?.data[i].image
-      ) {
-        await deleteS3(business.specialServices.data[i].image);
+  if (businessData?.specialServices?.data) {
+    if (business?.specialServices?.data && businessData?.specialServices?.data) {
+      for (let i = 0; i < business.specialServices.data.length; i++) {
+        if (
+          business?.specialServices?.data[i].image !=
+          businessData?.specialServices?.data[i].image
+        ) {
+          await deleteS3(business.specialServices.data[i].image);
+        }
       }
     }
   }
 
-  if (business?.service?.data && businessData?.service?.data) {
-    for (let i = 0; i < business.service.data.length; i++) {
-      if (
-        business?.service?.data[i].image != businessData?.service?.data[i].image
-      ) {
-        await deleteS3(business.service.data[i].image);
+  if (businessData.service?.data) {
+    if (business?.service?.data && businessData?.service?.data) {
+      for (let i = 0; i < business.service.data.length; i++) {
+        if (
+          business?.service?.data[i].image != businessData?.service?.data[i].image
+        ) {
+          await deleteS3(business.service.data[i].image);
+        }
       }
     }
   }
 
-  if (business?.gallery && businessData?.gallery) {
-    for (let i = 0; i < business.gallery.length; i++) {
-      if (business?.gallery[i] !== businessData?.gallery[i]) {
-        //+
-        await deleteS3(business.gallery[i]);
+  if (businessData.gallery) {
+    if (business?.gallery && businessData?.gallery) {
+      for (let i = 0; i < business.gallery.length; i++) {
+        if (business?.gallery[i] !== businessData?.gallery[i]) {
+          //+
+          await deleteS3(business.gallery[i]);
+        }
       }
     }
   }
