@@ -68,9 +68,11 @@ const getCurrentPlan = async (businessId) => {
     paymentStatus: PaymentStatus.SUCCESS,
   })
     .sort({ createdAt: -1 })
-    .populate("plan", "amount validity isPremium description");
+    .populate("plan", "amount validity isPremium description createdAt");
   const business = await Business.findById(businessId)
-    .select("validity isFree plan isValid isFreeTrailUsed isInFreeTrail ")
+    .select(
+      "validity isFree plan isValid isFreeTrailUsed isInFreeTrail createdAt ",
+    )
     .populate("selectedPlan");
   if (!business) {
     return await generateAPIError(errorMessages.userNotFound, 400);

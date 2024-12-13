@@ -41,7 +41,7 @@ const getS3Urls = errorWrapper(async (req, res, next) => {
   });
 });
 const deleteS3 = async (key) => {
-  const keyy = key.split("inconnect/")[1];
+  const keyy = key?.split("inconnect/")[1];
   console.log(`inconnect/${keyy}`, "key");
   // Ensure that AWS region and credentials are properly configured
   aws.config.update({

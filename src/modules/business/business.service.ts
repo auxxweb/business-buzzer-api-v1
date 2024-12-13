@@ -79,11 +79,11 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
     businessId: await createBusinessId(),
     ...(location?.lat &&
       location?.lon && {
-      location: {
-        type: "Point",
-        coordinates: [location?.lon, location?.lat],
-      },
-    }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -592,7 +592,7 @@ const updateBusiness = async (
     seoData,
     selectedPlan,
     location,
-    plan
+    plan,
   } = businessData;
   console.log();
 
@@ -607,22 +607,26 @@ const updateBusiness = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
-
   if (!business?.isValid && business?.plain !== PlanStatus.SPECIAL_TRAIL) {
     return await generateAPIError(errorMessages.planNotValid, 400);
   }
 
-  
   //remove s3 url after update
 
   if (businessData?.landingPageHero?.coverImage) {
-    if (business?.landingPageHero?.coverImage !== businessData?.landingPageHero?.coverImage) {
+    if (
+      business?.landingPageHero?.coverImage !==
+      businessData?.landingPageHero?.coverImage
+    ) {
       await deleteS3(business?.landingPageHero?.coverImage);
     }
   }
 
-  if (businessData.welcomePart?.coverImage){
-    if (business?.welcomePart?.coverImage !== businessData?.welcomePart?.coverImage) {
+  if (businessData.welcomePart?.coverImage) {
+    if (
+      business?.welcomePart?.coverImage !==
+      businessData?.welcomePart?.coverImage
+    ) {
       await deleteS3(business?.welcomePart?.coverImage);
     }
   }
@@ -647,7 +651,10 @@ const updateBusiness = async (
   }
 
   if (businessData?.specialServices?.data) {
-    if (business?.specialServices?.data && businessData?.specialServices?.data) {
+    if (
+      business?.specialServices?.data &&
+      businessData?.specialServices?.data
+    ) {
       for (let i = 0; i < business?.specialServices?.data.length; i++) {
         if (
           business?.specialServices?.data[i]?.image !=
@@ -663,7 +670,8 @@ const updateBusiness = async (
     if (business?.service?.data && businessData?.service?.data) {
       for (let i = 0; i < business?.service?.data?.length; i++) {
         if (
-          business?.service?.data[i]?.image != businessData?.service?.data[i].image
+          business?.service?.data[i]?.image !=
+          businessData?.service?.data[i].image
         ) {
           await deleteS3(business.service.data[i]?.image);
         }
@@ -681,7 +689,6 @@ const updateBusiness = async (
       }
     }
   }
-
 
   if (email) {
     const emailExists = await Business.findOne({
@@ -769,11 +776,11 @@ const updateBusiness = async (
       }),
       ...(location?.lat &&
         location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
     },
     {
       new: true,
@@ -974,15 +981,15 @@ const updateBusinessByAdmin = async (
       }),
       ...(password &&
         !comparePassword && {
-        password: hashedPassword,
-      }),
+          password: hashedPassword,
+        }),
       ...(location?.lat &&
         location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
     },
     {
       new: true,
@@ -1042,8 +1049,11 @@ const updateBusinessIsFreeByAdmin = async (
     },
     {
       isFree: !business?.isFree,
-      plan: business?.plan === PlanStatus.SPECIAL_TRAIL ? PlanStatus.PAID : PlanStatus.SPECIAL_TRAIL,
-      isValid: business?.plan !== PlanStatus.SPECIAL_TRAIL ? true : false
+      plan:
+        business?.plan === PlanStatus.SPECIAL_TRAIL
+          ? PlanStatus.PAID
+          : PlanStatus.SPECIAL_TRAIL,
+      isValid: business?.plan !== PlanStatus.SPECIAL_TRAIL ? true : false,
     },
   );
 
@@ -1078,7 +1088,7 @@ const activateSpecialTail = async ({
       {
         plan: PlanStatus.SPECIAL_TRAIL,
         isValid: true,
-        isFree: true
+        isFree: true,
       },
     );
 
@@ -1306,7 +1316,10 @@ const addProduct = async (
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
 
-  if ((!business.isValid || !business.paymentStatus) && business.plan !== PlanStatus.SPECIAL_TRAIL) {
+  if (
+    (!business.isValid || !business.paymentStatus) &&
+    business.plan !== PlanStatus.SPECIAL_TRAIL
+  ) {
     return await generateAPIError(errorMessages.planNotValid, 404);
   }
 
@@ -1319,8 +1332,8 @@ const addProduct = async (
       typeof productData.price === "number" && !isNaN(productData.price)
         ? productData.price
         : typeof productData.price === "string"
-          ? Number(productData.price)
-          : 0,
+        ? Number(productData.price)
+        : 0,
     image: productData.image || "", // Default to empty string if null or undefined
   };
 

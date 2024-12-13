@@ -69,11 +69,11 @@ const businessSignUp = async (userData) => {
     businessId: await createBusinessId(),
     ...(location?.lat &&
       location?.lon && {
-      location: {
-        type: "Point",
-        coordinates: [location?.lon, location?.lat],
-      },
-    }),
+        location: {
+          type: "Point",
+          coordinates: [location?.lon, location?.lat],
+        },
+      }),
     contactDetails,
     socialMediaLinks,
     category,
@@ -233,7 +233,8 @@ const getBusinessById = async (businessId, isAuth) => {
     if (
       !business?.paymentStatus &&
       !business?.isFree &&
-      !business?.isInFreeTrail
+      !business?.isInFreeTrail &&
+      business?.plan !== PlanStatus.SPECIAL_TRAIL
     ) {
       return await generateAPIError(errorMessages.paymentNotCompleted, 400);
     }
@@ -522,6 +523,7 @@ const updateBusiness = async (businessId, businessData) => {
     seoData,
     selectedPlan,
     location,
+    plan,
   } = businessData;
   console.log();
   const business = await Business.findOne({
@@ -533,60 +535,79 @@ const updateBusiness = async (businessId, businessData) => {
   if (business == null) {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
-  //remove s3 url after update
-  if (
-    business?.landingPageHero?.coverImage !==
-    businessData?.landingPageHero?.coverImage
-  ) {
-    await deleteS3(business?.landingPageHero?.coverImage);
-  }
-  if (
-    business?.welcomePart?.coverImage !== businessData?.welcomePart?.coverImage
-  ) {
-    await deleteS3(business?.welcomePart?.coverImage);
-  }
-  if (business?.logo !== businessData?.logo) {
-    await deleteS3(business?.logo);
-  }
-  if (business?.productSection?.data && businessData?.productSection?.data) {
-    for (let i = 0; i < business.productSection.data.length; i++) {
-      if (
-        business?.productSection?.data[i].image !=
-        businessData?.productSection?.data[i].image
-      ) {
-        await deleteS3(business.productSection.data[i].image);
-      }
-    }
-  }
-  if (business?.specialServices?.data && businessData?.specialServices?.data) {
-    for (let i = 0; i < business.specialServices.data.length; i++) {
-      if (
-        business?.specialServices?.data[i].image !=
-        businessData?.specialServices?.data[i].image
-      ) {
-        await deleteS3(business.specialServices.data[i].image);
-      }
-    }
-  }
-  if (business?.service?.data && businessData?.service?.data) {
-    for (let i = 0; i < business.service.data.length; i++) {
-      if (
-        business?.service?.data[i].image != businessData?.service?.data[i].image
-      ) {
-        await deleteS3(business.service.data[i].image);
-      }
-    }
-  }
-  if (business?.gallery && businessData?.gallery) {
-    for (let i = 0; i < business.gallery.length; i++) {
-      if (business?.gallery[i] !== businessData?.gallery[i]) {
-        //+
-        await deleteS3(business.gallery[i]);
-      }
-    }
-  }
-  if (!business?.isValid && business.plain !== PlanStatus.SPECIAL_TRAIL) {
+  if (!business?.isValid && business?.plain !== PlanStatus.SPECIAL_TRAIL) {
     return await generateAPIError(errorMessages.planNotValid, 400);
+  }
+  //remove s3 url after update
+  if (businessData?.landingPageHero?.coverImage) {
+    if (
+      business?.landingPageHero?.coverImage !==
+      businessData?.landingPageHero?.coverImage
+    ) {
+      await deleteS3(business?.landingPageHero?.coverImage);
+    }
+  }
+  if (businessData.welcomePart?.coverImage) {
+    if (
+      business?.welcomePart?.coverImage !==
+      businessData?.welcomePart?.coverImage
+    ) {
+      await deleteS3(business?.welcomePart?.coverImage);
+    }
+  }
+  if (businessData?.logo) {
+    if (business?.logo !== businessData?.logo) {
+      await deleteS3(business?.logo);
+    }
+  }
+  if (businessData?.productSection?.data) {
+    if (business?.productSection?.data && businessData?.productSection?.data) {
+      for (let i = 0; i < business?.productSection?.data?.length; i++) {
+        if (
+          business?.productSection?.data[i]?.image !=
+          businessData?.productSection?.data[i]?.image
+        ) {
+          await deleteS3(business?.productSection?.data[i]?.image);
+        }
+      }
+    }
+  }
+  if (businessData?.specialServices?.data) {
+    if (
+      business?.specialServices?.data &&
+      businessData?.specialServices?.data
+    ) {
+      for (let i = 0; i < business?.specialServices?.data.length; i++) {
+        if (
+          business?.specialServices?.data[i]?.image !=
+          businessData?.specialServices?.data[i]?.image
+        ) {
+          await deleteS3(business?.specialServices?.data[i]?.image);
+        }
+      }
+    }
+  }
+  if (businessData?.service?.data) {
+    if (business?.service?.data && businessData?.service?.data) {
+      for (let i = 0; i < business?.service?.data?.length; i++) {
+        if (
+          business?.service?.data[i]?.image !=
+          businessData?.service?.data[i].image
+        ) {
+          await deleteS3(business.service.data[i]?.image);
+        }
+      }
+    }
+  }
+  if (businessData?.gallery) {
+    if (business?.gallery && businessData?.gallery) {
+      for (let i = 0; i < business?.gallery?.length; i++) {
+        if (business?.gallery[i] !== businessData?.gallery[i]) {
+          //+
+          await deleteS3(business?.gallery[i]);
+        }
+      }
+    }
   }
   if (email) {
     const emailExists = await Business.findOne({
@@ -672,11 +693,11 @@ const updateBusiness = async (businessId, businessData) => {
       }),
       ...(location?.lat &&
         location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
     },
     {
       new: true,
@@ -860,15 +881,15 @@ const updateBusinessByAdmin = async (businessId, businessData) => {
       }),
       ...(password &&
         !comparePassword && {
-        password: hashedPassword,
-      }),
+          password: hashedPassword,
+        }),
       ...(location?.lat &&
         location?.lon && {
-        location: {
-          type: "Point",
-          coordinates: [location?.lon, location?.lat],
-        },
-      }),
+          location: {
+            type: "Point",
+            coordinates: [location?.lon, location?.lat],
+          },
+        }),
     },
     {
       new: true,
@@ -914,7 +935,11 @@ const updateBusinessIsFreeByAdmin = async (businessId, isFree) => {
     },
     {
       isFree: !business?.isFree,
-      plan: business?.isFreeTrailUsed ? PlanStatus.PAID : PlanStatus.FREE_TRAIL,
+      plan:
+        business?.plan === PlanStatus.SPECIAL_TRAIL
+          ? PlanStatus.PAID
+          : PlanStatus.SPECIAL_TRAIL,
+      isValid: business?.plan !== PlanStatus.SPECIAL_TRAIL ? true : false,
     },
   );
   return {
@@ -941,6 +966,7 @@ const activateSpecialTail = async ({ businessId }) => {
       {
         plan: PlanStatus.SPECIAL_TRAIL,
         isValid: true,
+        isFree: true,
       },
     );
     return {
@@ -968,7 +994,7 @@ const deactivateSpecialTail = async ({ businessId }) => {
         isDeleted: false,
       },
       {
-        plan: PlanStatus.SPECIAL_TRAIL,
+        plan: PlanStatus.CANCELLED,
         isValid: false,
       },
     );
@@ -1119,7 +1145,10 @@ const addProduct = async (businessId, productData) => {
   if (!business) {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
-  if (!business.isValid || !business.paymentStatus) {
+  if (
+    (!business.isValid || !business.paymentStatus) &&
+    business.plan !== PlanStatus.SPECIAL_TRAIL
+  ) {
     return await generateAPIError(errorMessages.planNotValid, 404);
   }
   // Validate and sanitize product data, add unique _id for the new product
@@ -1131,8 +1160,8 @@ const addProduct = async (businessId, productData) => {
       typeof productData.price === "number" && !isNaN(productData.price)
         ? productData.price
         : typeof productData.price === "string"
-          ? Number(productData.price)
-          : 0,
+        ? Number(productData.price)
+        : 0,
     image: productData.image || "", // Default to empty string if null or undefined
   };
   try {

@@ -5,6 +5,7 @@ import { errorWrapper } from "../../middleware/errorWrapper.js";
 import { businessService } from "./business.service.js";
 import { getPaginationOptions } from "../../utils/pagination.utils.js";
 import { ObjectId } from "../../constants/type.js";
+import { PlanStatus } from "./business.enum.js";
 const businessSignUp = errorWrapper(async (req, res, next) => {
   const data = await businessService.businessSignUp({
     ...req.body,
@@ -153,7 +154,12 @@ const getAllBusiness = errorWrapper(async (req, res, next) => {
   let query = {
     isDeleted: false,
     status: true,
-    $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
+    $or: [
+      { isFree: true },
+      { paymentStatus: true },
+      { isInFreeTrail: true },
+      { plan: PlanStatus.SPECIAL_TRAIL },
+    ],
   };
   const searchTerm = req.query?.searchTerm;
   if (searchTerm) {
@@ -383,7 +389,12 @@ const getBusinessByCategory = errorWrapper(async (req, res, next) => {
     isDeleted: false,
     category: new ObjectId(String(req.params?.id)),
     status: true,
-    $or: [{ isFree: true }, { paymentStatus: true }, { isInFreeTrail: true }],
+    $or: [
+      { isFree: true },
+      { paymentStatus: true },
+      { isInFreeTrail: true },
+      { plan: PlanStatus.SPECIAL_TRAIL },
+    ],
   };
   const searchTerm = req.query?.searchTerm;
   if (searchTerm) {

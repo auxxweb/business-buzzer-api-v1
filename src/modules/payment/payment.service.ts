@@ -94,7 +94,9 @@ const getCurrentPlan = async (businessId: string): Promise<any> => {
     .populate("plan", "amount validity isPremium description createdAt");
 
   const business = await Business.findById(businessId)
-    .select("validity isFree plan isValid isFreeTrailUsed isInFreeTrail createdAt ")
+    .select(
+      "validity isFree plan isValid isFreeTrailUsed isInFreeTrail createdAt ",
+    )
     .populate("selectedPlan");
 
   if (!business) {
