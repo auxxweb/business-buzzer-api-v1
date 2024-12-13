@@ -13,6 +13,7 @@ const createNews = async ({
   description,
   link,
   image,
+  isBanner
 }: CreateNews): Promise<any> => {
   console.log(description, "description");
 
@@ -30,6 +31,7 @@ const createNews = async ({
     description,
     businessId,
     link,
+    isBanner,
     ...(image && {
       image,
     }),
