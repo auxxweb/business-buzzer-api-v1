@@ -21,6 +21,7 @@ const createPlan = async (planData: CreatePlanServiceData): Promise<any> => {
     plan: planData?.plan,
     validity: planData?.validity,
     amount: planData?.amount,
+    actualAmount: planData?.actualAmount,
     isPremium: planData?.isPremium,
     description: planData?.description,
   });
@@ -60,6 +61,7 @@ const updatePlan = async (
     plan: string;
     validity: number;
     amount: number;
+    actualAmount: number;
     description: string;
     isDeleted: boolean;
     isPremium: boolean;
@@ -127,6 +129,9 @@ const updatePlan = async (
       ...(planData?.amount && {
         amount: planData?.amount,
       }),
+      ...(planData?.actualAmount && {
+        actualAmount: planData?.actualAmount,
+      }),
       ...(planData?.isPremium && {
         isPremium: planData?.isPremium,
       }),
@@ -147,6 +152,7 @@ const updateTrashPlan = async (
     plan: string;
     validity: number;
     amount: number;
+    actualAmount: number;
     description: string;
     isDeleted: boolean;
     isPremium: boolean;
@@ -213,6 +219,9 @@ const updateTrashPlan = async (
       }),
       ...(planData?.amount && {
         amount: planData?.amount,
+      }),
+      ...(planData?.actualAmount && {
+        actualAmount: planData?.actualAmount,
       }),
       ...(planData?.isPremium && {
         isPremium: planData?.isPremium,
