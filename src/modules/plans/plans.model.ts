@@ -16,6 +16,7 @@ const PlansCollection = new Schema(
       default: false,
     },
     amount: Number,
+    actualAmount:Number,
     description: {
       type: [String],
     },
