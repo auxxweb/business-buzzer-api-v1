@@ -13,7 +13,7 @@ const createNews = async ({
   description,
   link,
   image,
-  isBanner
+  isBanner,
 }: CreateNews): Promise<any> => {
   console.log(description, "description");
 

@@ -4,7 +4,14 @@ import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages } from "../../constants/messages.js";
 import BusinessNews from "./businessNews.model.js";
 import { deleteS3 } from "../../controller/s3.controller.js";
-const createNews = async ({ businessId, title, description, link, image }) => {
+const createNews = async ({
+  businessId,
+  title,
+  description,
+  link,
+  image,
+  isBanner,
+}) => {
   console.log(description, "description");
   const businessExists = await Business.findOne({
     _id: new ObjectId(businessId),
@@ -18,6 +25,7 @@ const createNews = async ({ businessId, title, description, link, image }) => {
     description,
     businessId,
     link,
+    isBanner,
     ...(image && {
       image,
     }),

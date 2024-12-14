@@ -16,6 +16,7 @@ const createPlan = async (planData) => {
     plan: planData?.plan,
     validity: planData?.validity,
     amount: planData?.amount,
+    actualAmount: planData?.actualAmount,
     isPremium: planData?.isPremium,
     description: planData?.description,
   });
@@ -92,6 +93,9 @@ const updatePlan = async (planId, planData) => {
       ...(planData?.amount && {
         amount: planData?.amount,
       }),
+      ...(planData?.actualAmount && {
+        actualAmount: planData?.actualAmount,
+      }),
       ...(planData?.isPremium && {
         isPremium: planData?.isPremium,
       }),
@@ -159,6 +163,9 @@ const updateTrashPlan = async (planId, planData) => {
       }),
       ...(planData?.amount && {
         amount: planData?.amount,
+      }),
+      ...(planData?.actualAmount && {
+        actualAmount: planData?.actualAmount,
       }),
       ...(planData?.isPremium && {
         isPremium: planData?.isPremium,

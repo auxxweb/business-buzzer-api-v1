@@ -4,5 +4,5 @@ export interface CreateNews {
   description: string;
   link: string;
   image: string;
-  isBanner: boolean
+  isBanner: boolean;
 }
