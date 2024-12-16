@@ -6,7 +6,6 @@ import { errorMessages } from "../../constants/messages.js";
 import BusinessNews from "./businessNews.model.js";
 import { FilterQuery, QueryOptions } from "mongoose";
 import { deleteS3 } from "../../controller/s3.controller.js";
-
 const createNews = async ({
   businessId,
   title,
@@ -17,6 +16,7 @@ const createNews = async ({
 }: CreateNews): Promise<any> => {
   console.log(description, "description");
 
+  // Check if business exists
   const businessExists = await Business.findOne({
     _id: new ObjectId(businessId),
     isDeleted: false,
@@ -26,15 +26,27 @@ const createNews = async ({
     return await generateAPIError(errorMessages.userNotFound, 400);
   }
 
+  // If isBanner is true, make sure no other document has isBanner: true
+  if (isBanner) {
+    // Update any existing document with isBanner: true to set it to false
+    await BusinessNews.updateMany(
+      {
+        isBanner: true,
+        businessId: new ObjectId(businessId),
+        isDeleted: false,
+      },
+      { $set: { isBanner: false } }
+    );
+  }
+
+  // Create the new news article with the provided data
   return await BusinessNews.create({
     title,
     description,
     businessId,
     link,
     isBanner,
-    ...(image && {
-      image,
-    }),
+    ...(image && { image }),
   });
 };
 
@@ -52,18 +64,31 @@ const getAllNews = async ({
 
   return { data, totalCount };
 };
-
 const updateNews = async (
   newsId: string,
-  updateData: Partial<CreateNews>,
+  updateData: Partial<CreateNews>
 ): Promise<any> => {
+  // Check if isBanner is being updated to true
+  if (updateData?.hasOwnProperty("isBanner") && updateData?.isBanner === true) {
+    // If so, set all other isBanner: true documents to isBanner: false
+    await BusinessNews.updateMany(
+      {
+        isBanner: true,
+        _id: { $ne: new ObjectId(newsId) }, // Exclude the current news document
+        isDeleted: false,
+      },
+      { $set: { isBanner: false } }
+    );
+  }
+
+  // Find the existing news data
   const newsData: any = await BusinessNews.findOne({
     _id: new ObjectId(newsId),
     isDeleted: false,
   });
 
-  console.log(newsData, "nesssssssssssssssssss");
-  console.log(updateData, "updateeeeee");
+  console.log(newsData, "newsData");
+  console.log(updateData, "updateData");
 
   if (newsData?.image !== updateData?.image) {
     await deleteS3(newsData?.image);
@@ -81,22 +106,25 @@ const updateNews = async (
       isDeleted: false,
     },
     {
-      ...(updateData?.title && {
+      ...(updateData?.hasOwnProperty("title") && {
         title: updateData?.title,
       }),
-      ...(updateData?.description && {
+      ...(updateData?.hasOwnProperty("description") && {
         description: updateData?.description,
       }),
-      ...(updateData?.link && {
+      ...(updateData?.hasOwnProperty("link") && {
         link: updateData?.link,
       }),
-      ...(updateData?.image && {
+      ...(updateData?.hasOwnProperty("image") && {
         image: updateData?.image,
+      }),
+      ...(updateData?.hasOwnProperty("isBanner") && {
+        isBanner: updateData?.isBanner,
       }),
     },
     {
       new: true,
-    },
+    }
   );
 };
 
@@ -127,7 +155,7 @@ const deleteNews = async ({
     },
     {
       new: true,
-    },
+    }
   );
   if (!data) {
     return await generateAPIError("Failed to delete news, try again", 400);
