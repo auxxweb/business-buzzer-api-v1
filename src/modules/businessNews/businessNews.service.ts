@@ -35,7 +35,7 @@ const createNews = async ({
         businessId: new ObjectId(businessId),
         isDeleted: false,
       },
-      { $set: { isBanner: false } }
+      { $set: { isBanner: false } },
     );
   }
 
@@ -66,7 +66,7 @@ const getAllNews = async ({
 };
 const updateNews = async (
   newsId: string,
-  updateData: Partial<CreateNews>
+  updateData: Partial<CreateNews>,
 ): Promise<any> => {
   // Check if isBanner is being updated to true
   if (updateData?.hasOwnProperty("isBanner") && updateData?.isBanner === true) {
@@ -77,7 +77,7 @@ const updateNews = async (
         _id: { $ne: new ObjectId(newsId) }, // Exclude the current news document
         isDeleted: false,
       },
-      { $set: { isBanner: false } }
+      { $set: { isBanner: false } },
     );
   }
 
@@ -124,7 +124,7 @@ const updateNews = async (
     },
     {
       new: true,
-    }
+    },
   );
 };
 
@@ -155,7 +155,7 @@ const deleteNews = async ({
     },
     {
       new: true,
-    }
+    },
   );
   if (!data) {
     return await generateAPIError("Failed to delete news, try again", 400);
