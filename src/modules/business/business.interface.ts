@@ -66,6 +66,7 @@ export interface CreateBusinessData {
         image: string;
         title: string;
         description: string;
+        link: string;
       },
     ];
   };
@@ -78,6 +79,7 @@ export interface CreateBusinessData {
         title: string;
         description: string;
         price: number;
+        link: string;
       },
     ];
   };
@@ -89,6 +91,7 @@ export interface CreateBusinessData {
         image: string;
         title: string;
         description: string;
+        link: string;
       },
     ];
   };

@@ -939,7 +939,7 @@ const updateBusinessIsFreeByAdmin = async (businessId, isFree) => {
         business?.plan === PlanStatus.SPECIAL_TRAIL
           ? PlanStatus.PAID
           : PlanStatus.SPECIAL_TRAIL,
-      isValid: business?.plan !== PlanStatus.SPECIAL_TRAIL ? true : false,
+      isValid: business?.plan !== PlanStatus.SPECIAL_TRAIL,
     },
   );
   return {
