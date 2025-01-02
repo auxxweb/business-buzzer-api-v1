@@ -72,6 +72,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
 
   const business = await Business.create({
     businessName,
+    slug:businessName,
     logo,
     ownerName,
     email,
@@ -131,6 +132,7 @@ const businessSignUp = async (userData: CreateBusinessData): Promise<any> => {
   return {
     _id: business?._id,
     businessName: business?.businessName,
+    slug:business?.slug,
     logo: business?.logo,
     ownerName: business?.ownerName,
     email: business?.email,
@@ -356,6 +358,7 @@ const getAllBusiness = async ({
         _id: 1,
         businessName: 1,
         logo: 1,
+        slug:1,
         // ownerName: 1,
         // email: 1,
         businessId: 1,
@@ -506,6 +509,7 @@ const getAllBusinessByAdmin = async ({
       $project: {
         _id: 1,
         businessName: 1,
+        slug:1,
         logo: 1,
         ownerName: 1,
         email: 1,

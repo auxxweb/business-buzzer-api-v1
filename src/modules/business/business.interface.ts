@@ -4,6 +4,7 @@ import { PlanStatus } from "./business.enum.js";
 
 export interface CreateBusinessData {
   businessName: string;
+  slug:string;
   logo: string;
   ownerName: string;
   email: string;
