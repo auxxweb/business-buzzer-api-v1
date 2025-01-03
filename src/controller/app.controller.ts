@@ -6,7 +6,7 @@ import { successMessages } from "../constants/messages.js";
 import Business from "modules/business/business.model.js";
 
 const createBusId = async (businessCount: number): Promise<string> => {
-  const paddedCount = String(businessCount + 1).padStart(8, "0");
+  const paddedCount = String(businessCount + 10).padStart(8, "0");
   return `ENC${paddedCount}`;
 };
 
@@ -17,7 +17,7 @@ const healthCheck = errorWrapper(
 
     for (const business of businesses) {
       // Ensure the businessId is being set correctly
-      business.businessId = await createBusId(busCount); // No need for `await` if `createBusId` is not async
+      business.businessId = await createBusId(busCount); // No need for await if createBusId is not async
       await business.save(); // Save the updated business
       busCount += 1; // Increment the counter
     }
