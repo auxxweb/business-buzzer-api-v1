@@ -445,6 +445,7 @@ const getAllBusinessByAdmin = async ({ query, options, lat, lon }) => {
       $project: {
         _id: 1,
         businessName: 1,
+        slug: 1,
         logo: 1,
         ownerName: 1,
         email: 1,

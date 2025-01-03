@@ -6,6 +6,9 @@ const BusinessSchema = new Schema(
     businessName: {
       type: String,
     },
+    slug: {
+      type: String,
+    },
     logo: {
       type: String,
     },

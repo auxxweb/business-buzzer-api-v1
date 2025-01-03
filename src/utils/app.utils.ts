@@ -182,8 +182,8 @@ export const adminResetLinkEmailTemplate = async (tempData: {
 
 export const createBusinessId = async (): Promise<string> => {
   const businessCount = await Business.countDocuments();
-  const paddedCount = String(businessCount + 1).padStart(6, "0");
-  return `INC${paddedCount}`;
+  const paddedCount = String(businessCount + 1).padStart(8, "0");
+  return `ENC${paddedCount}`;
 };
 
 export const getInformEmailTemplate = async ({
