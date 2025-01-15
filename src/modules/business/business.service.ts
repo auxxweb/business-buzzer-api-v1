@@ -671,7 +671,7 @@ const updateBusiness = async (
       for (let i = 0; i < business?.service?.data?.length; i++) {
         if (
           business?.service?.data[i]?.image !=
-          businessData?.service?.data[i].image
+          businessData?.service?.data[i]?.image
         ) {
           await deleteS3(business.service.data[i]?.image);
         }
