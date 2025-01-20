@@ -361,7 +361,7 @@ const getAllBusiness = async ({
         businessId: 1,
         address: 1,
         rating: 1,
-        // contactDetails: 1,
+        contactDetails: 1,
         // socialMediaLinks: 1,
         category: 1,
         // services: 1,
