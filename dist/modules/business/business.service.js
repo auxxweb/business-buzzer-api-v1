@@ -315,7 +315,7 @@ const getAllBusiness = async ({ query, options, lat, lon }) => {
         businessId: 1,
         address: 1,
         rating: 1,
-        // contactDetails: 1,
+        contactDetails: 1,
         // socialMediaLinks: 1,
         category: 1,
         // services: 1,
@@ -592,7 +592,7 @@ const updateBusiness = async (businessId, businessData) => {
       for (let i = 0; i < business?.service?.data?.length; i++) {
         if (
           business?.service?.data[i]?.image !=
-          businessData?.service?.data[i].image
+          businessData?.service?.data[i]?.image
         ) {
           await deleteS3(business.service.data[i]?.image);
         }
