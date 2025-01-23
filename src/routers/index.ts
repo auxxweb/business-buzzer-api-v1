@@ -17,6 +17,8 @@ import bannerRouter from "./banners/banner.router.js";
 import adminTermsRouter from "./adminTerms/adminTerms.router.js";
 import businessReviewRouter from "./businessReview/businessReview.router.js";
 import businessNewsReviewRouter from "./businessNews/businessNews.router.js";
+import freelistRouter from './freelist/freelist.router.js';
+
 
 const router = Router();
 router.post("/s3url", getS3Urls);
@@ -37,5 +39,6 @@ router.use("/banner", bannerRouter);
 router.use("/admin-terms", adminTermsRouter);
 router.use("/business-review", businessReviewRouter);
 router.use("/business-news", businessNewsReviewRouter);
+router.use('/freelist' , freelistRouter );
 
 export default router;
