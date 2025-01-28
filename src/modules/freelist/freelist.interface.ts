@@ -23,6 +23,7 @@ interface CreateFreeList {
     description?: string;
     enconnectUrl?: string;
     images?: string[];  
+    isDeleted?: boolean;
   }
   
   export default CreateFreeList;

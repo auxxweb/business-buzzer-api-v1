@@ -26,8 +26,12 @@ const FreeListSchema = new Schema(
     description: String,
     enconnectUrl: String,
     images: [String], // Array of URLs
+    isDeleted: {
+        type: Boolean,
+        default: false,
+      },
   },
-  
+ 
 );
 
 const FreeList = model("freelist", FreeListSchema);

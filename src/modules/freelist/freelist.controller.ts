@@ -26,6 +26,29 @@ const freeListSignUp = errorWrapper(
     },
   );
 
+
+  const getAllFreelistMain = errorWrapper(
+    async (req: Request, res: Response, next: NextFunction) => {
+      console.log(req.query, "query data");
+  
+      const { page = 1, limit = 10 } = req.query; // Default to page 1 and limit 10
+  
+      // Fetch data using the service
+      const data = await freeListService.getAllFreelistMain({
+        query: {
+          page: Number(page), // Ensure numeric values
+          limit: Number(limit),
+        },
+      });
+  
+      // Return the response
+      return responseUtils.success(res, {
+        data,
+        status: 200,
+      });
+    }
+  );
+
   const getAllFreelist = errorWrapper(
     async (req: Request, res: Response, next: NextFunction) => {
       // Directly call the service to fetch all freelist documents
@@ -42,8 +65,53 @@ const freeListSignUp = errorWrapper(
     }
   );
 
+
+const deleteBusinessByAdmin = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req?.params?.id, "req body");
+    const data = await freeListService.deleteBusinessByAdmin(req?.params?.id);
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+
+const unDeleteBusinessByAdmin = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.params.id, "hasasasreq body");
+    const data = await freeListService.unDeleteBusinessByAdmin(req?.params?.id);
+
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
+
+
+const getTrashBusiness = errorWrapper(
+    async (req: Request, res: Response, next: NextFunction) => {
+    
+      const data = await freeListService.getAllTrashFreelist();
+  
+      return responseUtils.success(res, {
+        data,
+        status: 200,
+      });
+    },
+  );
+
+
+
   export {
     freeListSignUp,
-    getAllFreelist
+    getAllFreelist,
+    deleteBusinessByAdmin,
+    unDeleteBusinessByAdmin,
+    getTrashBusiness,
+    getAllFreelistMain
   };
   
