@@ -1,3 +1,4 @@
+import { ObjectId } from "../../constants/type.js";
 import { model, Schema } from "mongoose";
 
 const FreeListSchema = new Schema(
@@ -34,6 +35,10 @@ const FreeListSchema = new Schema(
         type: Boolean,
         default: false,
       },
+       category: {
+           type: ObjectId,
+           ref: "categories",
+         },
   },
  
 );

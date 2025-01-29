@@ -19,6 +19,7 @@ const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
       enconnectUrl,
       images,
       password,
+      category
     } = userData
     const hashedPassword = await hashValue(password ?? '', 10)
 
@@ -31,6 +32,7 @@ const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
       description,
       enconnectUrl,
       images,
+      category,
       password: hashedPassword,
     })
 
@@ -44,6 +46,7 @@ const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
       description: freelist?.description,
       enconnectUrl: freelist?.enconnectUrl,
       images: freelist?.images,
+      catetory:freelist?.category
     }
   } catch (error) {
     console.error(error)
@@ -66,7 +69,10 @@ const freelistLogin = async ({
     return await generateAPIError(errorMessages.freeListNotFound, 400)
   }
 
-  const comparePassword = await bcrypt.compare(password, freeList?.password ?? '')
+  const comparePassword = await bcrypt.compare(
+    password,
+    freeList?.password ?? '',
+  )
 
   if (!comparePassword) {
     return await generateAPIError(errorMessages.invalidCredentials, 400) // changed from 401 to 404 to fix frontend issue with redirect to login page
@@ -79,8 +85,54 @@ const freelistLogin = async ({
   }
 }
 
-const updateFreeList = async (freeListId:string,updateData:Partial<CreateFreeList>):Promise<any>=>{
-const 
+const updateFreeList = async (
+  freeListId: string,
+  updateData: Partial<CreateFreeList>,
+): Promise<any> => {
+  const freeList = await FreeList.findOne({
+    isDeleted: false,
+    _id: new ObjectId(freeListId),
+  })
+
+  if (freeList == null) {
+    return await generateAPIError(errorMessages.freeListNotFound, 400)
+  }
+
+  return await FreeList.findOneAndUpdate(
+    {
+      isDeleted: false,
+      _id: new ObjectId(freeListId),
+    },
+    {
+      ...(updateData?.name !== null && {
+        name: updateData?.name,
+      }),
+      ...(updateData?.brandName !== null && {
+        brandName: updateData?.brandName,
+      }),
+      ...(updateData?.logo !== null && {
+        logo: updateData?.logo,
+      }),
+      ...(updateData?.address !== null && {
+        address: updateData?.address,
+      }),
+      ...(updateData?.contactDetails !== null && {
+        contactDetails: updateData?.contactDetails,
+      }),
+      ...(updateData?.description !== null && {
+        description: updateData?.description,
+      }),
+      ...(updateData?.enconnectUrl !== null && {
+        enconnectUrl: updateData?.enconnectUrl,
+      }),
+      ...(updateData?.images !== null && {
+        images: updateData?.images,
+      }),
+      ...(updateData?.category !== null && {
+        category: updateData?.category,
+      }),
+    },
+  )
 }
 
 // Adjust the path based on your file structure
@@ -104,7 +156,7 @@ const getAllFreelistMain = async ({
 
     // Return the fetched data
     return data
-  } catch (error:any) {
+  } catch (error) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error?.message}`)
   }
@@ -115,7 +167,7 @@ const getAllFreelist = async (): Promise<any> => {
     // Fetch all documents from the 'FreeList' collection
     const data = await FreeList.find({ isDeleted: { $ne: true } }).lean()
     return data
-  } catch (error:any) {
+  } catch (error) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error.message}`)
   }
@@ -125,7 +177,7 @@ const getAllTrashFreelist = async (): Promise<any> => {
     // Fetch all documents from the 'FreeList' collection
     const data = await FreeList.find({ isDeleted: { $ne: false } }).lean()
     return data
-  } catch (error:any) {
+  } catch (error) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error.message}`)
   }
@@ -186,5 +238,5 @@ export const freeListService = {
   getAllTrashFreelist,
   getAllFreelistMain,
   freelistLogin,
-  updateFreeList
+  updateFreeList,
 }

@@ -2,10 +2,6 @@ import {Request,Response, NextFunction } from "express";
 import { errorWrapper } from "../../middleware/errorWrapper.js";
 import { responseUtils } from "../../utils/response.utils.js";
 import { freeListService } from "./freelist.service.js";
-import { getPaginationOptions } from "utils/pagination.utils.js";
-import { FilterQuery } from "mongoose";
-import FreeList from "./freelist.model.js";
-import { ObjectId } from "constants/type.js";
 
 
 
