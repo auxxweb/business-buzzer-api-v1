@@ -5,6 +5,10 @@ const FreeListSchema = new Schema(
     name: { type: String, required: true },
     brandName: { type: String, required: true },
     logo: { type: String, required: false }, // URL as string
+    password:{
+      type:String,
+      required:true
+    },
     address: {
       buildingName: String,
       streetName: String,

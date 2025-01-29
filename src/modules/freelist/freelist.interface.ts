@@ -2,6 +2,7 @@ interface CreateFreeList {
     name: string;
     brandName: string;
     logo?: string;
+    password:string;
     address?: {
       buildingName?: string;
       streetName?: string;
