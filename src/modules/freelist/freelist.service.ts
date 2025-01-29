@@ -5,7 +5,7 @@ import { generateAPIError } from '../../errors/apiError.js'
 import { errorMessages } from '../../constants/messages.js'
 import { ObjectId } from '../../constants/type.js'
 import { hashValue } from '../../modules/business/business.utils.js'
-import { generateToken } from 'utils/auth.utils.js'
+import { generateToken } from '../../utils/auth.utils.js'
 
 const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
   try {
@@ -149,14 +149,50 @@ const getAllFreelistMain = async ({
     const skip = (page - 1) * limit
 
     // Fetch documents with pagination and filter out isDeleted items
-    const data = await FreeList.find({ isDeleted: { $ne: true } })
+    const data = await FreeList.aggregate([
+      {
+        $match: { isDeleted: { $ne: true } },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      {
+        $unwind: {
+          path: "$category",
+          preserveNullAndEmptyArrays: true, // Keeps items even if they have no category
+        },
+      },
+      {
+        $project: {
+          _id: 1, // Keeping the FreeList document ID
+          name: 1, // Keeping other FreeList fields
+          brandName: 1,
+          categoryName: "$category.name", // Extract category name
+          categoryId: "$category._id",
+          contactDetails:1,
+          address:1,
+          logo:1,
+          description:1,
+          enconnectUrl:1,
+          images:1,
+         
+
+           // Keeping category ID if needed
+        },
+      },
+    ])
       .skip(skip)
       .limit(limit)
-      .lean()
-
+      .exec();
+      console.log(data,'freeelistdataaa')
     // Return the fetched data
     return data
-  } catch (error) {
+  } catch (error:any) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error?.message}`)
   }
@@ -167,7 +203,7 @@ const getAllFreelist = async (): Promise<any> => {
     // Fetch all documents from the 'FreeList' collection
     const data = await FreeList.find({ isDeleted: { $ne: true } }).lean()
     return data
-  } catch (error) {
+  } catch (error:any) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error.message}`)
   }
@@ -177,7 +213,7 @@ const getAllTrashFreelist = async (): Promise<any> => {
     // Fetch all documents from the 'FreeList' collection
     const data = await FreeList.find({ isDeleted: { $ne: false } }).lean()
     return data
-  } catch (error) {
+  } catch (error:any) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error.message}`)
   }
