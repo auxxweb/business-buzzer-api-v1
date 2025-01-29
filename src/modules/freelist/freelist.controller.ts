@@ -17,11 +17,23 @@ const freeListSignUp = errorWrapper(
       const data = await freeListService.freeListSignup({
         ...req.body,
       });
-      console.log(req.body,'body daataaa')
+      console.log(req.body,'body daataaa')  
   
       return responseUtils.success(res, {
         data,
         status: 201,
+      });
+    },
+  );
+const freeListLogin = errorWrapper(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const data = await freeListService.freelistLogin({
+        ...req.body,
+      }); 
+  
+      return responseUtils.success(res, {
+        data,
+        status: 200,
       });
     },
   );
@@ -112,6 +124,7 @@ const getTrashBusiness = errorWrapper(
     deleteBusinessByAdmin,
     unDeleteBusinessByAdmin,
     getTrashBusiness,
-    getAllFreelistMain
+    getAllFreelistMain,
+    freeListLogin
   };
   
