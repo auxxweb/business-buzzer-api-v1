@@ -2,6 +2,7 @@ import {Request,Response, NextFunction } from "express";
 import { errorWrapper } from "../../middleware/errorWrapper.js";
 import { responseUtils } from "../../utils/response.utils.js";
 import { freeListService } from "./freelist.service.js";
+import { RequestWithFreeList } from "../../interface/app.interface.js";
 
 
 
@@ -24,6 +25,18 @@ const freeListSignUp = errorWrapper(
 const freeListLogin = errorWrapper(
     async (req: Request, res: Response, next: NextFunction) => {
       const data = await freeListService.freelistLogin({
+        ...req.body,
+      }); 
+  
+      return responseUtils.success(res, {
+        data,
+        status: 200,
+      });
+    },
+  );
+const updateFreeList = errorWrapper(
+    async (req: RequestWithFreeList, res: Response, next: NextFunction) => {
+      const data = await freeListService.updateFreeList(req?.user?._id,{
         ...req.body,
       }); 
   
@@ -121,6 +134,7 @@ const getTrashBusiness = errorWrapper(
     unDeleteBusinessByAdmin,
     getTrashBusiness,
     getAllFreelistMain,
-    freeListLogin
+    freeListLogin,
+    updateFreeList
   };
   

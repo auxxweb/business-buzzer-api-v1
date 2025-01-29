@@ -156,7 +156,7 @@ const getAllFreelistMain = async ({
 
     // Return the fetched data
     return data
-  } catch (error) {
+  } catch (error:any) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error?.message}`)
   }
