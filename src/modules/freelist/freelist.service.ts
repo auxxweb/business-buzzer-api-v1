@@ -46,7 +46,7 @@ const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
       description: freelist?.description,
       enconnectUrl: freelist?.enconnectUrl,
       images: freelist?.images,
-      catetory:freelist?.category
+      cate:freelist?.category
     }
   } catch (error) {
     console.error(error)
@@ -82,6 +82,16 @@ const freelistLogin = async ({
     token: await generateToken({
       id: String(freeList?._id),
     }),
+    _id: freeList?._id,
+      name: freeList?.name,
+      brandName: freeList?.brandName,
+      logo: freeList?.logo,
+      address: freeList?.address,
+      contactDetails: freeList?.contactDetails,
+      description: freeList?.description,
+      enconnectUrl: freeList?.enconnectUrl,
+      images: freeList?.images,
+      category:freeList?.category
   }
 }
 
