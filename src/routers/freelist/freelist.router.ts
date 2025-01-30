@@ -6,7 +6,7 @@ import { freeListProtect, protect } from "../../middleware/auth.middleware.js";
 const router = Router();
 router.post("/", freeListSignUp);
 router.post("/login", freeListLogin);
-router.patch("/",freeListProtect(), updateFreeList);
+router.patch("/:id", updateFreeList);
 router.get("/", getAllFreelistMain);
 router.delete("/admin/:id", protect({ isAdmin: true }), deleteBusinessByAdmin);
 router.delete("/admin/undelete/:id",protect({ isAdmin: true }), unDeleteBusinessByAdmin);
