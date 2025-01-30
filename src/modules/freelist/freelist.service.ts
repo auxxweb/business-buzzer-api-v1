@@ -62,8 +62,10 @@ const freelistLogin = async ({
 }): Promise<any> => {
   const freeList = await FreeList.findOne({
     isDeleted: false,
-    email: email?.trim(),
+    'contactDetails.email': email.trim(),
   })
+
+  console.log(freeList,'freelist email')
 
   if (freeList == null) {
     return await generateAPIError(errorMessages.freeListNotFound, 400)
