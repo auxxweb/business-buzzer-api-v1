@@ -40,6 +40,7 @@ const errorMessages = {
   freePlanExired: "Free plan Expired",
   freePlanCompleted:
     "You can't subscribe to the free plan because you have already completed the free trial.",
+  freeListNotFound: "Your FreeList account not found!",
 };
 const successMessages = {
   linkSend: "Link successfully send to mail",

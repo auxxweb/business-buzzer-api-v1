@@ -1,7 +1,10 @@
 import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { appConfig } from "../config/appConfig.js";
-import { RequestWithFreeList, RequestWithUser } from "../interface/app.interface.js";
+import {
+  RequestWithFreeList,
+  RequestWithUser,
+} from "../interface/app.interface.js";
 // import User from "../modules/business/business.model.js";
 import { errorMessages } from "../constants/messages.js";
 import { ObjectId } from "../constants/type.js";
@@ -134,7 +137,11 @@ export const protect = ({ isAdmin = false }: { isAdmin: boolean }) => {
 // };
 
 export const freeListProtect = () => {
-  return async (req: RequestWithFreeList, res: Response, next: NextFunction) => {
+  return async (
+    req: RequestWithFreeList,
+    res: Response,
+    next: NextFunction,
+  ) => {
     let token: any;
 
     if (req.headers.authorization?.startsWith("Bearer") === true) {
@@ -145,23 +152,20 @@ export const freeListProtect = () => {
         decoded = jwt.verify(token, appConfig.jwtSecret);
 
         if (decoded) {
-       
+          const user = await FreeList.findOne({
+            _id: new ObjectId(decoded?.id),
+            isDeleted: false,
+          }).select("status _id");
+          console.log(user, "user-token-details");
 
-          const  user = await FreeList.findOne({
-              _id: new ObjectId(decoded?.id),
-              isDeleted: false,
-            }).select("status _id");
-            console.log(user, "user-token-details");
+          // if (!user?.status) {
+          //   res
+          //     .status(401)
+          //     .send({ message: errorMessages.userAccountBlocked });
+          // }
 
-            // if (!user?.status) {
-            //   res
-            //     .status(401)
-            //     .send({ message: errorMessages.userAccountBlocked });
-            // }
-
-            req.user = user;
-            next();
-        
+          req.user = user;
+          next();
         }
       } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {

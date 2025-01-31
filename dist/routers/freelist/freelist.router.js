@@ -3,15 +3,12 @@ import {
   deleteBusinessByAdmin,
   freeListLogin,
   freeListSignUp,
-  getAllFreelist,
   getAllFreelistMain,
   getTrashBusiness,
   unDeleteBusinessByAdmin,
   updateFreeList,
 } from "../../modules/freelist/freelist.controller.js";
-
-import { freeListProtect, protect } from "../../middleware/auth.middleware.js";
-
+import { protect } from "../../middleware/auth.middleware.js";
 const router = Router();
 router.post("/", freeListSignUp);
 router.post("/login", freeListLogin);
@@ -24,5 +21,4 @@ router.delete(
   unDeleteBusinessByAdmin,
 );
 router.get("/trash-freelist", protect({ isAdmin: true }), getTrashBusiness);
-
 export default router;

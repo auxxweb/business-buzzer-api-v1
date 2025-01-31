@@ -9,7 +9,7 @@ export interface RequestWithUser extends Request {
   };
 }
 export interface RequestWithFreeList extends Request {
-  user?:any
+  user?: any;
 }
 
 export interface sendMailData {

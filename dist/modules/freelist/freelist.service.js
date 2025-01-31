@@ -1,13 +1,11 @@
 import bcrypt from "bcryptjs";
-import CreateFreeList from "./freelist.interface.js";
 import FreeList from "./freelist.model.js";
 import { generateAPIError } from "../../errors/apiError.js";
 import { errorMessages } from "../../constants/messages.js";
 import { ObjectId } from "../../constants/type.js";
 import { hashValue } from "../../modules/business/business.utils.js";
 import { generateToken } from "../../utils/auth.utils.js";
-
-const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
+const freeListSignup = async (userData) => {
   try {
     const {
       name,
@@ -22,7 +20,6 @@ const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
       category,
     } = userData;
     const hashedPassword = await hashValue(password ?? "", 10);
-
     const freelist = await FreeList.create({
       name,
       brandName,
@@ -35,7 +32,6 @@ const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
       category,
       password: hashedPassword,
     });
-
     return {
       _id: freelist?._id,
       name: freelist?.name,
@@ -52,34 +48,23 @@ const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
     console.error(error);
   }
 };
-const freelistLogin = async ({
-  email = "",
-  password = "",
-}: {
-  email: string;
-  password: string;
-}): Promise<any> => {
+const freelistLogin = async ({ email = "", password = "" }) => {
   // Find the freeList and populate the category field
   const freeList = await FreeList.findOne({
     isDeleted: false,
     "contactDetails.email": email.trim(),
   }).populate("category", "name"); // Populate the 'category' field with 'name' and '_id'
-
   console.log(freeList, "freelist email");
-
   if (freeList == null) {
     return await generateAPIError(errorMessages.freeListNotFound, 400);
   }
-
   const comparePassword = await bcrypt.compare(
     password,
     freeList?.password ?? "",
   );
-
   if (!comparePassword) {
     return await generateAPIError(errorMessages.invalidCredentials, 400);
   }
-
   return {
     token: await generateToken({
       id: String(freeList?._id),
@@ -96,20 +81,14 @@ const freelistLogin = async ({
     category: freeList?.category, // Now populated, should have 'name' and '_id'
   };
 };
-
-const updateFreeList = async (
-  freeListId: string,
-  updateData: Partial<CreateFreeList>,
-): Promise<any> => {
+const updateFreeList = async (freeListId, updateData) => {
   const freeList = await FreeList.findOne({
     isDeleted: false,
     _id: new ObjectId(freeListId),
   });
-
   if (freeList == null) {
     return await generateAPIError(errorMessages.freeListNotFound, 400);
   }
-
   return await FreeList.findOneAndUpdate(
     {
       isDeleted: false,
@@ -146,20 +125,12 @@ const updateFreeList = async (
     },
   );
 };
-
 // Adjust the path based on your file structure
-
-const getAllFreelistMain = async ({
-  query,
-}: {
-  query: { page: number; limit: number };
-}): Promise<any> => {
+const getAllFreelistMain = async ({ query }) => {
   try {
     const { page, limit } = query;
-
     // Calculate skip value for pagination
     const skip = (page - 1) * limit;
-
     // Fetch documents with pagination and filter out isDeleted items
     const data = await FreeList.aggregate([
       {
@@ -181,10 +152,10 @@ const getAllFreelistMain = async ({
       },
       {
         $project: {
-          _id: 1, // Keeping the FreeList document ID
-          name: 1, // Keeping other FreeList fields
+          _id: 1,
+          name: 1,
           brandName: 1,
-          categoryName: "$category.name", // Extract category name
+          categoryName: "$category.name",
           categoryId: "$category._id",
           contactDetails: 1,
           address: 1,
@@ -192,7 +163,6 @@ const getAllFreelistMain = async ({
           description: 1,
           enconnectUrl: 1,
           images: 1,
-
           // Keeping category ID if needed
         },
       },
@@ -203,42 +173,39 @@ const getAllFreelistMain = async ({
     console.log(data, "freeelistdataaa");
     // Return the fetched data
     return data;
-  } catch (error: any) {
+  } catch (error) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error?.message}`);
   }
 };
-
-const getAllFreelist = async (): Promise<any> => {
+const getAllFreelist = async () => {
   try {
     // Fetch all documents from the 'FreeList' collection
     const data = await FreeList.find({ isDeleted: { $ne: true } }).lean();
     return data;
-  } catch (error: any) {
+  } catch (error) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error.message}`);
   }
 };
-const getAllTrashFreelist = async (): Promise<any> => {
+const getAllTrashFreelist = async () => {
   try {
     // Fetch all documents from the 'FreeList' collection
     const data = await FreeList.find({ isDeleted: { $ne: false } }).lean();
     return data;
-  } catch (error: any) {
+  } catch (error) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error.message}`);
   }
 };
-
-const deleteBusinessByAdmin = async (businessId: string): Promise<any> => {
-  const business: any = await FreeList.findOne({
+const deleteBusinessByAdmin = async (businessId) => {
+  const business = await FreeList.findOne({
     _id: new ObjectId(businessId),
     isDeleted: false,
   });
   if (business == null) {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
-
   return await FreeList.findOneAndUpdate(
     {
       _id: new ObjectId(businessId),
@@ -252,17 +219,14 @@ const deleteBusinessByAdmin = async (businessId: string): Promise<any> => {
     },
   );
 };
-
-const unDeleteBusinessByAdmin = async (businessId: string): Promise<any> => {
-  const business: any = await FreeList.findOne({
+const unDeleteBusinessByAdmin = async (businessId) => {
+  const business = await FreeList.findOne({
     _id: new ObjectId(businessId),
     isDeleted: true,
   });
-
   if (business == null) {
     return await generateAPIError(errorMessages.userNotFound, 404);
   }
-
   return await FreeList.findOneAndUpdate(
     {
       _id: new ObjectId(businessId),
@@ -276,7 +240,6 @@ const unDeleteBusinessByAdmin = async (businessId: string): Promise<any> => {
     },
   );
 };
-
 export const freeListService = {
   freeListSignup,
   getAllFreelist,

@@ -5,6 +5,7 @@ import { errorMessages } from "../constants/messages.js";
 import { ObjectId } from "../constants/type.js";
 import Business from "../modules/business/business.model.js";
 import Admin from "../modules/admin/admin.model.js";
+import FreeList from "../modules/freelist/freelist.model.js";
 export const protect = ({ isAdmin = false }) => {
   return async (req, res, next) => {
     let token;
@@ -113,4 +114,42 @@ export const protect = ({ isAdmin = false }) => {
 //     // }
 //   };
 // };
+export const freeListProtect = () => {
+  return async (req, res, next) => {
+    let token;
+    if (req.headers.authorization?.startsWith("Bearer") === true) {
+      try {
+        token = req.headers.authorization.split(" ")[1];
+        let decoded = {};
+        console.log(token);
+        decoded = jwt.verify(token, appConfig.jwtSecret);
+        if (decoded) {
+          const user = await FreeList.findOne({
+            _id: new ObjectId(decoded?.id),
+            isDeleted: false,
+          }).select("status _id");
+          console.log(user, "user-token-details");
+          // if (!user?.status) {
+          //   res
+          //     .status(401)
+          //     .send({ message: errorMessages.userAccountBlocked });
+          // }
+          req.user = user;
+          next();
+        }
+      } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+          console.error("Token has expired", error);
+          return res.status(401).send({ message: "Token has expired" });
+        } else {
+          console.error("Error verifying token", error);
+          return res.status(401).send({ message: "Unauthorized" });
+        }
+      }
+    }
+    if (!token) {
+      res.status(401).send({ message: "Unauthorized, No token" });
+    }
+  };
+};
 export const authMiddleware = { protect };
