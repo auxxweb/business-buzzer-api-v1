@@ -46,38 +46,39 @@ const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
       description: freelist?.description,
       enconnectUrl: freelist?.enconnectUrl,
       images: freelist?.images,
-      cate:freelist?.category
+      catetory:freelist?.category
     }
   } catch (error) {
     console.error(error)
   }
 }
-
 const freelistLogin = async ({
   email = '',
   password = '',
 }: {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }): Promise<any> => {
+  // Find the freeList and populate the category field
   const freeList = await FreeList.findOne({
     isDeleted: false,
     'contactDetails.email': email.trim(),
   })
+  .populate('category', 'name'); // Populate the 'category' field with 'name' and '_id'
 
-  console.log(freeList,'freelist email')
+  console.log(freeList, 'freelist email');
 
   if (freeList == null) {
-    return await generateAPIError(errorMessages.freeListNotFound, 400)
+    return await generateAPIError(errorMessages.freeListNotFound, 400);
   }
 
   const comparePassword = await bcrypt.compare(
     password,
     freeList?.password ?? '',
-  )
+  );
 
   if (!comparePassword) {
-    return await generateAPIError(errorMessages.invalidCredentials, 400) // changed from 401 to 404 to fix frontend issue with redirect to login page
+    return await generateAPIError(errorMessages.invalidCredentials, 400);
   }
 
   return {
@@ -85,17 +86,18 @@ const freelistLogin = async ({
       id: String(freeList?._id),
     }),
     _id: freeList?._id,
-      name: freeList?.name,
-      brandName: freeList?.brandName,
-      logo: freeList?.logo,
-      address: freeList?.address,
-      contactDetails: freeList?.contactDetails,
-      description: freeList?.description,
-      enconnectUrl: freeList?.enconnectUrl,
-      images: freeList?.images,
-      category:freeList?.category
-  }
-}
+    name: freeList?.name,
+    brandName: freeList?.brandName,
+    logo: freeList?.logo,
+    address: freeList?.address,
+    contactDetails: freeList?.contactDetails,
+    description: freeList?.description,
+    enconnectUrl: freeList?.enconnectUrl,
+    images: freeList?.images,
+    category: freeList?.category, // Now populated, should have 'name' and '_id'
+  };
+};
+
 
 const updateFreeList = async (
   freeListId: string,
