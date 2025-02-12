@@ -160,6 +160,9 @@ const getAllFreelistMain = async ({
     // Calculate skip value for pagination
     const skip = (page - 1) * limit;
 
+    const totalData = await FreeList.countDocuments({
+      isDeleted: false,
+    });
     // Fetch documents with pagination and filter out isDeleted items
     const data = await FreeList.aggregate([
       {
@@ -202,7 +205,7 @@ const getAllFreelistMain = async ({
       .exec();
     console.log(data, "freeelistdataaa");
     // Return the fetched data
-    return data;
+    return { totalCount: totalData, data };
   } catch (error: any) {
     // Handle errors
     throw new Error(`Error fetching freelist: ${error?.message}`);
