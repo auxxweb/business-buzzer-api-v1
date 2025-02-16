@@ -21,6 +21,15 @@ const freeListSignup = async (userData: CreateFreeList): Promise<any> => {
       password,
       category,
     } = userData;
+
+    const freeListExists = await FreeList.findOne({
+      "contactDetails.email": contactDetails?.email ?? "",
+      isDeleted: false,
+    });
+
+    if (freeListExists != null) {
+      return await generateAPIError("Email already exists", 400);
+    }
     const hashedPassword = await hashValue(password ?? "", 10);
 
     const freelist = await FreeList.create({
@@ -108,6 +117,22 @@ const updateFreeList = async (
 
   if (freeList == null) {
     return await generateAPIError(errorMessages.freeListNotFound, 400);
+  }
+
+  const email = updateData?.contactDetails?.email;
+
+  if (email != null) {
+    const freeListEmailExists = await FreeList.findOne({
+      "contactDetails.email": email,
+      isDeleted: false,
+    });
+
+    if (freeListEmailExists != null) {
+      return await generateAPIError(
+        "Email already used on another profile",
+        400,
+      );
+    }
   }
 
   return await FreeList.findOneAndUpdate(
