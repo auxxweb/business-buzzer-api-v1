@@ -74,8 +74,6 @@ const freelistLogin = async ({
     "contactDetails.email": email.trim(),
   }).populate("category", "name"); // Populate the 'category' field with 'name' and '_id'
 
-  console.log(freeList, "freelist email");
-
   if (freeList == null) {
     return await generateAPIError(errorMessages.freeListNotFound, 400);
   }
@@ -121,7 +119,7 @@ const updateFreeList = async (
 
   const email = updateData?.contactDetails?.email;
 
-  if (email != null) {
+  if (email != null && freeList?.contactDetails?.email !== email) {
     const freeListEmailExists = await FreeList.findOne({
       "contactDetails.email": email,
       isDeleted: false,
@@ -134,7 +132,6 @@ const updateFreeList = async (
       );
     }
   }
-
   return await FreeList.findOneAndUpdate(
     {
       isDeleted: false,
@@ -228,7 +225,7 @@ const getAllFreelistMain = async ({
       .skip(skip)
       .limit(limit)
       .exec();
-    console.log(data, "freeelistdataaa");
+    // console.log(data, "freeelistdataaa");
     // Return the fetched data
     return { totalCount: totalData, data };
   } catch (error: any) {

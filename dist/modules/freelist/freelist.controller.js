@@ -21,7 +21,7 @@ const freeListLogin = errorWrapper(async (req, res, next) => {
   });
 });
 const updateFreeList = errorWrapper(async (req, res, next) => {
-  console.log(req.params.id, "ssasaasasas");
+  // console.log(req.params.id, "ssasaasasas");
   const data = await freeListService.updateFreeList(req?.params?.id, {
     ...req.body,
   });
