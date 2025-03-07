@@ -4,6 +4,7 @@ import {
   freeListLogin,
   freeListSignUp,
   getAllFreelistMain,
+  getFreeListById,
   getTrashBusiness,
   unDeleteBusinessByAdmin,
   updateFreeList,
@@ -14,6 +15,7 @@ router.post("/", freeListSignUp);
 router.post("/login", freeListLogin);
 router.patch("/:id", updateFreeList);
 router.get("/", getAllFreelistMain);
+router.get("/:id", getFreeListById);
 router.delete("/admin/:id", protect({ isAdmin: true }), deleteBusinessByAdmin);
 router.delete(
   "/admin/undelete/:id",

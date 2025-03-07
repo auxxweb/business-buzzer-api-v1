@@ -56,6 +56,14 @@ const getAllFreelist = errorWrapper(async (req, res, next) => {
     status: 200,
   });
 });
+const getFreeListById = errorWrapper(async (req, res, next) => {
+  const data = await freeListService.getFreeListById(req?.params?.id);
+  // Return the response
+  return responseUtils.success(res, {
+    data,
+    status: 200,
+  });
+});
 const deleteBusinessByAdmin = errorWrapper(async (req, res, next) => {
   console.log(req?.params?.id, "req body");
   const data = await freeListService.deleteBusinessByAdmin(req?.params?.id);
@@ -88,4 +96,5 @@ export {
   getAllFreelistMain,
   freeListLogin,
   updateFreeList,
+  getFreeListById,
 };

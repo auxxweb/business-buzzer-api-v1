@@ -79,6 +79,17 @@ const getAllFreelist = errorWrapper(
     });
   },
 );
+const getFreeListById = errorWrapper(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await freeListService.getFreeListById(req?.params?.id);
+
+    // Return the response
+    return responseUtils.success(res, {
+      data,
+      status: 200,
+    });
+  },
+);
 
 const deleteBusinessByAdmin = errorWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -124,4 +135,5 @@ export {
   getAllFreelistMain,
   freeListLogin,
   updateFreeList,
+  getFreeListById,
 };

@@ -302,6 +302,18 @@ const unDeleteBusinessByAdmin = async (businessId: string): Promise<any> => {
   );
 };
 
+const getFreeListById = async (freeListId: string): Promise<any> => {
+  const data = await FreeList.findOne({
+    _id: new ObjectId(freeListId),
+    isDeleted: false,
+  }).select("-password");
+
+  if (data == null) {
+    return await generateAPIError("Data not found", 400);
+  }
+
+  return data;
+};
 export const freeListService = {
   freeListSignup,
   getAllFreelist,
@@ -311,4 +323,5 @@ export const freeListService = {
   getAllFreelistMain,
   freelistLogin,
   updateFreeList,
+  getFreeListById,
 };
