@@ -266,7 +266,9 @@ const getFreeListById = async (freeListId) => {
   const data = await FreeList.findOne({
     _id: new ObjectId(freeListId),
     isDeleted: false,
-  }).select("-password");
+  })
+    .populate("")
+    .select("-password");
   if (data == null) {
     return await generateAPIError("Data not found", 400);
   }
