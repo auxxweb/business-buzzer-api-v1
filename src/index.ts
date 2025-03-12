@@ -20,7 +20,7 @@ import path from "path";
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import cron from "node-cron";
 import { checkFreePlan } from "./modules/cronjob/freePlanCheck.js";
-import Business from "modules/business/business.model.js";
+import Business from "./modules/business/business.model.js";
 // import dbConnect from "../../utils/dbConnection.js";
 // import { checkFreePlan } from "./freePlanCheck.js";
 const app = express();
