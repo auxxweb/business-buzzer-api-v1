@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import express from "express";
 import bodyParser from "body-parser";
 import { fork } from "child_process";
@@ -84,40 +85,60 @@ app.get("/profile/:profileName/:id", async (req, res) => {
     "businessName logo description",
   );
 
-  // Fetch data based on ID (from database or API)
-  const profileId = data?._id;
-  const title = data?.businessName;
-  const description = data?.description;
-  const image = data?.logo;
-  const redirectUrl = `https://enconnect.in/profile/${title}/${profileId}`;
+  if (!data) {
+    return res.status(404).send("Profile not found");
+  }
 
-  // Serve the OG meta HTML dynamically
-  res.send(`
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${title}</title>
-      
-      <meta property="og:title" content="${title}" />
-      <meta property="og:description" content="${description}" />
-      <meta property="og:image" content="${image}" />
-      <meta property="og:url" content="${redirectUrl}" />
-      <meta http-equiv="refresh" content="1;url=${redirectUrl}">
+  const profileId = data._id;
+  const title = data.businessName || "Default Business Name";
+  const description = data.description || "No description available.";
+  const image = data.logo?.startsWith("http")
+    ? data.logo
+    : `https://yourdomain.com/default-image.jpg`;
+  const redirectUrl = `https://enconnect.in/profile/${encodeURIComponent(
+    title,
+  )}/${profileId}`;
 
-     <script>
-            // Redirect users to the actual product page after OG scraping
-         
-                window.location.href = "${redirectUrl}";
-           
-        </script>
-  </head>
-  <body>
-      <p>Redirecting...</p>
-  </body>
-  </html>
-  `);
+  // Check if request is from a social media bot (Facebook, Twitter, LinkedIn, etc.)
+  const userAgent = req.headers["user-agent"] || "";
+  const isSocialBot =
+    /facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot/i.test(
+      userAgent,
+    );
+
+  if (isSocialBot) {
+    // Serve OG metadata for bots (NO JavaScript, NO Redirect)
+    return res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${title}</title>
+
+        <!-- Open Graph Meta Tags -->
+        <meta property="og:title" content="${title}" />
+        <meta property="og:description" content="${description}" />
+        <meta property="og:image" content="${image}" />
+        <meta property="og:url" content="${redirectUrl}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Enconnect" />
+
+        <!-- Twitter Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="${title}" />
+        <meta name="twitter:description" content="${description}" />
+        <meta name="twitter:image" content="${image}" />
+    </head>
+    <body>
+        <p>Re</p>
+    </body>
+    </html>
+    `);
+  }
+
+  // Redirect real users
+  res.redirect(redirectUrl);
 });
 
 void (async () => {
