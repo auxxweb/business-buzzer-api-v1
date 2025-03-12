@@ -20,6 +20,7 @@ import path from "path";
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import cron from "node-cron";
 import { checkFreePlan } from "./modules/cronjob/freePlanCheck.js";
+import Business from "modules/business/business.model.js";
 // import dbConnect from "../../utils/dbConnection.js";
 // import { checkFreePlan } from "./freePlanCheck.js";
 const app = express();
@@ -76,6 +77,48 @@ app.use(
   express.raw({ type: "application/json" }),
   webHookRouter,
 );
+app.get("/profile/:profileName/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const data = await Business.findById(id).select(
+    "businessName logo description",
+  );
+
+  // Fetch data based on ID (from database or API)
+  const profileId = data?._id;
+  const title = data?.businessName;
+  const description = data?.description;
+  const image = data?.logo;
+  const redirectUrl = `https://enconnect.in/profile/${title}/${profileId}`;
+
+  // Serve the OG meta HTML dynamically
+  res.send(`
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${title}</title>
+      
+      <meta property="og:title" content="${title}" />
+      <meta property="og:description" content="${description}" />
+      <meta property="og:image" content="${image}" />
+      <meta property="og:url" content="${redirectUrl}" />
+      <meta http-equiv="refresh" content="1;url=${redirectUrl}">
+
+     <script>
+            // Redirect users to the actual product page after OG scraping
+         
+                window.location.href = "${redirectUrl}";
+           
+        </script>
+  </head>
+  <body>
+      <p>Redirecting...</p>
+  </body>
+  </html>
+  `);
+});
 
 void (async () => {
   try {
