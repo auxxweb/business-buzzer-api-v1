@@ -80,9 +80,9 @@ app.get("/profile/:profileName/:id", async (req, res) => {
   const title = data.businessName || "Default Business Name";
   const description = data.description || "No description available.";
   const image = data.logo?.startsWith("http")
-    ? data.logo
-    : `https://yourdomain.com/default-image.jpg`;
-  const redirectUrl = `https://enconnect.in/profile/${encodeURIComponent(
+    ? data?.logo
+    : `https://auxxbay.auxxweb.in/images/titleEnconnectLogo.png`;
+  const redirectUrl = `https://auxxbay.auxxweb.in/profile/${encodeURIComponent(
     title,
   )}/${profileId}`;
   // Check if request is from a social media bot (Facebook, Twitter, LinkedIn, etc.)

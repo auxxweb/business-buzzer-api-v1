@@ -32,18 +32,20 @@ const getS3Urls = errorWrapper(
 
       const params = {
         Bucket: bucket,
-        Key: `${folder}/bb_${uniqueCode}`,
+        Key: `${folder}/ab_${uniqueCode}`,
         Expires: 60,
       };
       const url = await s3.getSignedUrlPromise("putObject", params);
 
       urls.push({
-        accessLink: `${appConfig.awsUrl}/${folder}/bb_${uniqueCode}`,
+        accessLink: `${appConfig.awsUrl}/${folder}/ab_${uniqueCode}`,
         file_type: files[i]?.file_type,
         position: files[i]?.position,
         url,
       });
     }
+
+    console.log(urls, "_____");
 
     return responseUtils.success(res, {
       data: urls,
@@ -57,8 +59,8 @@ interface DeleteS3Params {
 }
 
 const deleteS3 = async (key: string): Promise<any> => {
-  const keyy = key?.split("inconnect/")[1];
-  console.log(`inconnect/${keyy}`, "key");
+  const keyy = key?.split("auxxbay/")[1];
+  console.log(`auxxbay/${keyy}`, "key");
 
   // Ensure that AWS region and credentials are properly configured
   aws.config.update({
@@ -73,7 +75,7 @@ const deleteS3 = async (key: string): Promise<any> => {
 
   const params = {
     Bucket: bucket, // Your bucket name
-    Key: `inconnect/${keyy}`,
+    Key: `auxxbay/${keyy}`,
   };
 
   try {

@@ -14,7 +14,8 @@
     "lint:check": "eslint --ext .tsx,.ts .",
     "format:check": "prettier . --ignore-path .gitignore --check",
     "format:fix": "prettier . --ignore-path .gitignore --write",
-    "dev-tsx": "tsx watch --clear-screen=false src/index.ts"
+    "dev-tsx": "tsx watch --clear-screen=false src/index.ts",
+    "vercel-build": "echo build"
   },
   "lint-staged": {
     "*.ts": [
