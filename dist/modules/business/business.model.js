@@ -29,7 +29,7 @@ const BusinessSchema = new Schema(
     businessId: {
       type: String,
       required: true,
-      // unique: true,
+      unique: true,
     },
     location: {
       type: {
